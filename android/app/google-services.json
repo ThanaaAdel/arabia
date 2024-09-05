@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "682341598960",
+    "project_id": "arabia-f79c6",
+    "storage_bucket": "arabia-f79c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682341598960:android:bc081fab6c9ce3bf162435",
+        "android_client_info": {
+          "package_name": "com.topbusiness.arabia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjpzwBYFOY2FPhgZ2jIJSnfjtya_Lzsdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
