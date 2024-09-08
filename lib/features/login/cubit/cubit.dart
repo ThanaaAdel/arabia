@@ -174,6 +174,7 @@ class LoginCubit extends Cubit<LoginState> {
         if (r.code == 200) {
           loginWithClientIdModel = r;
           Navigator.pushNamed(context, Routes.homeRoute);
+          Preferences.instance.setUserWithSession(loginWithClientIdModel!);
         } else {
           errorGetBar(r.msg ?? '');
         }

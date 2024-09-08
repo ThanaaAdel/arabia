@@ -14,9 +14,12 @@ import 'package:arabia/features/setting_screen/screens/setting_screen.dart';
 import 'package:arabia/features/login/screens/verification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:arabia/features/splash/screens/splash_screen.dart';
+import '../../core/models/get_hourly__package_model.dart';
+import '../../core/models/login_with_client_id_model.dart';
 import '../../core/utils/app_strings.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../features/complain_screen/complaints_screen.dart';
+import '../../features/contract_houres_screen/cubit/cubit.dart';
 import '../../features/contract_houres_screen/widgets/total_data_from_hour_contarct_screen.dart';
 import '../../features/contract_month_screen/contract_month_screen.dart';
 import '../../features/hourly_contracts_details_screen/screens/hourly_contracts_details_screen.dart';
@@ -92,8 +95,9 @@ class AppRoutes {
           duration: const Duration(milliseconds: 800),
         );
       case Routes.contractHoursRoute:
+        final loginWithClientIdModel = settings.arguments as LoginWithClientIdModel;
         return PageTransition(
-          child: const ContractHourScreen(),
+          child:  ContractHourScreen(loginWithClientIdModel: loginWithClientIdModel,),
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
@@ -203,13 +207,18 @@ class AppRoutes {
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
-        );case Routes.choosePackageFromContractHourRoute:
+        );
+      case Routes.choosePackageFromContractHourRoute:
+        final args = settings.arguments as Map<String, dynamic>;
+        final Package package = args['package'];
+        final ContractHourCubit cubit = args['cubit'];
         return PageTransition(
-          child: const ChoosePackageFromContractHourScreen(),
+          child:  ChoosePackageFromContractHourScreen(package: package,cubit: cubit,),
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
-        );case Routes.totalDataFromHourContactRoute:
+        );
+        case Routes.totalDataFromHourContactRoute:
         return PageTransition(
           child: const TotalDataFromHourContactScreen(),
           type: PageTransitionType.fade,

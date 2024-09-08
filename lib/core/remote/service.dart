@@ -8,6 +8,9 @@ import '../api/end_points.dart';
 import '../error/exceptions.dart';
 import '../error/failures.dart';
 import '../models/complete_register_model.dart';
+import '../models/get_hourly__package_model.dart';
+import '../models/get_occupations_model.dart';
+import '../models/get_profile_data_model.dart';
 import '../models/login_model.dart';
 import '../models/login_with_client_id_model.dart';
 import '../models/type_accomonation_type.dart';
@@ -139,6 +142,81 @@ class ServiceApi {
       );
 
       return Right(HouseAccommondationTypeModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  ////////////////////////GetOccupations  ///////////////////////
+  Future<Either<Failure, GetOccupationsModel>> getGetOccupationsApi(
+      {required String clientId}) async {
+
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "___getOccupations",
+          'apiToken': "x93mY",
+          'client_id':clientId
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(GetOccupationsModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  ////////////////////////Get hour package  ///////////////////////
+  Future<Either<Failure, GetHourlyPackageModel>> getHourlyPackageApi(
+      {required String clientId}) async {
+    LoginWithClientIdModel? loginWithSessionModel = await Preferences.instance.getUserModelWithSession();
+
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "getAllRentalHourlyPackages",
+          'apiToken': "x93mY",
+          'client_id':clientId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+          'session_token':loginWithSessionModel?.data?.sessionToken ?? ''
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(GetHourlyPackageModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  ////////////////////////Get Profile Data  ///////////////////////
+  Future<Either<Failure, GetProfileDataModel>> getProfileDataApi() async {
+    LoginWithClientIdModel? loginWithSessionModel = await Preferences.instance.getUserModelWithSession();
+
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "___getClientProfileDataAsLanguage",
+          'apiToken': "x93mY",
+          'client_id':loginWithSessionModel?.data?.clientId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+          'session_token':loginWithSessionModel?.data?.sessionToken ?? '',
+          'y':66
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(GetProfileDataModel.fromJson(response));
     } on ServerException {
       return Left(ServerFailure());
     }

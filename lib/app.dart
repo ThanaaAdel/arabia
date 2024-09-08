@@ -9,6 +9,7 @@ import 'core/utils/app_strings.dart';
 import 'package:arabia/injector.dart' as injector;
 import 'features/complain_screen/cubit/cubit.dart';
 import 'features/contarcts_screen/cubit/cubit.dart';
+import 'features/contract_houres_screen/cubit/cubit.dart';
 import 'features/follow_up_on_orders_screen/cubit/cubit.dart';
 import 'features/home_screen/cubit/cubit.dart';
 import 'features/hourly_contracts_screen/cubit/cubit.dart';
@@ -64,6 +65,8 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider(
             create: (_) => injector.serviceLocator<HourlyContractsCubit>(),
+          ),BlocProvider(
+            create: (_) => injector.serviceLocator<ContractHourCubit>(),
           ),
         ],
         child: ScreenUtilInit(

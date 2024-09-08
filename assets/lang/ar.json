@@ -109,6 +109,10 @@
   "morning_service": "خدمة صباحية",
   "success_login": "تم تسجيل الدخول بنجاح",
   "verification_success": "تم التحقق بنجاح",
-  "complete_register_success": "تم التسجيل بنجاح"
+  "complete_register_success": "تم التسجيل بنجاح",
+  "you_have_reached_the_maximum_number_of_service_days_allowed": "تم تجاوز عدد الأيام الخدمة المسموحة",
+  "ratio": "الضريبة",
+  "sub_total": "اجمالي فرعي",
+  "exceeded_maximum_service_time_duration": "تم تجاوز مدة الخدمة الأقصى"
 
 }

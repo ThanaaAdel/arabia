@@ -15,7 +15,7 @@ class ImageAssets {
   static const String unoCafeIcon = '$imagePath/arabia_icon.png';
   static const String splashBackgroundImage = '$iconsPath/splash_background.svg';
   static const String splashTextImage = '$iconsPath/arabia_text_splash.svg';
-  static const String loginBackgroundImage = '$iconsPath/login_background.svg';
+  static const String loginBackgroundImage = '$imagePath/back_login.png';
   static const String arrowVerificationImage = '$iconsPath/arrow_verification_screen.svg';
   static const String homeBackgroundImage = '$iconsPath/background_home_appbar.svg';
   static const String notificationIcon = '$iconsPath/notification_icon.svg';

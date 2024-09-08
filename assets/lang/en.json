@@ -110,6 +110,10 @@
     "type_of_stay": "Type Of Stay",
     "success_login": "Login Successful",
     "verification_success": "Verification Successful",
-    "complete_register_success":"Register Successful"
+    "complete_register_success":"Register Successful",
+    "you_have_reached_the_maximum_number_of_service_days_allowed":"You have reached the maximum number of service days allowed",
+    "ratio": "Ratio",
+    "sub_total": "Sub Total",
+    "exceeded_maximum_service_time_duration":"Exceeded maximum service time duration"
 
 }

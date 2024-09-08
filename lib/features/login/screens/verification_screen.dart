@@ -22,22 +22,24 @@ class VerificationScreen extends StatelessWidget {
         body: BlocBuilder<LoginCubit, LoginState>(builder: (context, state) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
-                  child: SharedAppbar(text: "verification_code".tr()),
-                ),
-                SizedBox(height: 100.h),
-                _buildVerificationText(),
-                SizedBox(height: 10.h),
-                _buildOtpTextField(cubit),
-                SizedBox(height: 20.h),
-                _buildVerifyButton(context, cubit, state),
-                SizedBox(height: 20.h),
-                _buildTimerAndResend(context),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
+                    child: SharedAppbar(text: "verification_code".tr()),
+                  ),
+                  SizedBox(height: 100.h),
+                  _buildVerificationText(),
+                  SizedBox(height: 10.h),
+                  _buildOtpTextField(cubit),
+                  SizedBox(height: 20.h),
+                  _buildVerifyButton(context, cubit, state),
+                  SizedBox(height: 20.h),
+                  _buildTimerAndResend(context),
+                ],
+              ),
             ),
           );
         }),
@@ -83,11 +85,7 @@ class VerificationScreen extends StatelessWidget {
       BuildContext context, LoginCubit cubit, LoginState state) {
     return SizedBox(
         width: double.infinity,
-        child: (state is VerificationLoadingState)
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : ElevatedButton(
+        child:  ElevatedButton(
                 onPressed: () {
                   cubit.verificationData(context);
                 },
@@ -98,7 +96,11 @@ class VerificationScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                child: Text(
+                child: (state is VerificationLoadingState)
+                    ?  Center(
+                  child: CircularProgressIndicator(color: AppColors.white),
+                )
+                    :Text(
                   "verify".tr(),
                   style: TextStyle(
                     color: Colors.white,

@@ -13,6 +13,7 @@ import 'core/api/base_api_consumer.dart';
 import 'core/api/dio_consumer.dart';
 import 'features/complain_screen/cubit/cubit.dart';
 import 'features/contarcts_screen/cubit/cubit.dart';
+import 'features/contract_houres_screen/cubit/cubit.dart';
 import 'features/follow_up_on_orders_screen/cubit/cubit.dart';
 import 'features/hourly_contracts_screen/cubit/cubit.dart';
 
@@ -36,6 +37,10 @@ Future<void> setup() async {
 
   serviceLocator.registerFactory(
     () => HomeCubit(
+      serviceLocator(),
+    ),
+  );  serviceLocator.registerFactory(
+    () => ContractHourCubit(
       serviceLocator(),
     ),
   );

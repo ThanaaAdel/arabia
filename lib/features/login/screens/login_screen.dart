@@ -9,7 +9,6 @@ import 'package:arabia/core/utils/assets_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-// import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../core/utils/dialogs.dart';
 
@@ -29,23 +28,23 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     var cubit = context.read<LoginCubit>();
     return BlocBuilder<LoginCubit, LoginState>(builder: (context, state) {
-      return Scaffold(
-        backgroundColor: AppColors.white,
-        body: Stack(
-          children: [
-            SizedBox(
-              height: double.infinity,
-              width: double.infinity,
-              child: SvgPicture.asset(
-                ImageAssets.loginBackgroundImage,
+      return Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
                 fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              top: 200.h,
-              width: 350.w,
+                image: AssetImage(ImageAssets.loginBackgroundImage))),
+        child: Scaffold(
+          backgroundColor: AppColors.transparent,
+          body: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  SizedBox(height: 200.h),
                   SvgPicture.asset(
                     ImageAssets.splashTextImage,
                     width: 200.w,
@@ -97,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide:
                                           BorderSide(color: AppColors.grayLite),
                                     ),
-                                    labelText: "5xxxxxxxxx",
+                                    hintText: "5xxxxxxxxx",
                                   ),
                                   onChanged: (phone) {
                                     cubit.phoneEditingController.text = phone;
@@ -114,9 +113,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 50.h),
                   (state is LoadingState)
-                      ? Center(
-                          child:
-                              CircularProgressIndicator(color: AppColors.blue))
+                      ? Container(
+                      padding: EdgeInsets.all(20.sp),
+                      height: 40.h,
+                      width: 120.w,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.sp),
+                          color: AppColors.blue),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.white),
+                      ))
                       : ButtonWidget(
                           onPressed: () {
                             if (cubit.formKey.currentState!.validate()) {
@@ -132,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-          ],
+          ),
         ),
       );
     });

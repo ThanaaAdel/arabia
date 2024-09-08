@@ -1,25 +1,26 @@
-abstract class ComplaintsState {}
+abstract class ContractHourState {}
 
-class MainInitial extends ComplaintsState {}
+class MainInitial extends ContractHourState {}
+class GetOccupationsLoadingState extends ContractHourState {}
+class GetOccupationsErrorState extends ContractHourState {
+  final String error;
 
-class LoadedGetUserData extends ComplaintsState {}
+  GetOccupationsErrorState(this.error);
+}
+class GetOccupationsLoadedState extends ContractHourState {}
+class GetHourlyPackageLoadedState extends ContractHourState {}
+class GetHourlyPackageErrorState extends ContractHourState {
+  final String error;
 
-class LoadingGetUserData extends ComplaintsState {}
+  GetHourlyPackageErrorState(this.error);
+}
+class GetHourlyPackageLoadingState extends ContractHourState {}
+class LoadedGetUserDataWithSession extends ContractHourState {}
+class LoadingGetUserDataWithSession  extends ContractHourState {}
+class GetPackagesLoadedState extends ContractHourState {}
+class GetPackagesErrorState extends ContractHourState {
+  final String error;
 
-class LoadedGetNewOrderState extends ComplaintsState {}
-
-class ErrorGetNewOrderState extends ComplaintsState {}
-
-class LoadingGetNewOrderState extends ComplaintsState {}
-
-class ChangeStatusOfSelectedIndexOrder extends ComplaintsState {}
-
-class LoadingGetCurrentOrderState extends ComplaintsState {}
-
-class LoadedGetCurrentOrderState extends ComplaintsState {}
-
-class LoadingSendToken extends ComplaintsState {}
-
-class ErrorSendToken extends ComplaintsState {}
-
-class LoadedSendToken extends ComplaintsState {}
+  GetPackagesErrorState(this.error);
+}
+class GetPackagesLoadingState extends ContractHourState {}
