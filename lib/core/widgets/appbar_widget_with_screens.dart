@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -25,8 +26,8 @@ final String title,description;
               },
               child:Directionality.of(context) == TextDirection.rtl ?  SvgPicture.asset(
                 ImageAssets.arrowVerificationImage,
-                width: 30.w,
-                height: 30.h,
+                width: 25.w,
+                height: 25.h,
               ):
               Container(
                 width: 30.w,
@@ -42,12 +43,17 @@ final String title,description;
             children: [
               Text(
                 title,
-                style: TextStyles.size22FontWidgetBoldBlue
+                style: TextStyles.size22FontWidgetBoldBlue.copyWith(fontSize: 20.sp)
               ),
 
-              Text(
-                description,
-                style: TextStyles.size13FontWidgetSemiBoldBlackWithOpacity6
+              SizedBox(
+
+                child: Text(
+                  description,
+                  style: TextStyles.size13FontWidgetSemiBoldBlackWithOpacity6.copyWith(fontSize: 10.sp),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),

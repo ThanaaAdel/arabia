@@ -10,10 +10,19 @@ import 'package:arabia/core/utils/app_colors.dart';
 import '../../../core/utils/style_text.dart';
 import '../../../core/widgets/shared_appbar.dart';
 
-class VerificationScreen extends StatelessWidget {
+class VerificationScreen extends StatefulWidget {
   const VerificationScreen({super.key});
 
   @override
+  State<VerificationScreen> createState() => _VerificationScreenState();
+}
+
+class _VerificationScreenState extends State<VerificationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<LoginCubit>().startCountdown(); // Start the timer when the screen loads
+  }
   Widget build(BuildContext context) {
     var cubit = context.read<LoginCubit>();
     return SafeArea(
@@ -126,24 +135,30 @@ class VerificationScreen extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AutoSizeText("resend_text".tr(),
-                style: TextStyles.size16FontWidgetBoldBlack),
-            Text(timerText, style: TextStyles.size40FontWidgetBoldBlack),
+            AutoSizeText(
+              "resend_text".tr(),
+              style: TextStyles.size16FontWidgetBoldBlack,
+            ),
+            if (!isResendAvailable)
+              Text(
+                timerText,
+                style: TextStyles.size40FontWidgetBoldBlack,
+              ),
             SizedBox(height: 20.h),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: isResendAvailable
                     ? () {
-                        context.read<LoginCubit>().resendCode();
-                      }
+                  context.read<LoginCubit>().resendCode();
+                }
                     : null,
                 style: ElevatedButton.styleFrom(
                   disabledBackgroundColor: AppColors.orange.withOpacity(0.3),
                   backgroundColor: isResendAvailable
                       ? AppColors.orange
                       : AppColors.orange.withOpacity(
-                          0.5), // Use reduced opacity when not available
+                      0.5), // Use reduced opacity when not available
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),

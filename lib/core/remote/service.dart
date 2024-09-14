@@ -1,5 +1,4 @@
 
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -7,12 +6,24 @@ import '../api/base_api_consumer.dart';
 import '../api/end_points.dart';
 import '../error/exceptions.dart';
 import '../error/failures.dart';
+import '../models/GetTransferServiceTypeModel.dart';
 import '../models/complete_register_model.dart';
+import '../models/contract_model.dart';
+import '../models/experance_model.dart';
+import '../models/get_country_model.dart';
 import '../models/get_hourly__package_model.dart';
+import '../models/get_monthly_Data.dart';
 import '../models/get_occupations_model.dart';
 import '../models/get_profile_data_model.dart';
+import '../models/insert_hourly_data_model.dart';
+import '../models/insert_mediation_request_model.dart';
+import '../models/insert_monthly_data_model.dart';
+import '../models/insert_profissional_employment_model.dart';
+import '../models/insert_transfare_service_model.dart';
 import '../models/login_model.dart';
 import '../models/login_with_client_id_model.dart';
+import '../models/offers_model.dart';
+import '../models/religions_model.dart';
 import '../models/type_accomonation_type.dart';
 import '../models/verification_model.dart';
 import '../preferences/preferences.dart';
@@ -30,6 +41,7 @@ class ServiceApi {
           "apiToken": "x93mY",
           "action": "sendSMSConfirmationCode",
           "mobile_num": phone,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
         },
         formDataIsEnabled: true,
         options: Options(
@@ -54,6 +66,7 @@ class ServiceApi {
           'action': "checkSMSConfirmationCodeAndGetRegistrationStatusOfClient",
           'apiToken': "x93mY",
           "confirm_code": confirmCode,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
           "token": loginModel.data?.token,
         },
         formDataIsEnabled: true,
@@ -82,7 +95,7 @@ class ServiceApi {
           'action': "registerNewClientPerson",
           'apiToken': "x93mY",
           "identity_no": "1234567890",
-          "mobile_no":loginModel.data!.mobileNum,
+          "mobile_no": loginModel.data!.mobileNum,
           "firstname": firstName,
           "lastname": lastName,
           "y": 66,
@@ -101,6 +114,7 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
+
   /////////////////// login with ClientId   ///////////////////////////
   Future<Either<Failure, LoginWithClientIdModel>> loginWithClientIdApi(
       {required String clientId}) async {
@@ -111,7 +125,7 @@ class ServiceApi {
         body: {
           'action': "loginWithClientId",
           'apiToken': "x93mY",
-           'client_id':clientId,
+          'client_id': clientId,
         },
         formDataIsEnabled: true,
         options: Options(
@@ -124,16 +138,269 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
-  ////////////////////////HouseAccommondationType ///////////////////////
-  Future<Either<Failure, HouseAccommondationTypeModel>> getClientHouseAccomonationTypeApi() async {
 
+  ////////////////////////country ///////////////////////
+  Future<Either<Failure, GetCountriesModel>> getCountryApi() async {
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "___getCountries",
+          'apiToken': "x93mY",
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(GetCountriesModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  ////////////////////////Experince ///////////////////////
+  Future<Either<Failure, ExperanceModel>> getExperianceApi() async {
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "___getExperiencesOptions",
+          'apiToken': "x93mY",
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ExperanceModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  ////////////////////////Experince ///////////////////////
+  Future<Either<Failure, GetTransferServiceTypeModel>> getTransferServiceTypeOptionsApi() async {
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "__getTransferServiceTypeOptions",
+          'apiToken': "x93mY",
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(GetTransferServiceTypeModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  /////////////////// insert profissional employment data ///////////////////
+  Future<Either<Failure, InsertProfissionalEmployementModel>>
+      insertProfissionalEmploymentApi({
+    required String countryId,
+    required String occId,
+    required String experince,
+    required String visaNo,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+        await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "insertMediationRequest",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'country_id': countryId,
+          'occ_id': occId,
+          'experience': experince,
+          'visa_no': visaNo,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(InsertProfissionalEmployementModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// insert profissional employment data ///////////////////
+  Future<Either<Failure, ContractModel>>
+  contractApi() async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getAllClientsContractsAttachments",
+          'session_token': "c9f0f895fb98ab9159f51fd0297e236d",
+          'client_id': 14,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ContractModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// insert transfare service employment data ///////////////////
+  Future<Either<Failure, InsertTransefareServiceModel>>
+  insertTransfareServiceApi({
+    required String currentWorkerOccId,
+    required String currentWorkerCountryId,
+    required String currentWorkerReligion,
+    required String transferType,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "InsertTransferServiceRequest",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'current_worker_country_id':currentWorkerCountryId,
+          'current_worker_occ_id': currentWorkerOccId,
+          'current_worker_religion':currentWorkerReligion,
+          'transfer_type': transferType,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(InsertTransefareServiceModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// insert hourly data ///////////////////
+  Future<Either<Failure, InsertMediationRequestModel>>
+      insertMediationRequestApi({
+    required String countryId,
+    required int occId,
+    required String experince,
+    required String religion,
+    required String visaNo,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+        await Preferences.instance.getUserModelWithSession();
+
+    try {
+      // Build the body of the request dynamically
+      Map<String, dynamic> body = {
+        'apiToken': "x93mY",
+        'action': "insertMediationRequest",
+        'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+        'client_id': loginWithSessionModel?.data?.clientId,
+        'country_id': countryId,
+        'occ_id': occId,
+        'Experience': experince,
+        'Religion': religion,
+        'visa_no': visaNo,
+        'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+      };
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: body,
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(InsertMediationRequestModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  ////////////////////////Experince ///////////////////////
+  Future<Either<Failure, ReligionsModel>> getReligionsApi() async {
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "___getReligionsOptions",
+          'apiToken': "x93mY",
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ReligionsModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  ////////////////////////offers ///////////////////////
+  Future<Either<Failure, OffersModel>> getOffersApi() async {
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "___mobileArticlesOffers",
+          'apiToken': "x93mY",
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(OffersModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  ////////////////////////HouseAccommondationType ///////////////////////
+  Future<Either<Failure, HouseAccommondationTypeModel>>
+      getClientHouseAccomonationTypeApi() async {
     try {
       var response = await dio.post(
         EndPoints.baseUrl,
         body: {
           'action': "__getClientHouseAccommodationTypeOptions",
           'apiToken': "x93mY",
-
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
         },
         formDataIsEnabled: true,
         options: Options(
@@ -146,17 +413,18 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
+
   ////////////////////////GetOccupations  ///////////////////////
   Future<Either<Failure, GetOccupationsModel>> getGetOccupationsApi(
       {required String clientId}) async {
-
     try {
       var response = await dio.post(
         EndPoints.baseUrl,
         body: {
           'action': "___getOccupations",
           'apiToken': "x93mY",
-          'client_id':clientId
+          'client_id': clientId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
         },
         formDataIsEnabled: true,
         options: Options(
@@ -169,10 +437,122 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
+
+  /////////////////// insert hourly data ///////////////////
+  Future<Either<Failure, InsertHourlyDataModel>> insertHourlyDataApi({
+    required String countryId,
+    required int occId,
+    required int hourlyRentalMobilePackageId,
+    required String serviceTimeFrom,
+    required String serviceTimeTo,
+    required List<String> daysToServe, // List of days to serve
+    required int costWithoutTax,
+    required int costTax,
+    required int costIncludeTax,
+    required int costTaxRatio,
+    required String countOfWorkers,
+    required int visitPackageId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+        await Preferences.instance.getUserModelWithSession();
+
+    try {
+      // Build the body of the request dynamically
+      Map<String, dynamic> body = {
+        'apiToken': "x93mY",
+        'action': "insertRentHourlyRequest",
+        'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+        'client_id': loginWithSessionModel?.data?.clientId,
+        'country_id': countryId,
+        'occ_id': occId,
+        'hourly_rental_mobile_package_id': hourlyRentalMobilePackageId,
+        'service_time_from': serviceTimeFrom,
+        'service_time_to': serviceTimeTo,
+        'cost_without_tax': costWithoutTax,
+        'cost_tax': costTax,
+        'cost_include_tax': costIncludeTax,
+        'cost_tax_ratio': costTaxRatio,
+        'count_of_workers': countOfWorkers,
+        'visit_package_id': visitPackageId,
+        'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+      };
+
+      // Dynamically add days to serve
+      for (int i = 0; i < daysToServe.length; i++) {
+        body['days_to_serve[$i]'] = daysToServe[i];
+      }
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: body,
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(InsertHourlyDataModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  /////////////////// insert Month data ///////////////////
+  Future<Either<Failure, InsertMonthlyDataModel>> insertMonthlyDataApi({
+    required int countryId,
+    required int occId,
+    required int monthlyRentalMobilePackageId,
+    required String serviceTimeFrom,
+    required String serviceTimeTo,
+    required int countOfWorkers,
+    required String totalInvoiceCostWithoutTax,
+    required String totalInvoiceCostTax,
+    required String totalInvoiceCostIncludeTax,
+    required String totalInvoiceCostTaxRatio,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+        await Preferences.instance.getUserModelWithSession();
+
+    try {
+      // Build the body of the request dynamically
+      Map<String, dynamic> body = {
+        'apiToken': "x93mY",
+        'action': "insertRentMonthlyRequest",
+        'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+        'client_id': loginWithSessionModel?.data?.clientId,
+        'country_id': countryId,
+        'occ_id': occId,
+        'monthly_rental_mobile_package_id': monthlyRentalMobilePackageId,
+        'service_date_from': serviceTimeFrom,
+        'service_date_to': serviceTimeTo,
+        'total_invoice_cost_without_tax': totalInvoiceCostWithoutTax,
+        'total_invoice_cost_tax': totalInvoiceCostTax,
+        'count_of_workers': countOfWorkers,
+        'total_invoice_cost_include_tax': totalInvoiceCostIncludeTax,
+        'total_invoice_cost_tax_ratio': totalInvoiceCostTaxRatio,
+        'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+      };
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: body,
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(InsertMonthlyDataModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
   ////////////////////////Get hour package  ///////////////////////
+
   Future<Either<Failure, GetHourlyPackageModel>> getHourlyPackageApi(
       {required String clientId}) async {
-    LoginWithClientIdModel? loginWithSessionModel = await Preferences.instance.getUserModelWithSession();
+    LoginWithClientIdModel? loginWithSessionModel =
+        await Preferences.instance.getUserModelWithSession();
 
     try {
       var response = await dio.post(
@@ -180,9 +560,9 @@ class ServiceApi {
         body: {
           'action': "getAllRentalHourlyPackages",
           'apiToken': "x93mY",
-          'client_id':clientId,
+          'client_id': clientId,
           'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
-          'session_token':loginWithSessionModel?.data?.sessionToken ?? ''
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? ''
         },
         formDataIsEnabled: true,
         options: Options(
@@ -195,9 +575,39 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
+  ////////////////////////Get Month package  ///////////////////////
+
+  Future<Either<Failure, GetMonthlyDataModel>> getMonthPackageApi(
+      {required String clientId}) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "getAllRentalMonthlyPackages",
+          'apiToken': "x93mY",
+          'client_id': clientId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? ''
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(GetMonthlyDataModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
   ////////////////////////Get Profile Data  ///////////////////////
   Future<Either<Failure, GetProfileDataModel>> getProfileDataApi() async {
-    LoginWithClientIdModel? loginWithSessionModel = await Preferences.instance.getUserModelWithSession();
+    LoginWithClientIdModel? loginWithSessionModel =
+        await Preferences.instance.getUserModelWithSession();
 
     try {
       var response = await dio.post(
@@ -205,10 +615,10 @@ class ServiceApi {
         body: {
           'action': "___getClientProfileDataAsLanguage",
           'apiToken': "x93mY",
-          'client_id':loginWithSessionModel?.data?.clientId,
+          'client_id': loginWithSessionModel?.data?.clientId,
           'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
-          'session_token':loginWithSessionModel?.data?.sessionToken ?? '',
-          'y':66
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'y': 66
         },
         formDataIsEnabled: true,
         options: Options(
@@ -221,418 +631,5 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
-//   //
-//   // Future<Either<Failure, ServiceStoreModel>> postServiceStore(ServiceModel serviceModel) async {
-//   //   LoginModel loginModel = await Preferences.instance.getUserModel();
-//   //
-//   //   try {
-//   //     List<MultipartFile> images = [];
-//   //     for (int i = 0; i < serviceModel.images.length; i++) {
-//   //
-//   //       var image =  await MultipartFile.fromFile(serviceModel.images[i]!.path)  ;
-//   //       images.add(image);
-//   //     }      List phones = [];
-//   //     for(int i = 0 ; i<serviceModel.phones.length ; i++){
-//   //       phones.add(serviceModel.phones[i]);
-//   //     }
-//   //     final response = await dio.post(
-//   //       EndPoints.serviceStoreUrl,
-//   //       formDataIsEnabled: true,
-//   //       options: Options(
-//   //         headers: {'Authorization': loginModel.data!.accessToken!},
-//   //       ),
-//   //       body: {
-//   //         'name': serviceModel.name,
-//   //         "category_id":serviceModel.category_id,
-//   //         "sub_category_id":serviceModel.sub_category_id,
-//   //         "city_id":serviceModel.cityId,
-//   //         "phones[]": phones,
-//   //         "details":serviceModel.details,
-//   //         "logo": await MultipartFile.fromFile(serviceModel.logo.path),
-//   //         "location":serviceModel.location,
-//   //         "images[]":images,
-//   //         "longitude":serviceModel.longitude,
-//   //         "latitude":serviceModel.latitude,
-//   //       },
-//   //     );
-//   //     return Right(ServiceStoreModel.fromJson(response));
-//   //   } on ServerException {
-//   //
-//   //     return Left(ServerFailure());
-//   //   }
-//   // }
-//
-//   Future<Either<Failure,UpdatedModel >> edit(ServiceToUpdate serviceToUpdate,catId) async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//
-//     try {
-//       List<MultipartFile> images = [];
-//       for (int i = 0; i < serviceToUpdate.images!.length; i++) {
-//
-//         var image =  await MultipartFile.fromFile(serviceToUpdate.images?[i]!.path)  ;
-//         images.add(image);
-//       }      List phones = [];
-//       for(int i = 0 ; i<serviceToUpdate.phones!.length ; i++){
-//         phones.add(serviceToUpdate.phones?[i]);
-//       }
-//       final response = await dio.post(
-//         EndPoints.editServicesUrl + catId.toString(),
-//
-//         formDataIsEnabled: true,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//         body: {
-//           'name': serviceToUpdate.name,
-//           "category_id":serviceToUpdate.categoryId,
-//          // "sub_category_id":1,
-//           "phones[]": phones,
-//           "details":serviceToUpdate.details,
-//            "city_id":serviceToUpdate.cityId,
-//           "longitude":serviceToUpdate.longitude,
-//           "latitude":serviceToUpdate.latitude,
-//           "logo": serviceToUpdate.logo,
-//           "location":serviceToUpdate.location,
-//           "images[]":images,
-//         },
-//       );
-//       return Right(UpdatedModel.fromJson(response));
-//     } on ServerException {
-//
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, RateResponseModel>> postRate({required serviceId,required value,comment}) async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//
-//       final response = await dio.post(
-//         EndPoints.rateUrl,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//         body: {
-//           'service_id': serviceId,
-//           "value":value,
-//           "comment":comment
-//         },
-//       );
-//       return Right(RateResponseModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//
-//   Future<Either<Failure, LoginModel>> postEditProfile(
-//       String name) async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//
-//     try {
-//       final response = await dio.post(
-//         EndPoints.updateProfileUrl,
-//         options: Options(headers: {"Authorization":loginModel.data!.accessToken!}),
-//         body: {
-//           'name': name,
-//           "phone":loginModel.data?.user?.phone,
-//         },
-//       );
-//
-//       return Right(LoginModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//
-//   Future<Either<Failure, LoginModel>> postLogin(
-//       String phone, String phoneCode) async {
-//     try {
-//       final response = await dio.post(
-//         EndPoints.loginUrl,
-//         body: {
-//           'phone': phone,
-//         },
-//       );
-//       return Right(LoginModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, HomeModel>> homeData() async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.homeUrl,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data?.accessToken!},
-//         ),
-//       );
-//       return Right(HomeModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, CategoriesServicesModel>> servicesData(
-//       int catId) async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.servicesUrl + catId.toString(),
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//       );
-//       return Right(CategoriesServicesModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//   Future<Either<Failure, UpdatedModel>> editService(
-//       int catId,ServiceToUpdate serviceToUpdate) async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//
-//     try {
-//
-//       List<MultipartFile> images = [];
-//       for (int i = 0; i < serviceToUpdate.images!.length; i++) {
-//
-//         var imageFile = serviceToUpdate.images![i];
-//         if (imageFile.path.startsWith('http')) {
-//           // This is a remote URL, so we need to download the image and save it locally before uploading it
-//           var response = await http.get(Uri.parse(imageFile.path));
-//           var bytes = response.bodyBytes;
-//           var tempDir = await getTemporaryDirectory();
-//           var filePath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-//           await File(filePath).writeAsBytes(bytes);
-//           var image = await MultipartFile.fromFile(filePath);
-//           images.add(image);
-//         } else {
-//           // This is a local file, so we can create a MultipartFile object from it
-//           var image = await MultipartFile.fromFile(imageFile.path);
-//           images.add(image);
-//         }
-//       }
-//       final response = await dio.post(
-//         EndPoints.editServicesUrl + catId.toString(),
-//
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//         body: {
-//           "name":serviceToUpdate.name,
-//           "category_id":serviceToUpdate.categoryId,
-//           "sub_category_id":serviceToUpdate.subCategoryId,
-//           "phones[0]":serviceToUpdate.phones?[0],
-//           "phones[1]":serviceToUpdate.phones?[1],
-//           "details":serviceToUpdate.details,
-//          // "logo":serviceToUpdate.logo,
-//           //"logo": await MultipartFile.fromFile(serviceToUpdate.logo!),
-//           "logo": !serviceToUpdate.logo!.path.startsWith("http")?await MultipartFile.fromFile(serviceToUpdate.logo!.path):null,
-//           "location":serviceToUpdate.location,
-//           "images[]":images,
-//
-//         }
-//
-//       );
-//      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//       print(response);
-//       return Right(UpdatedModel.fromJson(response));
-//     } on ServerException {
-//       print("erroooooor");
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, CategoriesServicesModel>> servicesSearchData(
-//       int catId,searchKey) async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.servicesUrl + catId.toString(),
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//         queryParameters: {"search_key":searchKey}
-//       );
-//       return Right(CategoriesServicesModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, FavoriteModel>>getFavoriteData() async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.favoriteUrl ,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//       );
-//       return Right(FavoriteModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure,CitiesModel>> getCities()async{
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try{
-//       final response = await dio.get(
-//           EndPoints.citiesUrl,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//       );
-//       return Right(CitiesModel.fromJson(response));
-//     } on ServerException{
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, FavoriteModel>>getFavoriteSearchData(searchKey) async {
-//
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.favoriteUrl ,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//         queryParameters: {"search_key":searchKey}
-//       );
-//
-//       return Right(FavoriteModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, MyServicesModel>>getMyServicesData() async {
-//
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.myServicesUrl ,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//       );
-//       return Right(MyServicesModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//
-//   Future<Either<Failure, MyServicesModel>>getMyServicesSearchData(searchKey) async {
-//
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//
-//       final response = await dio.get(
-//         EndPoints.myServicesUrl ,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//         queryParameters: {"search_key":searchKey}
-//
-//       );
-//
-//       return Right(MyServicesModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   // Future<Either<Failure, NotificationModel>>getNotifications() async {
-//   //
-//   //   LoginModel loginModel = await Preferences.instance.getUserModel();
-//   //   try {
-//   //
-//   //     final response = await dio.get(
-//   //         EndPoints.notificationUrl ,
-//   //         options: Options(
-//   //           headers: {'Authorization': loginModel.data!.accessToken!},
-//   //         ),
-//   //
-//   //
-//   //     );
-//   //
-//   //     return Right(NotificationModel.fromJson(response));
-//   //   } on ServerException {
-//   //     return Left(ServerFailure());
-//   //   }
-//   // }
-//   //
-//
-//
-//
-//   Future<Either<Failure, CategoriesModel>>getCategoriesData() async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.categoriesUrl ,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//       );
-//       return Right(CategoriesModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure, SettingModel>> getSettingData() async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-//     try {
-//       final response = await dio.get(
-//         EndPoints.settingUrl,
-//         options: Options(
-//           headers: {'Authorization': loginModel.data!.accessToken!},
-//         ),
-//       );
-//
-//       return Right(SettingModel.fromJson(response));
-//     } on ServerException {
-//       return Left(ServerFailure());
-//     }
-//   }
-//
-//   Future<Either<Failure,AddToFavouriteResponseModel>> addToFavourite(serviceId) async {
-//     LoginModel loginModel = await Preferences.instance.getUserModel();
-// try{
-//
-//   final response = await dio.post(
-//       EndPoints.addToFavouriteUrl,
-//       options: Options(
-//         headers: {"Authorization":loginModel.data!.accessToken},
-//       ),
-//       body: {"service_id":serviceId}
-//   );
-//   return Right(AddToFavouriteResponseModel.fromJson(response));
-// } on ServerException{
-//   return Left(ServerFailure());
-// }
-//   }
 
-  // Future<Either<Failure, SearchModel>> search(searchKey) async {
-  //   LoginModel loginModel = await Preferences.instance.getUserModel();
-  //
-  //   try {
-  //     final response = await dio.get(
-  //       EndPoints.searchUrl+searchKey,
-  //       options: Options(
-  //         headers: {'Authorization': loginModel.data!.accessToken!},
-  //       ),
-  //     );
-  //     return Right(SearchModel.fromJson(response));
-  //   } on ServerException {
-  //     return Left(ServerFailure());
-  //   }
-  // }
 }

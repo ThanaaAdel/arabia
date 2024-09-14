@@ -1,5 +1,6 @@
 import 'package:arabia/features/home_screen/cubit/cubit.dart';
 import 'package:arabia/features/new_compliants_screen/cubit/cubit.dart';
+import 'package:arabia/features/professional_employment.screen/cubit/profissional_emploment_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:arabia/features/login/cubit/cubit.dart';
 import 'package:arabia/features/splash/cubit/cubit.dart';
@@ -13,9 +14,14 @@ import 'core/api/base_api_consumer.dart';
 import 'core/api/dio_consumer.dart';
 import 'features/complain_screen/cubit/cubit.dart';
 import 'features/contarcts_screen/cubit/cubit.dart';
-import 'features/contract_houres_screen/cubit/cubit.dart';
+import 'features/enter_data_professional_employment.screen/cubit/cubit.dart';
 import 'features/follow_up_on_orders_screen/cubit/cubit.dart';
 import 'features/hourly_contracts_screen/cubit/cubit.dart';
+import 'features/insert_contract_houres_screen/cubit/cubit.dart';
+import 'features/insert_contract_month_screen/cubit/cubit.dart';
+import 'features/mediation.screen/cubit/cubit.dart';
+import 'features/offers_screen/cubit/cubit.dart';
+import 'features/transfer_service.screen/cubit/transfer_service_cubit.dart';
 
 
 final serviceLocator = GetIt.instance;
@@ -40,7 +46,7 @@ Future<void> setup() async {
       serviceLocator(),
     ),
   );  serviceLocator.registerFactory(
-    () => ContractHourCubit(
+    () => InsertContractHourCubit(
       serviceLocator(),
     ),
   );
@@ -69,6 +75,30 @@ Future<void> setup() async {
   serviceLocator.registerFactory(
     () => HourlyContractsCubit(
       serviceLocator(),
+    ),
+  );  serviceLocator.registerFactory(
+    () => MediatationCubit(
+      serviceLocator(),
+    ),
+  );serviceLocator.registerFactory(
+    () => ProfissionalEmplomentCubit(
+      serviceLocator(),
+    ),
+  );serviceLocator.registerFactory(
+    () => EnterDataProfissionalEmployementCubit(
+      serviceLocator(),
+    ),
+  );serviceLocator.registerFactory(
+    () => OffersCubit(
+      serviceLocator(),
+    ),
+  );serviceLocator.registerFactory(
+            () => InsertContractMonthCubit(
+          serviceLocator(),
+    ),
+  );serviceLocator.registerFactory(
+            () => TransferServiceCubit(
+          serviceLocator(),
     ),
   );
   ///////////////////////////////////////////////////////////////////////////////

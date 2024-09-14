@@ -7,10 +7,12 @@ import '../utils/font_weight_helper.dart';
 import '../utils/style_text.dart';
 
 class SharedTextFiled extends StatelessWidget {
-    SharedTextFiled({super.key,this.enableOrNot,this.onChanged, required this.hintText, required this.onSaved,this.maxLines, this.suffixIcon, this.controller,this.inputFormatters});
+    SharedTextFiled({super.key,this.enableOrNot,this.onChanged, required this.hintText, required this.onSaved,this.maxLines, this.suffixIcon, this.controller,this.inputFormatters, this.readOnly, this.validator});
 final String hintText;
 final Function(String?) onSaved;
 final Widget? suffixIcon;
+final bool? readOnly;
+final String?Function(String?)? validator;
  final TextEditingController? controller;
   int? maxLines ;
     bool? enableOrNot ;
@@ -30,6 +32,8 @@ final Widget? suffixIcon;
 
 
         child: TextFormField(
+
+          readOnly: readOnly ?? false,
           onChanged: onChanged,
           inputFormatters:  inputFormatters,
           enabled: enableOrNot ?? true,
@@ -47,12 +51,7 @@ final Widget? suffixIcon;
               borderSide: BorderSide(color:AppColors.blue.withOpacity(0.33)), // Slightly darker border color when focused
             ),
           ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter $hintText';
-            }
-            return null;
-          },
+          validator: validator,
           onSaved: onSaved,
         ),
 

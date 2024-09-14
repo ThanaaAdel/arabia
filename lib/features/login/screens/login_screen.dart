@@ -36,108 +36,96 @@ class _LoginScreenState extends State<LoginScreen> {
                 image: AssetImage(ImageAssets.loginBackgroundImage))),
         child: Scaffold(
           backgroundColor: AppColors.transparent,
-          body: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 200.h),
-                  SvgPicture.asset(
-                    ImageAssets.splashTextImage,
-                    width: 200.w,
-                  ),
-                  SizedBox(height: 50.h),
-                  Form(
-                    key: cubit.formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: <Widget>[
-                          // Country Code Field
-                          Container(
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 200.h),
+                SvgPicture.asset(
+                  ImageAssets.splashTextImage,
+                  width: 200.w,
+                ),
+                SizedBox(height: 50.h),
+                Form(
+                  key: cubit.formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        // Country Code Field
+                        Container(
+                          height: 60.h,
+                          decoration: BoxDecoration(
+                            color: AppColors.baseGrayColor,
+                            borderRadius: BorderRadius.circular(8.sp),
+                          ),
+                          child: CountryCodePicker(
+                            onChanged: (value) {
+                              cubit.countryCode = value.toString();
+                              print("country code: ${cubit.countryCode}");
+                            },
+                            initialSelection: 'SA',
+                            showFlag: false,
+                          ),
+                        ),
+
+                        // Spacer between fields
+                        SizedBox(width: 10.sp),
+
+                        // Phone Number Field
+                        Expanded(
+                          child: Container(
                             height: 60.h,
                             decoration: BoxDecoration(
                               color: AppColors.baseGrayColor,
                               borderRadius: BorderRadius.circular(8.sp),
                             ),
-                            child: CountryCodePicker(
-                              onChanged: (value) {
-                                cubit.countryCode = value.toString();
-                                print("country code: ${cubit.countryCode}");
-                              },
-                              initialSelection: 'SA',
-                              showFlag: false,
-                            ),
-                          ),
-
-                          // Spacer between fields
-                          SizedBox(width: 10.sp),
-
-                          // Phone Number Field
-                          Expanded(
-                            child: Container(
-                              height: 60.h,
-                              decoration: BoxDecoration(
-                                color: AppColors.baseGrayColor,
-                                borderRadius: BorderRadius.circular(8.sp),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0.sp),
-                                child: TextFormField(
-                                  controller: cubit.phoneEditingController,
-                                  keyboardType: TextInputType.number,
-                                  cursorRadius: Radius.circular(8.sp),
-                                  autofocus: true,
-                                  decoration: InputDecoration(
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: AppColors.grayLite),
-                                    ),
-                                    hintText: "5xxxxxxxxx",
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0.sp),
+                              child: TextFormField(
+                                controller: cubit.phoneEditingController,
+                                keyboardType: TextInputType.number,
+                                cursorRadius: Radius.circular(8.sp),
+                                autofocus: true,
+                                decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: AppColors.grayLite),
                                   ),
-                                  onChanged: (phone) {
-                                    cubit.phoneEditingController.text = phone;
-                                    print(
-                                        "Phone Number: ${cubit.phoneEditingController.text}");
-                                  },
+                                  hintText: "5xxxxxxxxx",
                                 ),
+                                onChanged: (phone) {
+                                  cubit.phoneEditingController.text = phone;
+                                  print(
+                                      "Phone Number: ${cubit.phoneEditingController.text}");
+                                },
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 50.h),
-                  (state is LoadingState)
-                      ? Container(
-                      padding: EdgeInsets.all(20.sp),
-                      height: 40.h,
-                      width: 120.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.sp),
-                          color: AppColors.blue),
-                      child: Center(
-                        child: CircularProgressIndicator(
-                            color: AppColors.white),
-                      ))
-                      : ButtonWidget(
-                          onPressed: () {
-                            if (cubit.formKey.currentState!.validate()) {
-                              if (cubit.phoneEditingController.text.isEmpty) {
-                                errorGetBar("من فضلك ادخل رقم التليفون ");
-                              } else {
-                                cubit.loginData(context);
-                              }
+                ),
+                SizedBox(height: 50.h),
+                (state is LoadingState)
+                    ? CircularProgressIndicator(
+                        backgroundColor: AppColors.blue,
+                        color: AppColors.white)
+                    : ButtonWidget(
+                        onPressed: () {
+                          if (cubit.formKey.currentState!.validate()) {
+                            if (cubit.phoneEditingController.text.isEmpty) {
+                              errorGetBar("please_enter_your_phone_number".tr());
+                            } else {
+                              cubit.loginData(context);
                             }
-                          },
-                          textButton: "login".tr(),
-                        ),
-                ],
-              ),
+                          }
+                        },
+                        textButton: "login".tr(),
+                      ),
+              ],
             ),
           ),
         ),

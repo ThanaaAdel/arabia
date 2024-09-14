@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../utils/style_text.dart';
 
-class CustomDropdownWidget extends StatelessWidget {
+class CustomDropdownWidget extends StatefulWidget {
   final String label;
-  final List<String> items;
+  final List<dynamic> items; // Ensure this is a list of strings.
   final Function(String?) onChanged;
 
   const CustomDropdownWidget({
@@ -17,7 +17,24 @@ class CustomDropdownWidget extends StatelessWidget {
   });
 
   @override
+  _CustomDropdownWidgetState createState() => _CustomDropdownWidgetState();
+}
+
+class _CustomDropdownWidgetState extends State<CustomDropdownWidget> {
+  String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set the initial selected value to null or the first item in the list.
+    selectedValue = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Ensure unique items in the dropdown
+    List<dynamic> uniqueItems = widget.items.toSet().toList();
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 7.h),
       decoration: BoxDecoration(
@@ -25,33 +42,32 @@ class CustomDropdownWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0.sp),
       ),
       child: DropdownButtonFormField<String>(
-
+        value: selectedValue,
         decoration: InputDecoration(
           enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)), // Slightly darker border color when focused
+            borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)),
           ),
           disabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)), // Slightly darker border color when focused
-
+            borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)),
           ),
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)), // Slightly darker border color when focused
+            borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)),
           ),
-          hintText: label,
+          hintText: widget.label,
           contentPadding: EdgeInsets.only(bottom: 10.h),
           hintStyle: TextStyles.size16FontWidgetRegularGrayLight,
-
           labelStyle: TextStyle(
             fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
-              color:AppColors.black.withOpacity(0.5)),
+            fontSize: 16.sp,
+            color: AppColors.black,
+          ),
         ),
-        icon:  Icon(
+        icon: Icon(
           Icons.arrow_drop_down,
           color: AppColors.orange,
           size: 25.sp,
         ),
-        items: items.map((String value) {
+        items: uniqueItems.map((dynamic value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
@@ -64,12 +80,17 @@ class CustomDropdownWidget extends StatelessWidget {
         elevation: 1,
         borderRadius: BorderRadius.circular(8.sp),
         menuMaxHeight: 100.sp,
-        autofocus:  true,
+        autofocus: true,
         enableFeedback: false,
-        onChanged: onChanged,
+        onChanged: (newValue) {
+          setState(() {
+            selectedValue = newValue;
+          });
+          widget.onChanged(newValue);
+        },
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please select $label';
+            return 'Please select ${widget.label}';
           }
           return null;
         },

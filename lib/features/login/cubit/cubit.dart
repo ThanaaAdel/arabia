@@ -98,13 +98,15 @@ class LoginCubit extends Cubit<LoginState> {
           (r) {
         if (r.code == 200) {
           verificationModel = r;
+          startCountdown(); // Start the timer after a successful verification
+
           if (r.data!.code == 303) {
             loginWithClientIdData(
               context,
               r.data!.data!.clientId.toString(),
             );
           } else {
-           Navigator.pushNamed(context,Routes.completeTheRegistrationDataRoute);
+            Navigator.pushNamed(context, Routes.completeTheRegistrationDataRoute);
           }
 
           successGetBar("verification_success".tr());
@@ -115,6 +117,7 @@ class LoginCubit extends Cubit<LoginState> {
       },
     );
   }
+
 
   void completeRegisterData(BuildContext context) async {
     emit(CompleteRegisterLoadingState());

@@ -98,7 +98,7 @@
   "from_hour": "من الساعة",
   "to_hour": "الي الساعة",
   "number_of_workers": "عدد العمالة",
-  "service_days": "أيام الخدمة",
+  "service_days": "أيام الخدمة المتاحة ",
   "service_time": "وقت الخدمة",
   "add_service_transfer": "اضافة نقل خدمة",
   "no": "لا",
@@ -113,6 +113,17 @@
   "you_have_reached_the_maximum_number_of_service_days_allowed": "تم تجاوز عدد الأيام الخدمة المسموحة",
   "ratio": "الضريبة",
   "sub_total": "اجمالي فرعي",
-  "exceeded_maximum_service_time_duration": "تم تجاوز مدة الخدمة الأقصى"
-
+  "exceeded_maximum_service_time_duration": "تم تجاوز مدة الخدمة الأقصى",
+  "please_enter_your_phone_number":"من فضلك ادخل رقم التليفون",
+  "insert_hourly_data_success": "تم ادخال البيانات الساعية بنجاح",
+  "no_package_name": "لا يوجد اسم الباقة",
+  "insert_mediatation_data_success": "تم ادخال بيانات الوسيط بنجاح",
+  "insert_professional_employment_success": "تم ادخال بيانات العمالة المهنية بنجاح",
+"please_select_a_nationality": "من فضلك قم باختيار الجنسية",
+  "insert_monthly_data_success": "تم ادخال البيانات الشهرية بنجاح",
+"to_date": "الي تاريخ",
+  "from_date" : "من تاريخ",
+  "insert_transfare_service_success": "تم ادخال بيانات نقل خدمة بنجاح",
+  "transfer_cost": "تكلفة النقل",
+  "labor_cost": "تكلفة العمالة"
 }

@@ -96,7 +96,9 @@ class _SettingScreenState extends State<SettingScreen> {
                       CustomRowSetting(
                         title: "logout".tr(),
                         onTap: () {
-                          Navigator.pushNamed(context,Routes.loginRoute );
+                          Preferences.instance.clearShared().then((value) =>
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  Routes.initialRoute, (route) => false));
                         },
                         icon: ImageAssets.logoutIcon,
                       ),

@@ -52,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    const ServicesWidget(),
+                     ServicesWidget(
+                      clientId: cubit.model?.data?.clientId ?? '',
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [

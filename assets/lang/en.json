@@ -99,7 +99,7 @@
     "from_hour": "From Hour",
     "to_hour": "To Hour",
     "number_of_workers": "Number of Workers",
-    "service_days": "Service Days",
+    "service_days": "Service Days is ",
     "service_time": "Service Time",
     "add_service_transfer": "Add Service Transfer",
     "no": "No",
@@ -114,6 +114,18 @@
     "you_have_reached_the_maximum_number_of_service_days_allowed":"You have reached the maximum number of service days allowed",
     "ratio": "Ratio",
     "sub_total": "Sub Total",
-    "exceeded_maximum_service_time_duration":"Exceeded maximum service time duration"
+    "exceeded_maximum_service_time_duration":"Exceeded maximum service time duration",
+    "please_enter_your_phone_number":"Please enter your phone number",
+    "insert_hourly_data_success":"Insert Hourly Data Successful",
+    "no_package_name":"No Package Name",
+    "insert_mediatation_data_success": "Insert Mediation Data Successful",
+    "insert_professional_employment_success": "Insert Professional Employment Successful",
+    "please_select_a_nationality":"Please select a nationality",
+    "insert_monthly_data_success": "Insert Monthly Data Successful",
+    "to_date": "To Date",
+    "from_date" : "From Date",
+    "insert_transfare_service_success": "Insert Transfer Service Successful",
+    "transfer_cost":"Transfer Cost",
+    "labor_cost": "Labor Cost"
 
 }

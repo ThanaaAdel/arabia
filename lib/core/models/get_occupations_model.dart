@@ -1,7 +1,7 @@
 
 class GetOccupationsModel {
   int? code;
-  List<Datum>? data;
+  List<GetOccupationsData>? data;
   String? msg;
 
   GetOccupationsModel({
@@ -12,7 +12,7 @@ class GetOccupationsModel {
 
   factory GetOccupationsModel.fromJson(Map<String, dynamic> json) => GetOccupationsModel(
     code: json["code"],
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<GetOccupationsData>.from(json["data"]!.map((x) => GetOccupationsData.fromJson(x))),
     msg: json["msg"],
   );
 
@@ -23,16 +23,16 @@ class GetOccupationsModel {
   };
 }
 
-class Datum {
+class GetOccupationsData {
   String? id;
   String? name;
 
-  Datum({
+  GetOccupationsData({
     this.id,
     this.name,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory GetOccupationsData.fromJson(Map<String, dynamic> json) => GetOccupationsData(
     id: json["id"],
     name: json["name"],
   );

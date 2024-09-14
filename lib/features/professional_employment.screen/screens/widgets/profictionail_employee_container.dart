@@ -1,3 +1,4 @@
+import 'package:arabia/core/models/get_occupations_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,9 +9,10 @@ import '../../../../core/utils/style_text.dart';
 
 class ProfessionalEmploymentContainer extends StatelessWidget {
   const ProfessionalEmploymentContainer({
-    super.key, this.onTap,
+    super.key, this.onTap, required this.cubit,
   });
   final Function()? onTap;
+  final   GetOccupationsData cubit;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -34,7 +36,7 @@ class ProfessionalEmploymentContainer extends StatelessWidget {
                   child: Center(child: SvgPicture.asset(ImageAssets.settingsIcon,width: 20.sp,height: 20.sp,),),),
                 SizedBox(width: 10.w,),
                 Text(
-                  'المهمة 1',
+                  cubit.name.toString(),
                   style: TextStyles.size16FontWidgetRegularBlackWithOpacity7
                 ),
               ],

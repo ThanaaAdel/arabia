@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
+import '../../../../core/models/offers_model.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/assets_manager.dart';
-import '../../../../core/utils/style_text.dart';
 
 class CustomOfferContainer extends StatelessWidget {
   const CustomOfferContainer({
-    super.key, this.onTap,
+    super.key, this.onTap, this.offersData,
   });
   final Function()? onTap;
+  final OffersData? offersData;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -35,8 +35,7 @@ class CustomOfferContainer extends StatelessWidget {
                   child: Center(child: SvgPicture.asset(ImageAssets.offerIcon,width: 20.sp,height: 20.sp,),),),
                 SizedBox(width: 10.w,),
                 Text(
-                  'عرض 1',
-                  style: TextStyles.size16FontWidgetBoldBlackWithOpacity6
+                    offersData?.title ?? ''
                 ),
               ],
             ),

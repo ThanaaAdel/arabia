@@ -31,7 +31,7 @@ final LoginWithClientIdModel loginWithClientIdModel;
               text: "contract_hours".tr(),image: ImageAssets.contractMonthIcon,),
             ContainerWidgetHome(
               onPressed: () {
-                Navigator.pushNamed(context, Routes.contractMonthRoute);
+                Navigator.pushNamed(context, Routes.contractMonthRoute,arguments: loginWithClientIdModel);
               },
               text: "contract_month".tr(),image: ImageAssets.contractHourIcon,),
 

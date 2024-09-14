@@ -105,17 +105,10 @@ class _CompleteTheRegistrationDataScreenState extends State<CompleteTheRegistrat
                           height: 120.h,
                         ),
                         (state is CompleteRegisterLoadingState)
-                            ? Container(
-                                padding: EdgeInsets.all(20.sp),
-                                height: 40.h,
-                                width: 120.w,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.sp),
-                                    color: AppColors.blue),
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                      color: AppColors.white),
-                                ))
+                            ? CircularProgressIndicator(
+
+                              backgroundColor: AppColors.blue,
+                                color: AppColors.white)
                             : ButtonWidget(
                           textButton: "save".tr(),
                           onPressed: () {
