@@ -15,13 +15,18 @@ import 'features/home_screen/cubit/cubit.dart';
 import 'features/hourly_contracts_screen/cubit/cubit.dart';
 import 'features/insert_contract_houres_screen/cubit/cubit.dart';
 import 'features/insert_contract_month_screen/cubit/cubit.dart';
+import 'features/insert_mediation.screen/cubit/cubit.dart';
+import 'features/insert_professional_employment.screen/cubit/profissional_emploment_cubit.dart';
+import 'features/insert_transfer_service.screen/cubit/insert_transfer_service_cubit.dart';
 import 'features/login/cubit/cubit.dart';
-import 'features/mediation.screen/cubit/cubit.dart';
-import 'features/new_compliants_screen/cubit/cubit.dart';
+import 'features/mediation_contracts_screen/cubit/cubit.dart';
+import 'features/monthly_contracts_screen/cubit/cubit.dart';
+import 'features/notification_screen/cubit/cubit.dart';
 import 'features/offers_screen/cubit/cubit.dart';
-import 'features/professional_employment.screen/cubit/profissional_emploment_cubit.dart';
+import 'features/professional_employment_screen/cubit/cubit.dart';
+import 'features/setting_screen/cubit/cubit.dart';
 import 'features/splash/cubit/cubit.dart';
-import 'features/transfer_service.screen/cubit/transfer_service_cubit.dart';
+import 'features/transfer_service_screen/cubit/cubit.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -60,9 +65,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(
             create: (_) => injector.serviceLocator<ComplaintsCubit>(),
           ),
-          BlocProvider(
-            create: (_) => injector.serviceLocator<NewComplaintsCubit>(),
-          ),
+
           BlocProvider(
             create: (_) => injector.serviceLocator<ContractsCubit>(),
           ),
@@ -74,9 +77,9 @@ class _MyAppState extends State<MyApp> {
           ),BlocProvider(
             create: (_) => injector.serviceLocator<InsertContractHourCubit>(),
           ),BlocProvider(
-            create: (_) => injector.serviceLocator<MediatationCubit>(),
+            create: (_) => injector.serviceLocator<InsertMediationCubit>(),
           ),BlocProvider(
-            create: (_) => injector.serviceLocator<ProfissionalEmplomentCubit>(),
+            create: (_) => injector.serviceLocator<InsertProfessionalEmploymentCubit>(),
           ),BlocProvider(
             create: (_) => injector.serviceLocator<EnterDataProfissionalEmployementCubit>(),
           ),BlocProvider(
@@ -84,7 +87,19 @@ class _MyAppState extends State<MyApp> {
           ),BlocProvider(
             create: (_) => injector.serviceLocator<InsertContractMonthCubit>(),
           ),BlocProvider(
+            create: (_) => injector.serviceLocator<InsertTransferServiceCubit>(),
+          ),BlocProvider(
+            create: (_) => injector.serviceLocator<NotificationCubit>(),
+          ),BlocProvider(
+            create: (_) => injector.serviceLocator<MonthlyContractsCubit>(),
+          ),BlocProvider(
+            create: (_) => injector.serviceLocator<MediationContractsCubit>(),
+          ),BlocProvider(
+            create: (_) => injector.serviceLocator<ProfessionalEmploymentCubit>(),
+          ),BlocProvider(
             create: (_) => injector.serviceLocator<TransferServiceCubit>(),
+          ),BlocProvider(
+            create: (_) => injector.serviceLocator<SettingCubit>(),
           ),
         ],
         child: ScreenUtilInit(
@@ -93,7 +108,6 @@ class _MyAppState extends State<MyApp> {
           splitScreenMode: true,
 
           child: GetMaterialApp(
-
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             theme: appTheme(),

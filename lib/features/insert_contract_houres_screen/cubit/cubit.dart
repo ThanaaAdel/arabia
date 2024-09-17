@@ -145,7 +145,6 @@ class InsertContractHourCubit extends Cubit<InsertContractHourState> {
     required int visitPackageId,
     required String serviceTimeTo,
     required String serviceTimeFrom,
-
     required String countOfWorkers,
   }) async {
     emit(InsertHourlyDataLoadingState());
@@ -156,7 +155,6 @@ class InsertContractHourCubit extends Cubit<InsertContractHourState> {
     }).toList();
 
     final result = await api.insertHourlyDataApi(
-
       countryId: countryId,
       occId: occId,
       hourlyRentalMobilePackageId: hourlyRentalMobilePackageId,
@@ -182,11 +180,35 @@ class InsertContractHourCubit extends Cubit<InsertContractHourState> {
           Routes.totalDataFromHourContactRoute,
           arguments: insertHourlyDataModel,
         );
-        successGetBar("insert_hourly_data_success".tr());
+
+        // إعادة تعيين القيم إلى الافتراضي بعد الإدخال
+        _resetFields(
+          countOfWorkers: countOfWorkers,
+          serviceTimeFrom: serviceTimeFrom,
+          serviceTimeTo: serviceTimeTo,
+          formattedDates: formattedDates
+        );
+
+
         emit(InsertHourlyDataLoadedState());
       },
     );
   }
+
+
+  void _resetFields({ required String serviceTimeTo,
+    required String serviceTimeFrom,required String countOfWorkers, List<String>? formattedDates }) {
+    serviceTimeTo = '';
+    serviceTimeFrom = '';
+    countOfWorkers = '';
+    formattedDates =[];
+    selectedDatesFromServiceDays.clear();
+    numberOfWorkersController.clear();
+    fromHourController.clear();
+    toHourController.clear();
+    selectedDate = null;
+  }
+
 
 
 

@@ -2,24 +2,15 @@ abstract class HourlyContractsState {}
 
 class MainInitial extends HourlyContractsState {}
 
-class LoadedGetUserData extends HourlyContractsState {}
+class GetHourlyContractLoadingState extends HourlyContractsState {}
 
-class LoadingGetUserData extends HourlyContractsState {}
+class GetHourlyContractSuccessState extends HourlyContractsState {}
 
-class LoadedGetNewOrderState extends HourlyContractsState {}
-
-class ErrorGetNewOrderState extends HourlyContractsState {}
-
-class LoadingGetNewOrderState extends HourlyContractsState {}
+class GetHourlyContractErrorState extends HourlyContractsState {}
 
 class ChangeStatusOfSelectedIndexOrder extends HourlyContractsState {}
+class GetHourlyContractLoadingMoreState extends HourlyContractsState {}
+class ArchiveHourlyContractSuccessState extends HourlyContractsState {}
+class ArchiveHourlyContractErrorState extends HourlyContractsState {}
 
-class LoadingGetCurrentOrderState extends HourlyContractsState {}
-
-class LoadedGetCurrentOrderState extends HourlyContractsState {}
-
-class LoadingSendToken extends HourlyContractsState {}
-
-class ErrorSendToken extends HourlyContractsState {}
-
-class LoadedSendToken extends HourlyContractsState {}
+class ArchiveHourlyContractLoadingState extends HourlyContractsState {}

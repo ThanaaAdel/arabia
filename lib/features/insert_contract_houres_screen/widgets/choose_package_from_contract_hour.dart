@@ -82,7 +82,11 @@ class _ChoosePackageFromContractHourScreenState
   }
 
   int get ratio {
-    return subTotal * (int.tryParse(widget.package.taxRatio ?? '0') ?? 0);
+    // Parse taxRatio to double to handle decimal percentages correctly
+    double taxRatio = double.tryParse(widget.package.taxRatio ?? '0') ?? 0;
+
+    // Calculate the tax amount by multiplying subtotal with the tax ratio divided by 100
+    return (subTotal * (taxRatio / 100)).round();
   }
 
   int get total {
@@ -247,7 +251,7 @@ class _ChoosePackageFromContractHourScreenState
                                 children: [
                                   SizedBox(height: 20.h),
                                   Text(
-                                    "service_time".tr(),
+                                    "service_days_available".tr(),
                                     style: TextStyle(fontSize: 16.sp),
                                   ),
                                   Row(
@@ -653,12 +657,11 @@ class _ChoosePackageFromContractHourScreenState
             return;
           }
 
-          // عرض DatePicker لاختيار التاريخ
           final DateTime? picked = await showDatePicker(
             context: context,
             initialDatePickerMode: DatePickerMode.day,
             initialDate: widget.cubit.selectedDate ?? DateTime.now(),
-            firstDate: DateTime(2000),
+            firstDate: DateTime.now(), // تعديل لتكون أول تاريخ هو اليوم الحالي
             lastDate: DateTime(2025),
             builder: (context, child) {
               return Theme(
@@ -681,6 +684,7 @@ class _ChoosePackageFromContractHourScreenState
             },
           );
 
+
           // تحقق من أن التاريخ المختار ليس موجودًا بالفعل في القائمة (حسب اليوم فقط)
           if (picked != null &&
               !widget.cubit.selectedDatesFromServiceDays.any((date) =>
@@ -700,7 +704,7 @@ class _ChoosePackageFromContractHourScreenState
       readOnly: true,
       enableOrNot: true,
       hintText:
-          "service_days".tr() + widget.package.maxServiceDaysLimit.toString(),
+          "service_days_available".tr() + widget.package.maxServiceDaysLimit.toString(),
       onSaved: (p0) {},
     );
   }

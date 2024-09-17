@@ -142,7 +142,7 @@ class InsertContractMonthCubit extends Cubit<InsertContractMonthState> {
     required String serviceTimeTo,
     required int countOfWorkers,
   }) async {
-    emit(InsertHourlyDataLoadingState());
+    emit(InsertMonthlyDataLoadingState());
     final result = await api.insertMonthlyDataApi(
       monthlyRentalMobilePackageId: monthlyRentalMobilePackageId,
       totalInvoiceCostIncludeTax: totalInvoiceCostIncludeTax,
@@ -158,7 +158,7 @@ class InsertContractMonthCubit extends Cubit<InsertContractMonthState> {
 
     result.fold(
           (failure) {
-        emit(InsertHourlyDataErrorState('Error loading data: $failure'));
+        emit(InsertMonthlyDataErrorState('Error loading data: $failure'));
       },
           (r) {
             insertMonthlyDataModel = r;
@@ -167,8 +167,8 @@ class InsertContractMonthCubit extends Cubit<InsertContractMonthState> {
           Routes.totalDataFromMonthContactRoute,
           arguments: insertMonthlyDataModel,
         );
-        successGetBar("insert_monthly_data_success".tr());
-        emit(InsertHourlyDataLoadedState());
+
+        emit(InsertMonthlyDataLoadedState());
       },
     );
   }

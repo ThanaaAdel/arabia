@@ -2,24 +2,36 @@ abstract class ComplaintsState {}
 
 class MainInitial extends ComplaintsState {}
 
-class LoadedGetUserData extends ComplaintsState {}
+class GetClosedComplaintsLoadingState extends ComplaintsState {}
 
-class LoadingGetUserData extends ComplaintsState {}
+class GetClosedComplaintsLoadedState extends ComplaintsState {}
 
-class LoadedGetNewOrderState extends ComplaintsState {}
+class GetClosedComplaintsErrorState extends ComplaintsState {}
+class GetOpeningComplaintsLoadingState extends ComplaintsState {}
 
-class ErrorGetNewOrderState extends ComplaintsState {}
+class GetOpeningComplaintsLoadedState extends ComplaintsState {}
 
-class LoadingGetNewOrderState extends ComplaintsState {}
-
+class GetOpeningComplaintsErrorState extends ComplaintsState {}
 class ChangeStatusOfSelectedIndexOrder extends ComplaintsState {}
+class GetRepliesComplaintsLoadingState extends ComplaintsState {}
 
-class LoadingGetCurrentOrderState extends ComplaintsState {}
+class GetRepliesComplaintsLoadedState extends ComplaintsState {}
 
-class LoadedGetCurrentOrderState extends ComplaintsState {}
+class GetRepliesComplaintsErrorState extends ComplaintsState {}
+class LoadingUploadImage extends ComplaintsState {}
+class ErrorHomeState extends ComplaintsState {
+  final String messageError;
+  ErrorHomeState(this.messageError);
+}
+class LoadedUploadImage extends ComplaintsState {
 
-class LoadingSendToken extends ComplaintsState {}
+}
+class AddRepliesComplaintsLoadingState extends ComplaintsState {}
 
-class ErrorSendToken extends ComplaintsState {}
+class AddRepliesComplaintsLoadedState extends ComplaintsState {}
 
-class LoadedSendToken extends ComplaintsState {}
+class AddRepliesComplaintsErrorState extends ComplaintsState {}
+class ReplyFromComplaintLoadingState extends ComplaintsState {}
+class ReplyFromComplaintLoadedState extends ComplaintsState {}
+
+class ReplyFromComplaintErrorState extends ComplaintsState {}

@@ -1,4 +1,9 @@
 import 'package:arabia/config/routes/app_routes.dart';
+import 'package:arabia/features/setting_screen/screens/widgets/about_us.dart';
+import 'package:arabia/features/setting_screen/screens/widgets/contact_us.dart';
+import 'package:arabia/features/setting_screen/screens/widgets/our_info.dart';
+import 'package:arabia/features/setting_screen/screens/widgets/our_services.dart';
+import 'package:arabia/features/setting_screen/screens/widgets/privacy_policy_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:arabia/core/utils/assets_manager.dart';
@@ -67,22 +72,38 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       SizedBox(height: 100.h,),
                       CustomRowSetting(
-                        title: "my_data".tr(),
+                        onTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => const OurServiceScreen(),));
+                        },
+                        title: "our_services".tr(),
                         icon: ImageAssets.myDataIcon,
                       ),
+                      // CustomRowSetting(
+                      //   onTap: () {
+                      //     Navigator.push(context,MaterialPageRoute(builder: (context) => const AboutUsScreen(),));
+                      //   },
+                      //   title: "about_us".tr(),
+                      //   icon: ImageAssets.aboutUsIcon,
+                      // ),
                       CustomRowSetting(
-                        title: "about_us".tr(),
-                        icon: ImageAssets.aboutUsIcon,
-                      ),
-                      CustomRowSetting(
+                        onTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => const OurInfoScreen(),));
+                        },
                         title: "our_info".tr(),
                         icon: ImageAssets.ourInfoIcon,
                       ),
                       CustomRowSetting(
-                        title: "terms_of_use".tr(),
+                        onTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen(),));
+
+                        },
+                        title: "privacy_policy".tr(),
                         icon: ImageAssets.termsOfUseIcon,
                       ),
                       CustomRowSetting(
+                        onTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => const ContactUsScreen(),));
+                        },
                         title: "contact_us".tr(),
                         icon: ImageAssets.contactUsIcon,
                       ),

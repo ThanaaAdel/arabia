@@ -104,16 +104,14 @@ class _CompleteTheRegistrationDataScreenState extends State<CompleteTheRegistrat
                          SizedBox(
                           height: 120.h,
                         ),
-                        (state is CompleteRegisterLoadingState)
+                        (state is CompleteRegisterLoadingState || state is LoginWithClientIdLoadingState )
                             ? CircularProgressIndicator(
-
                               backgroundColor: AppColors.blue,
                                 color: AppColors.white)
                             : ButtonWidget(
                           textButton: "save".tr(),
                           onPressed: () {
-                            if (cubit.formKeyCompleteRegister.currentState!
-                                .validate()) {
+                            if (cubit.formKeyCompleteRegister.currentState!.validate()) {
                               cubit.completeRegisterData(context);
                             }
                           },

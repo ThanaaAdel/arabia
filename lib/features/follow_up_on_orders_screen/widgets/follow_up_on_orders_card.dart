@@ -8,11 +8,10 @@ import '../../../core/utils/app_colors.dart';
 class FollowUpOnOrdersCard extends StatelessWidget {
   const FollowUpOnOrdersCard({
     super.key,
-    this.onTap, required this.title, required this.number, required this.image,
+    this.onTap, required this.title,  required this.image,
   });
   final Function()? onTap;
   final String title ;
-  final int number;
   final String image;
   @override
   Widget build(BuildContext context) {
@@ -59,15 +58,15 @@ class FollowUpOnOrdersCard extends StatelessWidget {
 
               Row(
                 children: [
-                  Container(
-                    width : 18.w,
-                    height: 18.h,
-                    decoration:  const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.green),
-                    child: Center(child: Text(number.toString(),
-                      style: TextStyle(color: AppColors.white,fontSize: 16.sp),)),
-                  ),
+                  // Container(
+                  //   width : 18.w,
+                  //   height: 18.h,
+                  //   decoration:  const BoxDecoration(
+                  //       shape: BoxShape.circle,
+                  //       color: Colors.green),
+                  //   child: Center(child: Text(number.toString(),
+                  //     style: TextStyle(color: AppColors.white,fontSize: 16.sp),)),
+                  // ),
                   SizedBox(width: 10.w,),
                   Center(
                     child: Icon(

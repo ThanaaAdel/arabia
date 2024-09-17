@@ -20,7 +20,7 @@ class HourlyContractsWidget extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          cubit.onTapChangeCurrentOrder(selectedIndexOrder, context);
+          cubit.onTapChangeCurrentOrder(selectedIndexOrder,context);
         },
         child: Container(
           height: MediaQuery.of(context).size.height / 20,

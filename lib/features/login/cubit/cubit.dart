@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:arabia/core/models/login_model.dart';
 import 'package:arabia/core/models/login_with_client_id_model.dart';
 import 'package:arabia/core/models/verification_model.dart';
@@ -19,16 +18,17 @@ class LoginCubit extends Cubit<LoginState> {
 
   final ServiceApi api;
   final TextEditingController phoneEditingController = TextEditingController();
-  String _countryCode = '+966'; // Add this private field
+  String _countryCode = '+966';
 
-  String get countryCode => _countryCode; // Getter for countryCode
-
-  set countryCode(String value) {  // Setter for countryCode
+  String get countryCode => _countryCode;
+  set countryCode(String value) {
     _countryCode = value;
   }
 
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> formKeyCompleteRegister = GlobalKey<FormState>();
+  // استخدم مراجع جديدة للمفاتيح عند كل عملية تسجيل دخول
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> formKeyCompleteRegister = GlobalKey<FormState>();
+
   LoginModel? loginModel;
   VerificationModel? verificationModel;
   LoginWithClientIdModel? loginWithClientIdModel;
@@ -67,7 +67,6 @@ class LoginCubit extends Cubit<LoginState> {
     return "$minutes:$remainingSeconds";
   }
 
-
   @override
   Future<void> close() {
     // Dispose of controllers when the Cubit is closed
@@ -78,16 +77,24 @@ class LoginCubit extends Cubit<LoginState> {
     _timer?.cancel();
     return super.close();
   }
+
+  void resetKeys() {
+    formKey = GlobalKey<FormState>();
+    formKeyCompleteRegister = GlobalKey<FormState>();
+  }
+
   String? childrenNumber;
   selectChildrenNumber(String number) {
     childrenNumber = number;
     emit(ChildrenNumberLoadedState());
   }
+
   String? selectTypeOfStay;
   selectTypeOfStayValue(String value) {
     selectTypeOfStay = value;
     emit(TypeOfStayLoadedState());
   }
+
   void verificationData(BuildContext context) async {
     emit(VerificationLoadingState());
     final result = await api.verificationApi(otpController.text);
@@ -98,7 +105,8 @@ class LoginCubit extends Cubit<LoginState> {
           (r) {
         if (r.code == 200) {
           verificationModel = r;
-          startCountdown(); // Start the timer after a successful verification
+          _timer?.cancel();
+          startCountdown();
 
           if (r.data!.code == 303) {
             loginWithClientIdData(
@@ -106,7 +114,8 @@ class LoginCubit extends Cubit<LoginState> {
               r.data!.data!.clientId.toString(),
             );
           } else {
-            Navigator.pushNamed(context, Routes.completeTheRegistrationDataRoute);
+            Navigator.pushNamed(
+                context, Routes.completeTheRegistrationDataRoute);
           }
 
           successGetBar("verification_success".tr());
@@ -117,7 +126,6 @@ class LoginCubit extends Cubit<LoginState> {
       },
     );
   }
-
 
   void completeRegisterData(BuildContext context) async {
     emit(CompleteRegisterLoadingState());
@@ -134,6 +142,7 @@ class LoginCubit extends Cubit<LoginState> {
           (r) {
         if (r.code == 200) {
           completeRegisterModel = r;
+          _timer?.cancel();
           loginWithClientIdData(context, r.data!.clientId.toString());
           successGetBar("complete_register_success".tr());
         } else {
@@ -155,6 +164,7 @@ class LoginCubit extends Cubit<LoginState> {
         if (r.code == 200) {
           Preferences.instance.setUser(r).then((value) {
             loginModel = r;
+            resetKeys(); // إعادة تعيين المفاتيح عند تسجيل الدخول
             Navigator.pushNamed(context, Routes.verificationRoute);
             successGetBar("success_login".tr());
           });
@@ -165,6 +175,7 @@ class LoginCubit extends Cubit<LoginState> {
       },
     );
   }
+
   HouseAccommondationTypeModel? houseAccommondationTypeModel;
   void loginWithClientIdData(BuildContext context, String clientId) async {
     emit(LoginWithClientIdLoadingState());
@@ -176,6 +187,8 @@ class LoginCubit extends Cubit<LoginState> {
           (r) {
         if (r.code == 200) {
           loginWithClientIdModel = r;
+          _timer?.cancel();
+          resetKeys(); // إعادة تعيين المفاتيح عند تسجيل الدخول
           Navigator.pushNamed(context, Routes.homeRoute);
           Preferences.instance.setUserWithSession(loginWithClientIdModel!);
         } else {
@@ -185,6 +198,7 @@ class LoginCubit extends Cubit<LoginState> {
       },
     );
   }
+
   ///////////////////////get house accommodation type /////////////////
   void getHouseAccommodationTypeData(BuildContext context) async {
     emit(LoginWithClientIdLoadingState());
@@ -196,7 +210,6 @@ class LoginCubit extends Cubit<LoginState> {
           (r) {
         if (r.code == 200) {
           houseAccommondationTypeModel = r;
-
         } else {
           errorGetBar(r.msg ?? '');
         }
@@ -204,5 +217,4 @@ class LoginCubit extends Cubit<LoginState> {
       },
     );
   }
-
 }

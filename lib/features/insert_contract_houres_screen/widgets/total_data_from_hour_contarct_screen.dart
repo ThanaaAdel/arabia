@@ -1,11 +1,13 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../config/routes/app_routes.dart';
 import '../../../core/models/insert_hourly_data_model.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/widgets/appbar_widget_with_screens.dart';
+import '../../../core/utils/dialogs.dart';
+import '../../../core/utils/style_text.dart';
 import '../../../core/widgets/button_widget.dart';
+import 'details_from_insert_hourly_contract_screen.dart';
 
 class TotalDataFromHourContactScreen extends StatefulWidget {
   const TotalDataFromHourContactScreen({super.key, required this.insertHourlyDataModel});
@@ -18,61 +20,81 @@ class TotalDataFromHourContactScreen extends StatefulWidget {
 
 String formatTime(String time) {
   try {
-    // تحقق مما إذا كان الوقت يتضمن أصفار زائدة في البداية
     List<String> parts = time.split(':');
     int hour = int.parse(parts[0]);
     String minute = parts[1];
-
-    // تحديد ما إذا كان الوقت صباحًا أم مساءً
     String period = hour >= 12 ? 'م' : 'ص';
-
-    // تحويل الساعة إلى تنسيق 12 ساعة وإزالة الأصفار الزائدة
     hour = hour % 12;
-    hour = hour == 0 ? 12 : hour; // إذا كانت الساعة 0، يتم تحويلها إلى 12
-
-    // إرجاع الوقت بالتنسيق المطلوب
+    hour = hour == 0 ? 12 : hour;
     return '$hour:$minute $period';
   } catch (e) {
-    print("Error formatting time: $e");
-    return time; // إرجاع الوقت الأصلي في حالة وجود خطأ
+    return time;
   }
 }
-
 
 class _TotalDataFromHourContactScreenState extends State<TotalDataFromHourContactScreen> {
   @override
   Widget build(BuildContext context) {
-    final daysList = widget.insertHourlyDataModel.data?.daysToServe ?? [];
-    final serviceDaysCount = daysList.length; // حساب عدد أيام الخدمة
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: EdgeInsets.all(20.0.sp),
-              child: AppbarWidgetWithScreens(
-                title: "contract_hours".tr(),
-                description: 'details'.tr(),
+              child:  Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      "contract_hours".tr(),
+                      style: TextStyles.size22FontWidgetBoldBlue.copyWith(fontSize: 20.sp)
+                  ),
+
+                  SizedBox(
+
+                    child: Text(
+                      'details'.tr(),
+                      style: TextStyles.size13FontWidgetSemiBoldBlackWithOpacity6.copyWith(fontSize: 10.sp),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
+              // child: AppbarWidgetWithScreens(
+              //   title: "contract_hours".tr(),
+              //   description: 'details'.tr(),
+              // ),
             ),
             Padding(
               padding: EdgeInsets.all(10.0.sp),
               child: ServiceSummaryWidget(
-                insertHourlyDataModel: widget.insertHourlyDataModel, // Pass the insertHourlyDataModel object
+                orderNumber: widget.insertHourlyDataModel.data?.id.toString() ?? '',
+                orderStatus: widget.insertHourlyDataModel.data?.statusDisplay?.title ?? '',
+                chosenPackage: widget.insertHourlyDataModel.data?.hourlyRentalMobilePackage?.name ?? '',
+                insertHourlyDataModel: widget.insertHourlyDataModel,
                 serviceTime: widget.insertHourlyDataModel.data?.visitPackage?.title ?? '',
                 fromHour: formatTime(widget.insertHourlyDataModel.data?.serviceTimeFrom ?? ''),
                 toHour: formatTime(widget.insertHourlyDataModel.data?.serviceTimeTo ?? ''),
                 numberOfWorkers: widget.insertHourlyDataModel.data?.countOfWorkers.toString() ?? '',
-                serviceDays: "$serviceDaysCount",
+                serviceDays: widget.insertHourlyDataModel.data?.daysToServe
+                    ?.map((date) => "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}")
+                    .toList() ?? [],
+                occupation: widget.insertHourlyDataModel.data?.occupation?.name ?? '',
                 nationality: widget.insertHourlyDataModel.data?.country?.name ?? '',
                 totalCost: "${widget.insertHourlyDataModel.data?.costIncludeTax.toString() ?? ''} ر.س",
               ),
+
             ),
             Expanded(child: Container()),
             ButtonWidget(textButton: "order_now".tr(), onPressed: () {
-              Navigator.pushNamed(context, Routes.hourlyContractsDetailsRoute,arguments: widget.insertHourlyDataModel);
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsFromHourlyContractScreen(insertHourlyDataModel: widget.insertHourlyDataModel,),));
+              successGetBar("insert_hourly_data_success".tr());
             }),
           ],
         ),
@@ -86,21 +108,28 @@ class ServiceSummaryWidget extends StatelessWidget {
   final String fromHour;
   final String toHour;
   final String numberOfWorkers;
-  final String serviceDays;
+  final List<String> serviceDays;
   final String nationality;
   final String totalCost;
-  final InsertHourlyDataModel? insertHourlyDataModel; // Properly define this field
+  final String orderNumber;
+  final String chosenPackage;
+  final InsertHourlyDataModel? insertHourlyDataModel;
+  final String occupation;
+  final String orderStatus;
 
-  ServiceSummaryWidget({
+  const ServiceSummaryWidget({
     super.key,
     required this.serviceTime,
-    required this.insertHourlyDataModel, // Require the insertHourlyDataModel object
+    required this.insertHourlyDataModel,
     required this.fromHour,
     required this.toHour,
     required this.numberOfWorkers,
     required this.serviceDays,
     required this.nationality,
     required this.totalCost,
+    required this.orderNumber,
+    required this.chosenPackage,
+    required this.occupation, required this.orderStatus,
   });
 
   @override
@@ -114,13 +143,76 @@ class ServiceSummaryWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Properly check the condition and display the content
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 4.0.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+                Text(
+                  'chosen_package'.tr(),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                SizedBox(width: 20.w),
+                SizedBox(
+                  width: 150.w,
+                  child: AutoSizeText(
+                    chosenPackage,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
+            ),
+          ),
+          _buildSummaryRow('order_number'.tr(), orderNumber, isHighlighted: true),
+          _buildSummaryRow('order_status'.tr(), orderStatus,isHighlighted: true),
           if (insertHourlyDataModel?.data?.visitPackage?.id != null)
             _buildSummaryRow('service_time'.tr(), serviceTime, isHighlighted: true),
           _buildSummaryRow('from_hour'.tr(), fromHour, isHighlighted: true),
           _buildSummaryRow('to_hour'.tr(), toHour, isHighlighted: true),
           _buildSummaryRow('number_of_workers'.tr(), numberOfWorkers, isHighlighted: true),
-          _buildSummaryRow('service_days'.tr(), serviceDays),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 4.0.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    'service_days'.tr(),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: serviceDays.map((day) => Text(
+                    day,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.grey[800],
+                    ),
+                  )).toList(),
+                ),
+              ],
+            ),
+          ),
+
+          _buildSummaryRow('occupation'.tr(), occupation),
+
           _buildSummaryRow('nationality'.tr(), nationality),
           _buildSummaryRow('total_cost'.tr(), totalCost, isCost: true),
         ],
@@ -156,3 +248,6 @@ class ServiceSummaryWidget extends StatelessWidget {
     );
   }
 }
+
+
+

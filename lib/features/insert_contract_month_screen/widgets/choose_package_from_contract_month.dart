@@ -60,7 +60,7 @@ class _ChoosePackageFromContractMonthScreenState
                 padding: EdgeInsets.all(20.0.sp),
                 child: AppbarWidgetWithScreens(
                   title: "contract_month".tr(),
-                  description: widget.cubit.insertMonthlyDataModel?.data?.monthlyRentalMobilePackage?.name.toString() ?? '',
+                  description: widget.package.name.toString() ?? '',
                 ),
               ),
               Expanded(
@@ -92,7 +92,7 @@ class _ChoosePackageFromContractMonthScreenState
                       _buildTotalCost(),
                       SizedBox(height: 20.h),
                       BlocBuilder<InsertContractMonthCubit, InsertContractMonthState>(builder: (context, state) {
-                        return (state is InsertHourlyDataLoadingState)
+                        return (state is InsertMonthlyDataLoadingState)
                             ? Center(
                             child: CircularProgressIndicator(color: AppColors.blue))
                             : ButtonWidget(
@@ -183,36 +183,38 @@ class _ChoosePackageFromContractMonthScreenState
   Widget _buildDateFilter(BuildContext context, String hintText, TextEditingController controller,
       {required bool isFromDate}) {
     return SharedTextFiled(
+      readOnly: true,
       controller: controller,
       suffixIcon: GestureDetector(
         onTap: () async {
-          // Determine first date and last date
+          // تحديد التاريخ الأول بناءً على منطق التاريخ المحدد مسبقًا
           DateTime firstDate = isFromDate
               ? DateTime.now()
               : selectedFromDate?.add(Duration(days: (30 * minRentalDuration) - 1)) ?? DateTime.now();
 
+          // تحديد التاريخ الابتدائي بناءً على التاريخ الأول
           DateTime initialDate = isFromDate
               ? DateTime.now()
               : (firstDate.isAfter(DateTime.now()) ? firstDate : DateTime.now());
 
-          // Ensure the last date is not before the first date
-          DateTime lastDate = DateTime(2025);
-          if (lastDate.isBefore(firstDate)) {
-            lastDate = firstDate;  // Adjust last date if necessary
-          }
+          // تحديد التاريخ الأخير للسماح بفترة أطول من 6 أشهر
+          DateTime lastDate = DateTime(2030); // تحديد تاريخ بعيد في المستقبل للسماح بفترة أطول
 
+          // فتح نافذة اختيار التاريخ
           final DateTime? picked = await showDatePicker(
             context: context,
             initialDate: initialDate,
             firstDate: firstDate,
-            lastDate: lastDate,  // Use the dynamically adjusted last date
+            lastDate: lastDate,
           );
+
           if (picked != null) {
             setState(() {
               if (isFromDate) {
                 selectedFromDate = picked;
                 fromDate.text = "${picked.toLocal()}".split(' ')[0];
-                if (selectedToDate != null && selectedToDate!.isBefore(selectedFromDate!.add(Duration(days: (30 * minRentalDuration) - 1)))) {
+                if (selectedToDate != null &&
+                    selectedToDate!.isBefore(selectedFromDate!.add(Duration(days: (30 * minRentalDuration) - 1)))) {
                   selectedToDate = selectedFromDate!.add(Duration(days: (30 * minRentalDuration) - 1));
                   toDate.text = "${selectedToDate!.toLocal()}".split(' ')[0];
                 }
@@ -235,6 +237,7 @@ class _ChoosePackageFromContractMonthScreenState
       onSaved: (value) {},
     );
   }
+
 
 
   Widget _buildTransferServiceOption() {
@@ -260,6 +263,7 @@ class _ChoosePackageFromContractMonthScreenState
                     onChanged: (value) {
                       setState(() {
                         selectedTransferType = value.toString();
+                        print("selectedTransferType: $selectedTransferType");
                       });
                     },
                   ),
@@ -274,6 +278,7 @@ class _ChoosePackageFromContractMonthScreenState
                     onChanged: (value) {
                       setState(() {
                         selectedTransferType = value.toString();
+                        print("selectedTransferType: $selectedTransferType");
                       });
                     },
                   ),

@@ -1,12 +1,20 @@
 
+import 'package:arabia/core/models/aechive_transfer_service_model.dart';
+import 'package:arabia/core/models/hourly_contract_model.dart';
+import 'package:arabia/core/models/mediation_contract_archive_model.dart';
+import 'package:arabia/core/models/mediation_contract_model.dart';
+import 'package:arabia/core/models/setting_model.dart';
+import 'package:arabia/core/models/transfer_service_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-
 import '../api/base_api_consumer.dart';
 import '../api/end_points.dart';
 import '../error/exceptions.dart';
 import '../error/failures.dart';
 import '../models/GetTransferServiceTypeModel.dart';
+import '../models/add_complain_model.dart';
+import '../models/archive_professional_employment_model.dart';
+import '../models/closed_complain_model.dart';
 import '../models/complete_register_model.dart';
 import '../models/contract_model.dart';
 import '../models/experance_model.dart';
@@ -15,6 +23,7 @@ import '../models/get_hourly__package_model.dart';
 import '../models/get_monthly_Data.dart';
 import '../models/get_occupations_model.dart';
 import '../models/get_profile_data_model.dart';
+import '../models/hourly_contract_archive_model.dart';
 import '../models/insert_hourly_data_model.dart';
 import '../models/insert_mediation_request_model.dart';
 import '../models/insert_monthly_data_model.dart';
@@ -22,8 +31,15 @@ import '../models/insert_profissional_employment_model.dart';
 import '../models/insert_transfare_service_model.dart';
 import '../models/login_model.dart';
 import '../models/login_with_client_id_model.dart';
+import '../models/monthly_contract_archive_model.dart';
+import '../models/monthly_contract_model.dart';
+import '../models/notification_model.dart';
 import '../models/offers_model.dart';
+import '../models/opening_complain_model.dart';
+import '../models/professional_employment_model.dart';
 import '../models/religions_model.dart';
+import '../models/replaies_complain_model.dart';
+import '../models/reply_from_complain.dart';
 import '../models/type_accomonation_type.dart';
 import '../models/verification_model.dart';
 import '../preferences/preferences.dart';
@@ -203,7 +219,528 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
+  /////////////////// notification data ///////////////////
+  Future<Either<Failure, NotificationModel>>
+  notificationApi() async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
 
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getAllNotificationsOfClient",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(NotificationModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  ///////////////////  opening complain data ///////////////////
+  Future<Either<Failure, OpeningComplainModel>>
+  getOpeningComplainApi({
+    required String page,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "geOpenedComplaintsOfClients",
+          'session_token':  loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id':loginWithSessionModel?.data?.clientId,
+          'page':page,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(OpeningComplainModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  ///////////////////  opening complain data ///////////////////
+  Future<Either<Failure, ClosedComplainModel>>
+  getClosedComplainApi({
+    required String page,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "geClosedComplaintsOfClients",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'page':page,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ClosedComplainModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  Future<Either<Failure, AddComplainModel>> addComplianApi({
+    String? base64FileContant, // Made optional
+    String? image, // Made optional
+    required String contact,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+      // Preparing the body dynamically based on provided parameters
+      final body = {
+        'apiToken': "x93mY",
+        'action': "sendComplaintAgainstOffice",
+        'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+        'client_id': loginWithSessionModel?.data?.clientId,
+        'content': contact,
+        'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+      };
+
+      // Adding optional fields if provided
+      if (base64FileContant != null) {
+        body['base64FileContent'] = base64FileContant;
+      }
+      if (image != null) {
+        body['filename'] = image;
+      }
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: body,
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(AddComplainModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  /////////////////// reply from complain data ///////////////////
+  Future<Either<Failure, ReplyFromComplainModel>>
+  replyFromComplianApi({
+    required String base64FileContant,
+    required String image,
+    required String contact,
+    required String complainId,
+  }) async {
+
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "sendComplaintReply",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'base64FileContent':base64FileContant,
+          'filename':image,
+          'content':contact,
+          'complaint_id':complainId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ReplyFromComplainModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// hourly Contract archive data ///////////////////
+  Future<Either<Failure, ReplaiesComplainModel>>
+  replaiesComplianApi({
+    required String complainId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getOneComplaint",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'complaint_id':complainId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ReplaiesComplainModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// hourly Contract archive data ///////////////////
+  Future<Either<Failure, HourlyContractArchiveModel>>
+  hourlyContractArchiveApi({
+    required String itemId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "archiveRentHourlyRequest",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'item_id':itemId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(HourlyContractArchiveModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// monthly Contract archive data ///////////////////
+  Future<Either<Failure, MonthlyContractArchiveModel>>
+  monthlyContractArchiveApi({
+    required String itemId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "archiveRentMonthlyRequest",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'item_id':itemId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(MonthlyContractArchiveModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// monthly Contract data ///////////////////
+  Future<Either<Failure, MonthlyContractModel>>
+  monthlyContractApi({
+    required int pageNo,
+    required String status,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getAllRentalMonthlyRequests",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'page_no':pageNo,
+          'status':status,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(MonthlyContractModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// Professional Employment archive data ///////////////////
+  Future<Either<Failure, ArchiveProfessionalEmploymentModel>>
+  professionalEmploymentArchiveApi({
+    required String itemId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "archiveProfessionalEmploymentRequest",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'item_id':itemId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ArchiveProfessionalEmploymentModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// Transfer Service archive data ///////////////////
+  Future<Either<Failure, ArchiveTransferServiceModel>>
+  transferServiceArchiveApi({
+    required String itemId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "archiveTransferServiceRequest",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'item_id':itemId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ArchiveTransferServiceModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  /////////////////// mediation Contract archive data ///////////////////
+  Future<Either<Failure, MediationContractArchiveModel>>
+  mediationContractArchiveApi({
+    required String itemId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "archiveMediationRequest",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'item_id':itemId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(MediationContractArchiveModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// mediation Contract data ///////////////////
+  Future<Either<Failure, MediationContractModel>>
+  mediationContractApi({
+    required int pageNo,
+    required String status,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getAllMediationRequests",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'page_no':pageNo,
+          'status':status,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(MediationContractModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// Transfer Service data ///////////////////
+  Future<Either<Failure, TransferServiceModel>>
+  transferServiceApi({
+    required int pageNo,
+    required String status,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getAllTransferServiceRequests",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'page_no':pageNo,
+          'status':status,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(TransferServiceModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// Professional Employment Contract data ///////////////////
+  Future<Either<Failure, ProfessionalEmploymentModel>>
+  professionalEmploymentApi({
+    required int pageNo,
+    required String status,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getAllProfessionalEmploymentRequests",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'page_no':pageNo,
+          'status':status,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ProfessionalEmploymentModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  /////////////////// hourly Contract data ///////////////////
+  Future<Either<Failure, HourlyContractModel>>
+  hourlyContractApi({
+    required int pageNo,
+    required String status,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "getAllRentalHourlyRequests",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? "",
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'page_no':pageNo,
+          'status':status,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(HourlyContractModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
   /////////////////// insert profissional employment data ///////////////////
   Future<Either<Failure, InsertProfissionalEmployementModel>>
       insertProfissionalEmploymentApi({
@@ -221,7 +758,7 @@ class ServiceApi {
         EndPoints.baseUrl,
         body: {
           'apiToken': "x93mY",
-          'action': "insertMediationRequest",
+          'action': "insertProfessionalEmploymentRequest",
           'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
           'client_id': loginWithSessionModel?.data?.clientId,
           'country_id': countryId,
@@ -254,8 +791,8 @@ class ServiceApi {
         body: {
           'apiToken': "x93mY",
           'action': "getAllClientsContractsAttachments",
-          'session_token': "c9f0f895fb98ab9159f51fd0297e236d",
-          'client_id': 14,
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
           'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
         },
         formDataIsEnabled: true,
@@ -327,8 +864,8 @@ class ServiceApi {
         'client_id': loginWithSessionModel?.data?.clientId,
         'country_id': countryId,
         'occ_id': occId,
-        'Experience': experince,
-        'Religion': religion,
+        'experience': experince,
+        'religion': religion,
         'visa_no': visaNo,
         'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
       };
@@ -386,6 +923,27 @@ class ServiceApi {
       );
 
       return Right(OffersModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+  ////////////////////////setting ///////////////////////
+  Future<Either<Failure, SettingModel>> getSettingApi() async {
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "___mobileArticles",
+          'apiToken': "x93mY",
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(SettingModel.fromJson(response));
     } on ServerException {
       return Left(ServerFailure());
     }

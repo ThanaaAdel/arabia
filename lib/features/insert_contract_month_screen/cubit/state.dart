@@ -24,10 +24,10 @@ class GetPackagesErrorState extends InsertContractMonthState {
   GetPackagesErrorState(this.error);
 }
 class GetPackagesLoadingState extends InsertContractMonthState {}
-class InsertHourlyDataLoadedState extends InsertContractMonthState {}
-class InsertHourlyDataErrorState extends InsertContractMonthState {
+class InsertMonthlyDataLoadedState extends InsertContractMonthState {}
+class InsertMonthlyDataErrorState extends InsertContractMonthState {
   final String error;
 
-  InsertHourlyDataErrorState(this.error);
+  InsertMonthlyDataErrorState(this.error);
 }
-class InsertHourlyDataLoadingState extends InsertContractMonthState {}
+class InsertMonthlyDataLoadingState extends InsertContractMonthState {}

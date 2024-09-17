@@ -1,17 +1,22 @@
 import 'package:arabia/core/models/insert_monthly_data_model.dart';
-import 'package:arabia/features/chat_complaints_screen/chat_complaints_screen.dart';
+import 'package:arabia/features/complain_screen/widgets/open_chat_complaints_screen.dart';
 import 'package:arabia/features/insert_contract_month_screen/cubit/cubit.dart';
 import 'package:arabia/features/insert_contract_month_screen/widgets/choose_package_from_contract_month.dart';
+import 'package:arabia/features/insert_mediation.screen/screens/insert_mediation_screen.dart';
+import 'package:arabia/features/insert_professional_employment.screen/screens/professional_employment.dart';
 import 'package:arabia/features/login/screens/complete_the_registration_data_screen.dart';
 import 'package:arabia/features/contarcts_screen/contarcts_screen.dart';
 import 'package:arabia/features/insert_contract_houres_screen/widgets/choose_package_from_contract_hour.dart';
 import 'package:arabia/features/enter_data_professional_employment.screen/screens/enter_data_professional_employment.screen.dart';
 import 'package:arabia/features/follow_up_on_orders_screen/follow_up_on_orders_screen.dart';
 import 'package:arabia/features/home_screen/screens/home_Screen.dart';
-import 'package:arabia/features/new_compliants_screen/screens/new_complaint_screen.dart';
+import 'package:arabia/features/complain_screen/widgets/new_complaint_screen.dart';
+import 'package:arabia/features/mediation_contracts_screen/mediation_contracts_screen.dart';
+import 'package:arabia/features/monthly_contracts_screen/monthly_contracts_screen.dart';
 import 'package:arabia/features/notification_screen/screens/notification_screen.dart';
 import 'package:arabia/features/offers_screen/screens/widget/offers_details_screen.dart';
 import 'package:arabia/features/offers_screen/screens/offers_screen.dart';
+import 'package:arabia/features/professional_employment_screen/professional_employment_screen.dart';
 import 'package:arabia/features/setting_screen/screens/setting_screen.dart';
 import 'package:arabia/features/login/screens/verification_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,20 +26,19 @@ import '../../core/models/get_monthly_Data.dart';
 import '../../core/models/insert_hourly_data_model.dart';
 import '../../core/models/login_with_client_id_model.dart';
 import '../../core/models/offers_model.dart';
+import '../../core/models/opening_complain_model.dart';
 import '../../core/utils/app_strings.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../features/complain_screen/complaints_screen.dart';
 import '../../features/insert_contract_houres_screen/cubit/cubit.dart';
 import '../../features/insert_contract_houres_screen/insert_contract_hour_screen.dart';
 import '../../features/insert_contract_houres_screen/widgets/total_data_from_hour_contarct_screen.dart';
-import '../../features/hourly_contracts_screen/widgets/hourly_contracts_details_screen.dart';
 import '../../features/hourly_contracts_screen/hourly_contracts_screen.dart';
 import '../../features/insert_contract_month_screen/insert_contract_month_screen.dart';
 import '../../features/insert_contract_month_screen/widgets/total_data_from_month_contarct_screen.dart';
+import '../../features/insert_transfer_service.screen/screens/insert_transfer_service_screen.dart';
 import '../../features/login/screens/login_screen.dart';
-import '../../features/mediation.screen/screens/mediation_screen.dart';
-import '../../features/professional_employment.screen/screens/professional_employment.dart';
-import '../../features/transfer_service.screen/screens/transfer_service_screen.dart';
+import '../../features/transfer_service_screen/transfer_service_screen.dart';
 
 class Routes {
   static const String initialRoute = '/';
@@ -50,14 +54,19 @@ class Routes {
   static const String offersRoute = '/offersRoute';
   static const String offerDetailsRoute = '/offerDetailsRoute';
   static const String complaintsRoute = '/complaintsRoute';
-  static const String chatComplaintsRoute = '/chatComplaintsRoute';
   static const String newComplaintRoute = '/newComplaintRoute';
+  static const String openChatComplaintsRoute = '/openChatComplaintsRoute';
+  static const String closeChatComplaintsRoute = '/closeChatComplaintsRoute';
   static const String contractsRoute = '/contractsRoute';
   static const String followUpOnOrdersRoute = '/followUpOnOrdersRoute';
   static const String hourlyContractsRoute = '/hourlyContractsRoute';
-  static const String hourlyContractsDetailsRoute = '/hourlyContractsDetailsRoute';
+  static const String monthlyContractsRoute = '/monthlyContractsRoute';
+  static const String transferServiceRoute = '/transferServiceRoute';
+  static const String mediationContractsRoute = '/mediationContractsRoute';
+  static const String insertProfessionalEmploymentRoute = '/insertProfessionalEmploymentRoute';
+  static const String detailsScreenRoute = '/detailsScreenRoute';
   static const String enterDataProfessionalEmploymentRoute = '/enterDataProfessionalEmploymentRoute';
-  static const String serviceMoveRoute = '/serviceMoveRoute';
+  static const String insertServiceMoveRoute = '/insertServiceMoveRoute';
   static const String mediationRoute = '/mediationRoute';
   static const String choosePackageFromContractHourRoute = '/choosePackageFromContractHourRoute';
   static const String choosePackageFromContractMonthRoute = '/choosePackageFromContractMonthRoute';
@@ -120,10 +129,10 @@ class AppRoutes {
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
         );
-      case Routes.professionalEmploymentRoute:
+      case Routes.insertProfessionalEmploymentRoute:
         final clientId = settings.arguments as String;
         return PageTransition(
-          child:  ProfessionalEmploymentScreen(
+          child:  InsertProfessionalEmploymentScreen(
             clientId: clientId,
           ),
           type: PageTransitionType.fade,
@@ -166,13 +175,15 @@ class AppRoutes {
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
         );
-      case Routes.chatComplaintsRoute:
+      case Routes.openChatComplaintsRoute:
+        final replyOpenComplian = settings.arguments as Reply;
         return PageTransition(
-          child: const ChatComplaintsScreen(),
+          child:  OpenChatComplainScreen(replyOpenComplian: replyOpenComplian),
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
-        );  case Routes.newComplaintRoute:
+        );
+       case Routes.newComplaintRoute:
         return PageTransition(
           child: const NewComplaintScreen(),
           type: PageTransitionType.fade,
@@ -197,10 +208,28 @@ class AppRoutes {
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
-        );case Routes.hourlyContractsDetailsRoute:
-        final insertHourlyDataModel = settings.arguments as InsertHourlyDataModel;
+        );case Routes.monthlyContractsRoute:
         return PageTransition(
-          child:  HourlyContractsDetailsScreen(insertHourlyDataModel: insertHourlyDataModel,),
+          child: const MonthlyContractsScreen(),
+          type: PageTransitionType.fade,
+          alignment: Alignment.center,
+          duration: const Duration(milliseconds: 800),
+        );case Routes.mediationContractsRoute:
+        return PageTransition(
+          child: const MediationContractsScreen(),
+          type: PageTransitionType.fade,
+          alignment: Alignment.center,
+          duration: const Duration(milliseconds: 800),
+        );
+        case Routes.professionalEmploymentRoute:
+        return PageTransition(
+          child:  const ProfessionalEmploymentScreen(),
+          type: PageTransitionType.fade,
+          alignment: Alignment.center,
+          duration: const Duration(milliseconds: 800),
+        );case Routes.transferServiceRoute:
+        return PageTransition(
+          child:  const TransferServiceScreen(),
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
@@ -215,16 +244,16 @@ class AppRoutes {
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
-        );case Routes.serviceMoveRoute:
+        );case Routes.insertServiceMoveRoute:
       final clientId = settings.arguments as String;
         return PageTransition(
-          child:  TransferServiceScreen(clientId: clientId,),
+          child:  InsertTransferServiceScreen(clientId: clientId,),
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
         );case Routes.mediationRoute:
         return PageTransition(
-          child: const MediationScreen(),
+          child: const InsertMediationScreen(),
           type: PageTransitionType.fade,
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
@@ -265,16 +294,7 @@ class AppRoutes {
           alignment: Alignment.center,
           duration: const Duration(milliseconds: 800),
         );
-      //
-      // case Routes.resultOfLessonExam:
-      //   ResponseOfApplyLessonExmamData model =
-      //       settings.arguments as ResponseOfApplyLessonExmamData;
-      //   return PageTransition(
-      //     child: ResultExamLessonScreen(model: model),
-      //     type: PageTransitionType.fade,
-      //     alignment: Alignment.center,
-      //     duration: const Duration(milliseconds: 800),
-      //   );
+
 
       default:
         return undefinedRoute();

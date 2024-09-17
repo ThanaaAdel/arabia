@@ -3,8 +3,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/utils/app_colors.dart';
+import '../../../core/utils/dialogs.dart';
+import '../../../core/utils/style_text.dart';
 import '../../../core/widgets/appbar_widget_with_screens.dart';
 import '../../../core/widgets/button_widget.dart';
+import 'details_from_insert_monthly_contract_screen.dart';
 
 class TotalDataFromMonthContactScreen extends StatefulWidget {
   const TotalDataFromMonthContactScreen(
@@ -35,20 +38,50 @@ class _TotalDataFromMonthContactScreenState
       child: Scaffold(
         backgroundColor: AppColors.white,
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: EdgeInsets.all(20.0.sp),
-              child: AppbarWidgetWithScreens(
-                title: "contract_month".tr(),
-                description: widget.insertMonthlyDataModel.data
-                        ?.monthlyRentalMobilePackage?.name
-                        .toString() ??
-                    '',
+              child:
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      "contract_month".tr(),
+                      style: TextStyles.size22FontWidgetBoldBlue.copyWith(fontSize: 20.sp)
+                  ),
+
+                  SizedBox(
+
+                    child: Text(
+                      widget.insertMonthlyDataModel.data
+                          ?.monthlyRentalMobilePackage?.name
+                          .toString() ??
+                          '',
+                      style: TextStyles.size13FontWidgetSemiBoldBlackWithOpacity6.copyWith(fontSize: 10.sp),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
+              // AppbarWidgetWithScreens(
+              //   title: "contract_month".tr(),
+              //   description: widget.insertMonthlyDataModel.data
+              //           ?.monthlyRentalMobilePackage?.name
+              //           .toString() ??
+              //       '',
+              // ),
             ),
             Padding(
               padding: EdgeInsets.all(10.0.sp),
               child: ServiceSummaryWidget(
+                orderNumber: widget.insertMonthlyDataModel.data?.id.toString() ??'',
+                occupation: widget.insertMonthlyDataModel.data?.occupation?.name.toString() ??'',
+                statusOrder: widget.insertMonthlyDataModel.data?.statusClient.toString() ??'',
+
                 fromHour: formatDate(widget
                         .insertMonthlyDataModel.data?.serviceDateFrom
                         .toString() ??
@@ -68,7 +101,10 @@ class _TotalDataFromMonthContactScreenState
               ),
             ),
             Expanded(child: Container()),
-            ButtonWidget(textButton: "order_now".tr(), onPressed: () {}),
+            ButtonWidget(textButton: "order_now".tr(), onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsFromMonthlyContractScreen(insertMonthlyDataModel: widget.insertMonthlyDataModel,),));
+              successGetBar("insert_monthly_data_success".tr());
+            }),
           ],
         ),
       ),
@@ -82,14 +118,16 @@ class ServiceSummaryWidget extends StatelessWidget {
   final String numberOfWorkers;
   final String nationality;
   final String totalCost;
-
+  final String orderNumber;
+  final String occupation;
+  final String statusOrder;
   ServiceSummaryWidget({
     super.key,
     required this.fromHour,
     required this.toHour,
     required this.numberOfWorkers,
     required this.nationality,
-    required this.totalCost,
+    required this.totalCost, required this.orderNumber, required this.occupation, required this.statusOrder,
   });
 
   @override
@@ -103,10 +141,13 @@ class ServiceSummaryWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildSummaryRow('order_number'.tr(), orderNumber, isHighlighted: true),
+          _buildSummaryRow('order_status'.tr(), statusOrder, isHighlighted: true),
           _buildSummaryRow('from_date'.tr(), fromHour, isHighlighted: true),
           _buildSummaryRow('to_date'.tr(), toHour, isHighlighted: true),
           _buildSummaryRow('number_of_workers'.tr(), numberOfWorkers,
               isHighlighted: true),
+          _buildSummaryRow('occupation'.tr(), occupation),
           _buildSummaryRow('nationality'.tr(), nationality),
           _buildSummaryRow('total_cost'.tr(), totalCost, isCost: true),
         ],

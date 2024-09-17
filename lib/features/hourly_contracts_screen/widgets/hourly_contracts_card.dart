@@ -1,16 +1,19 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/assets_manager.dart';
+import '../../../core/models/hourly_contract_model.dart';
 
 class HourlyContractsCard extends StatelessWidget {
   const HourlyContractsCard({
     super.key,
-    this.onTap,
+    this.onTap, required this.item,
   });
   final Function()? onTap;
+  final Item item;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -44,9 +47,12 @@ class HourlyContractsCard extends StatelessWidget {
                 SizedBox(
                   width: 10.w,
                 ),
-                Text(
-                  'طلب 1',
-                  style: TextStyle(fontSize: 18.sp),
+                SizedBox(
+                  width:220.sp,
+                  child: AutoSizeText(
+                    item.hourlyRentalMobilePackage!.name.toString(),
+                    maxLines: 1,
+                  ),
                 ),
               ],
             ),

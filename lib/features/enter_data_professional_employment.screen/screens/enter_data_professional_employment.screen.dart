@@ -94,6 +94,7 @@ class _EnterDataProfessionalEmploymentScreenState
                       ),
                       SizedBox(height: 20.h),
                       SharedTextFiled(
+                        keyboardType: TextInputType.number,
                         hintText: "visa_number".tr(),
                         onSaved: (value) {
                           visaNumber = value;

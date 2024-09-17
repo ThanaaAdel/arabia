@@ -30,12 +30,12 @@ final String clientId;
               text: "mediation_service".tr(),image: ImageAssets.mediationServiceIcon,),
             ContainerWidgetHome(
               onPressed: () {
-                Navigator.pushNamed(context, Routes.professionalEmploymentRoute,arguments: clientId);
+                Navigator.pushNamed(context, Routes.insertProfessionalEmploymentRoute,arguments: clientId);
               },
               text: "professional_employment".tr(),image: ImageAssets.professionalLaborIcon,),
             ContainerWidgetHome(
               onPressed: () {
-                Navigator.pushNamed(context, Routes.serviceMoveRoute,arguments: clientId);
+                Navigator.pushNamed(context, Routes.insertServiceMoveRoute,arguments: clientId);
               },
               text: "move_service".tr(),image: ImageAssets.requestForServiceTransferIcon,),
 

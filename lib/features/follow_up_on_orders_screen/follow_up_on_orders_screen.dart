@@ -37,38 +37,35 @@ class _FollowUpOnOrdersScreenState extends State<FollowUpOnOrdersScreen> {
               },
               image: ImageAssets.contractHourIcon,
               title: "hourly_contracts".tr(),
-              number: 1,
+
             ),
             FollowUpOnOrdersCard(
               onTap: () {
-                Navigator.pushNamed(context, Routes.contractMonthRoute);
+                Navigator.pushNamed(context, Routes.monthlyContractsRoute);
               },
               image: ImageAssets.contractMonthIcon,
               title: "monthly_contracts".tr(),
-              number: 6,
+
             ),
             FollowUpOnOrdersCard(
               onTap: () {
-                Navigator.pushNamed(context, Routes.mediationRoute);
+                Navigator.pushNamed(context, Routes.mediationContractsRoute);
               },
               image: ImageAssets.mediationServiceIcon,
               title: "mediation".tr(),
-              number: 5,
             ),
             FollowUpOnOrdersCard(
               onTap: () {
                 Navigator.pushNamed(context, Routes.professionalEmploymentRoute);              },
               image: ImageAssets.professionalLaborIcon,
               title: "professional_labor".tr(),
-              number: 4,
             ),
             FollowUpOnOrdersCard(
               onTap: () {
-                Navigator.pushNamed(context, Routes.serviceMoveRoute);
+               Navigator.pushNamed(context, Routes.transferServiceRoute);
               },
               image: ImageAssets.followUpOnOrdersIcon,
               title: "transfer_of_services".tr(),
-              number: 2,
             ),
           ],
         ),
