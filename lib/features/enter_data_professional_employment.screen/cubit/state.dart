@@ -22,4 +22,11 @@ class InsertProfissionalEmploymentErrorState extends EnterDataProfissionalEmploy
 
   InsertProfissionalEmploymentErrorState(this.error);
 }
+class GetReligionLoadedState extends EnterDataProfissionalEmployementState {}
+class GetReligionErrorState extends EnterDataProfissionalEmployementState {
+  final String error;
+
+  GetReligionErrorState(this.error);
+}
+class GetReligionLoadingState extends EnterDataProfissionalEmployementState {}
 class InsertProfissionalEmploymentLoadedState extends EnterDataProfissionalEmployementState {}

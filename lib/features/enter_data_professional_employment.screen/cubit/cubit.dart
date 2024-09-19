@@ -1,6 +1,8 @@
 
 
+
 import 'package:arabia/core/models/insert_profissional_employment_model.dart';
+import 'package:arabia/core/models/religions_model.dart';
 import 'package:arabia/core/utils/dialogs.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +21,7 @@ class EnterDataProfissionalEmployementCubit extends Cubit<EnterDataProfissionalE
   ExperanceModel? experanceModel;
   GetCountriesModel?  getCountriesModel;
   String? experanceName;
+  String? religionName;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   void getCountryData() async {
 
@@ -31,6 +34,20 @@ class EnterDataProfissionalEmployementCubit extends Cubit<EnterDataProfissionalE
           (r) {
         getCountriesModel = r;
         emit(GetCountriesLoadedState());
+      },
+    );
+  }
+  ReligionsModel? religionsModel;
+  void getReligionData() async {
+    emit(GetReligionLoadingState());
+    final result = await api.getReligionsApi();
+    result.fold(
+          (failure) {
+        emit(GetReligionErrorState('Error loading data: $failure'));
+      },
+          (r) {
+            religionsModel = r;
+        emit(GetReligionLoadedState());
       },
     );
   }
@@ -53,9 +70,11 @@ class EnterDataProfissionalEmployementCubit extends Cubit<EnterDataProfissionalE
     required String countryId,
     required String occId,
     required String visaNo,
+
   }) async {
     emit(InsertProfissionalEmploymentLoadingState());
     final result = await api.insertProfissionalEmploymentApi(
+      religion: religionName.toString(),
       countryId: countryId,
       occId: occId,
       experince: experanceName.toString(),

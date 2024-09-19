@@ -37,11 +37,7 @@ class ProfessionalEmploymentCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: AppColors.white),
                   child: Center(
-                    child: SvgPicture.asset(
-                      ImageAssets.contractMonthIcon,
-                      width: 20.sp,
-                      height: 20.sp,
-                    ),
+                      child: Text(item.id ?? '')
                   ),
                 ),
                 SizedBox(

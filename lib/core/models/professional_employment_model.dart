@@ -61,6 +61,7 @@ class Item {
   String? countryId;
   String? occId;
   Experience? experience;
+  Religion? religion;
   String? visaNo;
   String? costWithoutTax;
   String? costTax;
@@ -81,6 +82,7 @@ class Item {
     this.countryId,
     this.occId,
     this.experience,
+    this.religion,
     this.visaNo,
     this.costWithoutTax,
     this.costTax,
@@ -112,7 +114,11 @@ class Item {
     occupation: json["occupation"] == null ? null : Occupation.fromJson(json["occupation"]),
     country: json["country"] == null ? null : Country.fromJson(json["country"]),
     statusDisplay: json["status_display"] == null ? null : Experience.fromJson(json["status_display"]),
-  );
+    religion: json["religion"] is String
+        ? Religion(id: null, title: json["religion"])  // treat as string
+        : json["religion"] == null
+        ? null
+        : Religion.fromJson(json["religion"]),   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -123,6 +129,7 @@ class Item {
     "country_id": countryId,
     "occ_id": occId,
     "experience": experience?.toJson(),
+    "religion": religion,
     "visa_no": visaNo,
     "cost_without_tax": costWithoutTax,
     "cost_tax": costTax,
@@ -179,7 +186,25 @@ class Experience {
     "title": title,
   };
 }
+class Religion {
+  String? id;
+  String? title;
 
+  Religion({
+    this.id,
+    this.title,
+  });
+
+  factory Religion.fromJson(Map<String, dynamic> json) => Religion(
+    id: json["id"],
+    title: json["title"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "title": title,
+  };
+}
 class Occupation {
   String? id;
   String? name;

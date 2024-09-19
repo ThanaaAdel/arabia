@@ -10,4 +10,7 @@ class GetContractsErrorState extends ContractsState {
   GetContractsErrorState(this.error);
 }
 class GetContractsLoadedState extends ContractsState {}
+class ArchiveContractLoadingState extends ContractsState {}
+class ArchiveContractErrorState extends ContractsState {}
+class ArchiveContractSuccessState extends ContractsState {}
 

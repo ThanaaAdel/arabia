@@ -1,3 +1,4 @@
+import 'package:url_launcher/url_launcher.dart';
 import 'package:arabia/core/models/opening_complain_model.dart';
 import 'package:arabia/core/utils/app_colors.dart';
 import 'package:arabia/core/widgets/shared_appbar.dart';
@@ -34,163 +35,161 @@ class _OpenChatComplainScreenState extends State<OpenChatComplainScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
-        body: BlocBuilder<ComplaintsCubit, ComplaintsState>(
-          builder: (context, state) {
-            if (state is GetRepliesComplaintsLoadedState) {
-              // التمرير إلى الأسفل عند تحميل الرسائل
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              });
-            }
-
-            return (state is GetRepliesComplaintsLoadingState ||
-                cubit.replaiesComplainModel == null)
-                ? Center(
-              child: CircularProgressIndicator(
-                color: AppColors.blue,
+        body: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.sp),
+              child: SharedAppbar(
+                text: widget.replyOpenComplian.complaintBasicInfo!
+                    .complaintNumber
+                    .toString(),
               ),
-            )
-                : Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(8.sp),
-                  child: SharedAppbar(
-                    text: widget.replyOpenComplian.complaintBasicInfo!
-                        .complaintNumber
-                        .toString(),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    controller: _scrollController, // استخدام التحكم في التمرير
-                    reverse: false, // جعل القائمة تبدأ من الأسفل
-                    shrinkWrap: true,
+            ),
+            Expanded(
+              child: BlocBuilder<ComplaintsCubit, ComplaintsState>(
+                builder: (context, state) {
+                  if (state is GetRepliesComplaintsLoadedState) {
+                    // التمرير إلى الأسفل عند تحميل الرسائل
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _scrollController.animateTo(
+                        _scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
+                    });
+                  }
+
+                  return (state is GetRepliesComplaintsLoadingState ||
+                      cubit.replaiesComplainModel == null)
+                      ? Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.blue,
+                    ),
+                  )
+                      : ListView.builder(
+                    controller: _scrollController,
                     itemCount: cubit.replaiesComplainModel?.data
-                        ?.complaintReplies?.length,
+                        ?.complaintReplies?.length ??
+                        0,
                     itemBuilder: (context, index) {
                       var reply = cubit.replaiesComplainModel!.data!
                           .complaintReplies![index];
 
-                      // Set imageUrl if there are attachments and the fileUrlPath is not empty
                       String? imageUrl;
                       if (reply.attachments != null &&
                           reply.attachments!.isNotEmpty &&
                           reply.attachments![0].fileUrlPath != null &&
                           reply.attachments![0].fileUrlPath!.isNotEmpty) {
-                        imageUrl = reply.attachments![0]
-                            .fileUrlPath; // Correctly assign the file URL
+                        imageUrl = reply.attachments![0].fileUrlPath;
                       }
-                      return Column(
-                        crossAxisAlignment: reply.byComplainant == "1"
-                            ? CrossAxisAlignment.start
-                            : CrossAxisAlignment.end,
-                        children: [
-                          if (imageUrl != null)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5.0, horizontal: 8.0),
-                              child: Column(
-                                crossAxisAlignment:
-                                reply.byComplainant == "1"
-                                    ? CrossAxisAlignment.end
-                                    : CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    child: Image.network(
-                                      imageUrl,
-                                      width: 150.w,
-                                      height: 150.h,
-                                      fit: BoxFit.cover,
-                                      loadingBuilder: (BuildContext context,
-                                          Widget child,
-                                          ImageChunkEvent?
-                                          loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child; // Display the image once loaded
-                                        return Container(
-                                          width: 150.w,
-                                          height: 150.h,
-                                          color: Colors.grey[300], // اللون البديل أثناء التحميل
-                                          child: Center(
-                                            child:
-                                            CircularProgressIndicator(
-                                              value: loadingProgress
-                                                  .expectedTotalBytes !=
-                                                  null
-                                                  ? loadingProgress
-                                                  .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                      .expectedTotalBytes ??
-                                                      1)
-                                                  : null,
-                                              color: AppColors.blue,
+
+                      bool isImage = imageUrl != null &&
+                          (imageUrl.toLowerCase().endsWith('.png') ||
+                              imageUrl.toLowerCase().endsWith('.jpg') ||
+                              imageUrl.toLowerCase().endsWith('.jpeg') ||
+                              imageUrl.toLowerCase().endsWith('.gif'));
+
+
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+                        child: Align(
+                          alignment: reply.byComplainant == "1"
+                              ? Alignment.centerRight // Align everything to the right if by_complainant is 1
+                              : Alignment.centerLeft, // Otherwise, align to the left
+                          child: Column(
+                            crossAxisAlignment: reply.byComplainant == "1"
+                                ? CrossAxisAlignment.end // Align content to the right
+                                : CrossAxisAlignment.start, // Align content to the left
+                            children: [
+                              // إذا كان هناك ملف أو صورة، قم بعرضها هنا
+                              if (imageUrl != null)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      // Open the URL when the link is clicked
+                                      if (await canLaunchUrl(Uri.parse(imageUrl!))) {
+                                        await launchUrl(Uri.parse(imageUrl), mode: LaunchMode.externalApplication);
+                                      } else {
+                                        throw 'Could not launch $imageUrl';
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12.w),
+                                        color: AppColors.baseGrayColor,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(12.w),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.file_download, color: AppColors.blue, size: 24.w),
+                                            SizedBox(width: 5.w),
+                                            Text(
+                                              "upload".tr(), // Display "upload"
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                color: AppColors.blue,
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                      errorBuilder: (BuildContext context,
-                                          Object exception,
-                                          StackTrace? stackTrace) {
-                                        return Container(
-                                          width: 150.w,
-                                          height: 150.h,
-                                          color: Colors.grey[300],
-                                          child: Center(
-                                            child: Icon(Icons.error,
-                                                color: Colors.red), // عرض رمز خطأ عند الفشل
-                                          ),
-                                        );
-                                      },
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  SizedBox(height: 5.sp),
-                                ],
-                              ),
-                            ),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5.0, horizontal: 8.0),
-                            decoration: BoxDecoration(
-                              color: reply.byComplainant == "1"
-                                  ? Colors.grey[300]
-                                  : Colors.blue,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  reply.content ?? '',
-                                  style: TextStyle(
+                                ),
+
+                              // عرض النص، إذا وجد
+                              if (reply.content != null && reply.content!.isNotEmpty)
+                                Container(
+                                  padding: EdgeInsets.all(12.w),
+                                  decoration: BoxDecoration(
                                     color: reply.byComplainant == "1"
-                                        ? Colors.black
-                                        : Colors.white,
+                                        ? AppColors.blue // Blue background for user messages
+                                        : Colors.grey[300], // Grey background for others
+                                    borderRadius: BorderRadius.circular(12.w),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: reply.byComplainant == "1"
+                                        ? CrossAxisAlignment.end // Align text to the right
+                                        : CrossAxisAlignment.start, // Align text to the left for others
+                                    children: [
+                                      Text(
+                                        reply.content ?? '',
+                                        style: TextStyle(
+                                          color: reply.byComplainant == "1"
+                                              ? Colors.white // White text for user messages
+                                              : Colors.black, // Black text for other messages
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5.h),
+                                      Text(
+                                        reply.dateOfReply ?? '',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 10.sp,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(height: 5.sp),
-                                Text(
-                                  reply.dateOfReply ?? '',
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 10.sp),
-                                ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       );
+
+
                     },
-                  ),
-                ),
-                Container(
+                  );
+                },
+              ),
+            ),
+            // Add the message input field container here inside BlocBuilder
+            BlocBuilder<ComplaintsCubit, ComplaintsState>(
+              builder: (context, state) {
+                return Container(
                   height: 50.0.h,
                   padding: EdgeInsets.symmetric(horizontal: 8.0.sp),
                   decoration: BoxDecoration(
@@ -252,6 +251,17 @@ class _OpenChatComplainScreenState extends State<OpenChatComplainScreen> {
                         onTap: () {
                           cubit.pickLogoImage();
                         },
+                        child: Icon(
+                          Icons.photo,
+                          color: AppColors.gray,
+                          size: 24.sp,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      GestureDetector(
+                        onTap: () {
+                          cubit.pickFile();
+                        },
                         child: SvgPicture.asset(
                           ImageAssets.uploadChatIcon,
                           width: 24.sp,
@@ -261,10 +271,10 @@ class _OpenChatComplainScreenState extends State<OpenChatComplainScreen> {
                       ),
                     ],
                   ),
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

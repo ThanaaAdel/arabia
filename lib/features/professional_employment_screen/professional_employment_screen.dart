@@ -90,6 +90,7 @@ class _ProfessionalEmploymentScreenState extends State<ProfessionalEmploymentScr
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                         ProfessionalEmploymentRequestDetailsScreen(
+                                          inProgress: item.statusClient == "in_progress" ? true : false,
                                       isArchive: item.statusClient == "archived" ? true : false,
                                       item:
                                     cubit.professionalEmploymentModel!.data!.items![index],

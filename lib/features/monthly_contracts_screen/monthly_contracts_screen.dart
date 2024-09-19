@@ -89,6 +89,7 @@ class _MonthlyContractsScreenState extends State<MonthlyContractsScreen> {
                                   item: item,
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => MonthlyContractRequestDetailsScreen(
+                                      inProgress: item.statusClient == "in_progress" ? true : false,
                                       isArchive: item.statusClient == "archived" ? true : false,
                                       item:
                                     cubit.monthlyContractModel!.data!.items![index],

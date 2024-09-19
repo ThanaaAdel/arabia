@@ -9,10 +9,11 @@ import '../../../core/widgets/appbar_widget_with_screens.dart';
 import 'package:arabia/core/models/transfer_service_model.dart';
 
 class TransferServiceRequestDetailsScreen extends StatelessWidget {
-  const TransferServiceRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive});
+  const TransferServiceRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive, required this.inProgress});
  final Item item;
  final Function()? onPressed;
   final bool isArchive;
+  final bool inProgress;
   @override
   String formatDate(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
@@ -91,27 +92,35 @@ class TransferServiceRequestDetailsScreen extends StatelessWidget {
                             "date".tr(),
                             formatDate(item.createdAt.toString() ?? ''),
                           ),
-
-
                           _buildDetailRow(
                             context,
-                            "nationality".tr(),
+                            "current_employment_country".tr(),
                             item.currentWorkerCountry?.name.toString() ?? '',
                           ),
                           _buildDetailRow(
                             context,
-                            "occupation".tr(),
+                            "current_employment_entity".tr(),
                             item.currentWorkerOccupation?.name.toString() ??
                                 '',
                           ),
-
                           _buildDetailRow(
                             context,
-                            "employment_entity".tr(),
+                            "current_employment_nationality".tr(),
                             item.currentWorkerReligion?.title.toString() ??
                                 '',
                           ),
-
+                          _buildDetailRow(
+                            context,
+                            "transfer_type".tr(),
+                            item.transferType?.title ??
+                                '',
+                          ),
+                          _buildDetailRow(
+                            context,
+                            "order_status".tr(),
+                            item.statusDisplay?.title ??
+                                '',
+                          ),
                         ],
                       ),
                     ),
@@ -120,7 +129,7 @@ class TransferServiceRequestDetailsScreen extends StatelessWidget {
 
                       ),
                     ),
-                    isArchive == true?
+                    isArchive == true || inProgress == true?
                         const SizedBox():
                     ButtonWidget(textButton: "archiving".tr(), onPressed:onPressed),
                   ],

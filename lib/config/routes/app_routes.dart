@@ -83,219 +83,158 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (context) => const SplashScreen(),
         );
-        case Routes.loginRoute:
-        return PageTransition(
-          child: const LoginScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+      case Routes.loginRoute:
+        return MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
         );
 
       case Routes.verificationRoute:
-        return PageTransition(
-          child: const VerificationScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => const VerificationScreen(),
         );
       case Routes.completeTheRegistrationDataRoute:
-        return PageTransition(
-          child: const CompleteTheRegistrationDataScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => const CompleteTheRegistrationDataScreen(),
         );
       case Routes.homeRoute:
-        return PageTransition(
-          child: const HomeScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
         );
       case Routes.contractHoursRoute:
         final loginWithClientIdModel = settings.arguments as LoginWithClientIdModel;
-        return PageTransition(
-          child:  InsertContractHourScreen(loginWithClientIdModel: loginWithClientIdModel,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => InsertContractHourScreen(
+            loginWithClientIdModel: loginWithClientIdModel,
+          ),
         );
       case Routes.contractMonthRoute:
         final loginWithClientIdModel = settings.arguments as LoginWithClientIdModel;
-
-        return PageTransition(
-          child:  InsertContractMonthScreen(loginWithClientIdModel: loginWithClientIdModel,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => InsertContractMonthScreen(
+            loginWithClientIdModel: loginWithClientIdModel,
+          ),
         );
       case Routes.insertProfessionalEmploymentRoute:
         final clientId = settings.arguments as String;
-        return PageTransition(
-          child:  InsertProfessionalEmploymentScreen(
+        return MaterialPageRoute(
+          builder: (context) => InsertProfessionalEmploymentScreen(
             clientId: clientId,
           ),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
         );
       case Routes.notificationRoute:
-        return PageTransition(
-          child: const NotificationScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => const NotificationScreen(),
         );
       case Routes.settingRoute:
-        return PageTransition(
-          child: const SettingScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => const SettingScreen(),
         );
       case Routes.offersRoute:
-        return PageTransition(
-          child: const OfferScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => const OfferScreen(),
         );
       case Routes.offerDetailsRoute:
         final offersData = settings.arguments as OffersData;
-        return PageTransition(
-          child:  OfferDetailsScreen(offersData: offersData,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => OfferDetailsScreen(
+            offersData: offersData,
+          ),
         );
       case Routes.complaintsRoute:
-        return PageTransition(
-          child: const ComplaintsScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => const ComplaintsScreen(),
         );
       case Routes.openChatComplaintsRoute:
         final replyOpenComplian = settings.arguments as Reply;
-        return PageTransition(
-          child:  OpenChatComplainScreen(replyOpenComplian: replyOpenComplian),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => OpenChatComplainScreen(
+            replyOpenComplian: replyOpenComplian,
+          ),
         );
-       case Routes.newComplaintRoute:
-        return PageTransition(
-          child: const NewComplaintScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+      case Routes.newComplaintRoute:
+        return MaterialPageRoute(
+          builder: (context) => const NewComplaintScreen(),
         );
-        case Routes.contractsRoute:
-        return PageTransition(
-          child: const ContractsScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
-        );  case Routes.followUpOnOrdersRoute:
-        return PageTransition(
-          child: const FollowUpOnOrdersScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
-        );case Routes.hourlyContractsRoute:
-        return PageTransition(
-          child: const HourlyContractsScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
-        );case Routes.monthlyContractsRoute:
-        return PageTransition(
-          child: const MonthlyContractsScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
-        );case Routes.mediationContractsRoute:
-        return PageTransition(
-          child: const MediationContractsScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+      case Routes.contractsRoute:
+        return MaterialPageRoute(
+          builder: (context) => const ContractsScreen(),
         );
-        case Routes.professionalEmploymentRoute:
-        return PageTransition(
-          child:  const ProfessionalEmploymentScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
-        );case Routes.transferServiceRoute:
-        return PageTransition(
-          child:  const TransferServiceScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+      case Routes.followUpOnOrdersRoute:
+        return MaterialPageRoute(
+          builder: (context) => const FollowUpOnOrdersScreen(),
         );
-        case Routes.enterDataProfessionalEmploymentRoute:
-          final occId = settings.arguments as String;
-
-          return PageTransition(
-          child:  EnterDataProfessionalEmploymentScreen(
+      case Routes.hourlyContractsRoute:
+        return MaterialPageRoute(
+          builder: (context) => const HourlyContractsScreen(),
+        );
+      case Routes.monthlyContractsRoute:
+        return MaterialPageRoute(
+          builder: (context) => const MonthlyContractsScreen(),
+        );
+      case Routes.mediationContractsRoute:
+        return MaterialPageRoute(
+          builder: (context) => const MediationContractsScreen(),
+        );
+      case Routes.professionalEmploymentRoute:
+        return MaterialPageRoute(
+          builder: (context) => const ProfessionalEmploymentScreen(),
+        );
+      case Routes.transferServiceRoute:
+        return MaterialPageRoute(
+          builder: (context) => const TransferServiceScreen(),
+        );
+      case Routes.enterDataProfessionalEmploymentRoute:
+        final occId = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (context) => EnterDataProfessionalEmploymentScreen(
             accId: occId,
           ),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
-        );case Routes.insertServiceMoveRoute:
-      final clientId = settings.arguments as String;
-        return PageTransition(
-          child:  InsertTransferServiceScreen(clientId: clientId,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
-        );case Routes.mediationRoute:
-        return PageTransition(
-          child: const InsertMediationScreen(),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        );
+      case Routes.insertServiceMoveRoute:
+        final clientId = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (context) => InsertTransferServiceScreen(
+            clientId: clientId,
+          ),
+        );
+      case Routes.mediationRoute:
+        return MaterialPageRoute(
+          builder: (context) => const InsertMediationScreen(),
         );
       case Routes.choosePackageFromContractHourRoute:
         final args = settings.arguments as Map<String, dynamic>;
         final Package package = args['package'];
         final InsertContractHourCubit cubit = args['cubit'];
-        return PageTransition(
-          child:  ChoosePackageFromContractHourScreen(package: package,cubit: cubit,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => ChoosePackageFromContractHourScreen(
+            package: package,
+            cubit: cubit,
+          ),
         );
       case Routes.choosePackageFromContractMonthRoute:
         final args = settings.arguments as Map<String, dynamic>;
         final MonthlyPackage package = args['package'];
         final InsertContractMonthCubit cubit = args['cubit'];
-        return PageTransition(
-          child:   ChoosePackageFromContractMonthScreen(package: package,cubit: cubit,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => ChoosePackageFromContractMonthScreen(
+            package: package,
+            cubit: cubit,
+          ),
         );
-        case Routes.totalDataFromHourContactRoute:
+      case Routes.totalDataFromHourContactRoute:
         final insertHourlyDataModel = settings.arguments as InsertHourlyDataModel;
-        return PageTransition(
-          child:  TotalDataFromHourContactScreen(insertHourlyDataModel: insertHourlyDataModel,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => TotalDataFromHourContactScreen(
+            insertHourlyDataModel: insertHourlyDataModel,
+          ),
         );
       case Routes.totalDataFromMonthContactRoute:
         final insertMonthlyDataModel = settings.arguments as InsertMonthlyDataModel;
-        return PageTransition(
-          child:  TotalDataFromMonthContactScreen(insertMonthlyDataModel: insertMonthlyDataModel,),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 800),
+        return MaterialPageRoute(
+          builder: (context) => TotalDataFromMonthContactScreen(
+            insertMonthlyDataModel: insertMonthlyDataModel,
+          ),
         );
-
-
       default:
         return undefinedRoute();
     }
@@ -311,3 +250,4 @@ class AppRoutes {
     );
   }
 }
+

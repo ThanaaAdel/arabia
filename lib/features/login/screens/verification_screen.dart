@@ -9,6 +9,7 @@ import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:arabia/core/utils/app_colors.dart';
 import '../../../core/utils/style_text.dart';
+
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen({super.key});
 
@@ -17,18 +18,41 @@ class VerificationScreen extends StatefulWidget {
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     context.read<LoginCubit>().startCountdown(); // Start the timer when the screen loads
+    //
+    // // التمرير التلقائي عند تغيير الحالة
+    // context.read<LoginCubit>().stream.listen((state) {
+    //   if (state is VerificationLoadingState ||
+    //       state is CompleteRegisterLoadingState ||
+    //       state is LoginWithClientIdLoadingState ||
+    //       state is VerificationTimerRunning) {
+    //     // تمرير الصفحة لأسفل عند وجود حالة تحميل
+    //     WidgetsBinding.instance.addPostFrameCallback((_) {
+    //       if (_scrollController.hasClients) {
+    //         _scrollController.animateTo(
+    //           _scrollController.position.maxScrollExtent,
+    //           duration: const Duration(milliseconds: 300),
+    //           curve: Curves.easeOut,
+    //         );
+    //       }
+    //     });
+    //   }
+    // });
   }
+
+  @override
   Widget build(BuildContext context) {
     var cubit = context.read<LoginCubit>();
     return WillPopScope(
-        onWillPop: () async {
-      SystemNavigator.pop();
-      return false;
-    },
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return false;
+      },
       child: SafeArea(
         child: Scaffold(
           backgroundColor: AppColors.white,
@@ -36,8 +60,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: SingleChildScrollView(
+                controller: _scrollController,
                 child: Padding(
-                  padding:  EdgeInsets.all(20.0.sp),
+                  padding: EdgeInsets.all(20.0.sp),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -47,8 +72,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              "verification_code".tr(),
-                              style: TextStyles.size22FontWidgetBoldBlue.copyWith(fontSize: 20.sp)
+                            "verification_code".tr(),
+                            style: TextStyles.size22FontWidgetBoldBlue
+                                .copyWith(fontSize: 20.sp),
                           ),
                         ],
                       ),
@@ -77,8 +103,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
       children: [
         SizedBox(
           width: 270.w,
-          child: Text("text_verification_screen".tr(),
-              style: TextStyles.size16FontWidgetRegularBlack),
+          child: Text(
+            "text_verification_screen".tr(),
+            style: TextStyles.size16FontWidgetRegularBlack,
+          ),
         ),
       ],
     );
@@ -94,7 +122,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       fieldHeight: 52.h,
       fieldWidth: 45.w,
       borderColor: AppColors.white,
-      borderRadius: BorderRadius.zero, // Set to zero
+      borderRadius: BorderRadius.zero,
       keyboardType: TextInputType.number,
       textStyle: TextStyle(
         fontSize: 24.sp,
@@ -108,31 +136,35 @@ class _VerificationScreenState extends State<VerificationScreen> {
   Widget _buildVerifyButton(
       BuildContext context, LoginCubit cubit, LoginState state) {
     return SizedBox(
-        width: double.infinity,
-        child:  ElevatedButton(
-                onPressed: () {
-                  cubit.verificationData(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 10.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                child: (state is VerificationLoadingState)
-                    ?  Center(
-                  child: CircularProgressIndicator(color: AppColors.white),
-                )
-                    :Text(
-                  "verify".tr(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ));
+      width: double.infinity,
+      child: (state is VerificationLoadingState ||
+          state is CompleteRegisterLoadingState ||
+          state is LoginWithClientIdLoadingState)
+          ? Center(
+        child: CircularProgressIndicator(color: AppColors.blue),
+      )
+          : ElevatedButton(
+        onPressed: () {
+          context.read<LoginCubit>().endTimer();
+          cubit.verificationData(context);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.blue,
+          padding: EdgeInsets.symmetric(vertical: 10.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        child: Text(
+          "verify".tr(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildTimerAndResend(BuildContext context) {
@@ -172,8 +204,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   disabledBackgroundColor: AppColors.orange.withOpacity(0.3),
                   backgroundColor: isResendAvailable
                       ? AppColors.orange
-                      : AppColors.orange.withOpacity(
-                      0.5), // Use reduced opacity when not available
+                      : AppColors.orange.withOpacity(0.5),
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -182,9 +213,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 child: Text(
                   "resend_code".tr(),
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

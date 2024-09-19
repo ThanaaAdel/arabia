@@ -1,4 +1,6 @@
 
+
+
 import 'package:arabia/core/models/aechive_transfer_service_model.dart';
 import 'package:arabia/core/models/hourly_contract_model.dart';
 import 'package:arabia/core/models/mediation_contract_archive_model.dart';
@@ -13,6 +15,7 @@ import '../error/exceptions.dart';
 import '../error/failures.dart';
 import '../models/GetTransferServiceTypeModel.dart';
 import '../models/add_complain_model.dart';
+import '../models/archive_contacts_model.dart';
 import '../models/archive_professional_employment_model.dart';
 import '../models/closed_complain_model.dart';
 import '../models/complete_register_model.dart';
@@ -609,6 +612,37 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
+  ///////////////////  Contract archive data ///////////////////
+  Future<Either<Failure, ContractArchiveModel>>
+ archiveContractApi({
+    required String fileId,
+  }) async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+
+    try {
+
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'apiToken': "x93mY",
+          'action': "archiveClientContractAttachment",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'item_id':fileId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      return Right(ContractArchiveModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
   /////////////////// mediation Contract data ///////////////////
   Future<Either<Failure, MediationContractModel>>
   mediationContractApi({
@@ -748,6 +782,7 @@ class ServiceApi {
     required String occId,
     required String experince,
     required String visaNo,
+    required String religion
   }) async {
     LoginWithClientIdModel? loginWithSessionModel =
         await Preferences.instance.getUserModelWithSession();
@@ -765,6 +800,7 @@ class ServiceApi {
           'occ_id': occId,
           'experience': experince,
           'visa_no': visaNo,
+          'religion':religion,
           'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
         },
         formDataIsEnabled: true,
@@ -780,7 +816,9 @@ class ServiceApi {
   }
   /////////////////// insert profissional employment data ///////////////////
   Future<Either<Failure, ContractModel>>
-  contractApi() async {
+  contractApi({
+    required String status,
+}) async {
     LoginWithClientIdModel? loginWithSessionModel =
     await Preferences.instance.getUserModelWithSession();
 
@@ -794,6 +832,7 @@ class ServiceApi {
           'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
           'client_id': loginWithSessionModel?.data?.clientId,
           'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+          "status":status,
         },
         formDataIsEnabled: true,
         options: Options(
@@ -1004,10 +1043,10 @@ class ServiceApi {
     required String serviceTimeFrom,
     required String serviceTimeTo,
     required List<String> daysToServe, // List of days to serve
-    required int costWithoutTax,
-    required int costTax,
-    required int costIncludeTax,
-    required int costTaxRatio,
+    required double costWithoutTax,
+    required double costTax,
+    required double costIncludeTax,
+    required double costTaxRatio,
     required String countOfWorkers,
     required int visitPackageId,
   }) async {

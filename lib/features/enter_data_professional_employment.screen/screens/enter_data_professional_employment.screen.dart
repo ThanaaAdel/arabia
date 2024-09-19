@@ -30,6 +30,7 @@ class _EnterDataProfessionalEmploymentScreenState
     super.initState();
     context.read<EnterDataProfissionalEmployementCubit>().getExperiencesData();
     context.read<EnterDataProfissionalEmployementCubit>().getCountryData();
+    context.read<EnterDataProfissionalEmployementCubit>().getReligionData();
   }
 
   @override
@@ -93,9 +94,29 @@ class _EnterDataProfessionalEmploymentScreenState
                         items: cubit.experanceModel?.data?.map((e) => e.name!).toList() ?? [],
                       ),
                       SizedBox(height: 20.h),
+                      CustomDropdownWidget(
+                        label: "employment_entity".tr(),
+                        onChanged: (value) {
+                          setState(() {
+                            cubit.religionName = value;
+                            print("religionName: ${cubit.religionName}");
+                          });
+                        },
+                        items: cubit.religionsModel?.data?.map((e) => e.name!).toList() ?? [],
+                      ),
+                      SizedBox(height: 20.h),
                       SharedTextFiled(
                         keyboardType: TextInputType.number,
                         hintText: "visa_number".tr(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'please_enter_visa_number'.tr();
+                          }
+                          if (value.length != 10) {
+                            return 'visa_number_must_be_10_digits'.tr(); // رسالة الخطأ إذا لم يكن الطول 10 أرقام
+                          }
+                          return null; // إذا كان التحقق صحيحاً، لا يوجد خطأ
+                        },
                         onSaved: (value) {
                           visaNumber = value;
                         },
@@ -115,7 +136,6 @@ class _EnterDataProfessionalEmploymentScreenState
                                 cubit.formKey.currentState?.save();
                                 cubit.insertProfissionalEmploymentData(
                                   visaNo: visaNumber ?? '',
-
                                   countryId: selectedNationalityId?.toString() ?? '',
                                   context: context,
                                   occId: widget.accId,

@@ -1,3 +1,12 @@
+// To parse this JSON data, do
+//
+//     final insertProfissionalEmployementModel = insertProfissionalEmployementModelFromJson(jsonString);
+
+import 'dart:convert';
+
+InsertProfissionalEmployementModel insertProfissionalEmployementModelFromJson(String str) => InsertProfissionalEmployementModel.fromJson(json.decode(str));
+
+String insertProfissionalEmployementModelToJson(InsertProfissionalEmployementModel data) => json.encode(data.toJson());
 
 class InsertProfissionalEmployementModel {
   int? code;
@@ -32,15 +41,17 @@ class Data {
   String? countryId;
   String? occId;
   Experience? experience;
+  Experience? religion;
   String? visaNo;
   String? costWithoutTax;
   String? costTax;
   String? costTaxRatio;
   String? costIncludeTax;
   String? statusClient;
+  DateTime? createdAt;
   Occupation? occupation;
   Country? country;
-  StatusDisplay? statusDisplay;
+  Experience? statusDisplay;
 
   Data({
     this.id,
@@ -51,12 +62,14 @@ class Data {
     this.countryId,
     this.occId,
     this.experience,
+    this.religion,
     this.visaNo,
     this.costWithoutTax,
     this.costTax,
     this.costTaxRatio,
     this.costIncludeTax,
     this.statusClient,
+    this.createdAt,
     this.occupation,
     this.country,
     this.statusDisplay,
@@ -71,15 +84,17 @@ class Data {
     countryId: json["country_id"],
     occId: json["occ_id"],
     experience: json["experience"] == null ? null : Experience.fromJson(json["experience"]),
+    religion: json["religion"] == null ? null : Experience.fromJson(json["religion"]),
     visaNo: json["visa_no"],
     costWithoutTax: json["cost_without_tax"],
     costTax: json["cost_tax"],
     costTaxRatio: json["cost_tax_ratio"],
     costIncludeTax: json["cost_include_tax"],
     statusClient: json["status_client"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     occupation: json["occupation"] == null ? null : Occupation.fromJson(json["occupation"]),
     country: json["country"] == null ? null : Country.fromJson(json["country"]),
-    statusDisplay: json["status_display"] == null ? null : StatusDisplay.fromJson(json["status_display"]),
+    statusDisplay: json["status_display"] == null ? null : Experience.fromJson(json["status_display"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -91,12 +106,14 @@ class Data {
     "country_id": countryId,
     "occ_id": occId,
     "experience": experience?.toJson(),
+    "religion": religion?.toJson(),
     "visa_no": visaNo,
     "cost_without_tax": costWithoutTax,
     "cost_tax": costTax,
     "cost_tax_ratio": costTaxRatio,
     "cost_include_tax": costIncludeTax,
     "status_client": statusClient,
+    "created_at": createdAt?.toIso8601String(),
     "occupation": occupation?.toJson(),
     "country": country?.toJson(),
     "status_display": statusDisplay?.toJson(),
@@ -146,25 +163,7 @@ class Experience {
     "title": title,
   };
 }
-class StatusDisplay {
-  String? id;
-  String? title;
 
-  StatusDisplay({
-    this.id,
-    this.title,
-  });
-
-  factory StatusDisplay.fromJson(Map<String, dynamic> json) => StatusDisplay(
-    id: json["id"],
-    title: json["title"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "title": title,
-  };
-}
 class Occupation {
   String? id;
   String? name;

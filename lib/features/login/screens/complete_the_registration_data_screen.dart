@@ -15,14 +15,34 @@ class CompleteTheRegistrationDataScreen extends StatefulWidget {
   const CompleteTheRegistrationDataScreen({super.key});
 
   @override
-  State<CompleteTheRegistrationDataScreen> createState() => _CompleteTheRegistrationDataScreenState();
+  State<CompleteTheRegistrationDataScreen> createState() =>
+      _CompleteTheRegistrationDataScreenState();
 }
 
-class _CompleteTheRegistrationDataScreenState extends State<CompleteTheRegistrationDataScreen> {
+class _CompleteTheRegistrationDataScreenState
+    extends State<CompleteTheRegistrationDataScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
-    context.read<LoginCubit>().getHouseAccommodationTypeData(context);
     super.initState();
+    context.read<LoginCubit>().getHouseAccommodationTypeData(context);
+
+    context.read<LoginCubit>().stream.listen((state) {
+      if (state is CompleteRegisterLoadingState ||
+          state is LoginWithClientIdLoadingState ||
+          state is VerificationTimerRunning) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_scrollController.hasClients) {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          }
+        });
+      }
+    });
   }
 
   @override
@@ -38,16 +58,16 @@ class _CompleteTheRegistrationDataScreenState extends State<CompleteTheRegistrat
               return Form(
                 key: cubit.formKeyCompleteRegister,
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Container(
-                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
                     child: Column(
                       children: [
                         SharedAppbar(
                           text: "complete_the_registration_data".tr(),
                         ),
-                        SizedBox(
-                          height: 50.h,
-                        ),
+                        SizedBox(height: 50.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -60,25 +80,19 @@ class _CompleteTheRegistrationDataScreenState extends State<CompleteTheRegistrat
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
+                        SizedBox(height: 20.h),
                         SharedTextFiled(
                           controller: cubit.firstNameController,
                           onSaved: (value) {},
                           hintText: "first_name".tr(),
                         ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
+                        SizedBox(height: 20.h),
                         SharedTextFiled(
                           controller: cubit.lastNameController,
                           onSaved: (value) {},
                           hintText: "last_name".tr(),
                         ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
+                        SizedBox(height: 20.h),
                         CustomDropdownWidget(
                           label: "type_of_stay".tr(),
                           onChanged: (p0) {
@@ -91,9 +105,7 @@ class _CompleteTheRegistrationDataScreenState extends State<CompleteTheRegistrat
                               .toList() ??
                               [],
                         ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
+                        SizedBox(height: 20.h),
                         CustomDropdownWidget(
                           label: "number_of_children".tr(),
                           onChanged: (number) {
@@ -101,21 +113,30 @@ class _CompleteTheRegistrationDataScreenState extends State<CompleteTheRegistrat
                           },
                           items: const ["5", "4", "3", "2", "1"],
                         ),
-                         SizedBox(
-                          height: 120.h,
-                        ),
-                        (state is CompleteRegisterLoadingState || state is LoginWithClientIdLoadingState )
-                            ? CircularProgressIndicator(
+                        SizedBox(height: 120.h),
+                        if (state is CompleteRegisterLoadingState ||
+                            state is LoginWithClientIdLoadingState ||
+                            state is VerificationTimerRunning) ...[
+                          CircularProgressIndicator(
                               backgroundColor: AppColors.blue,
-                                color: AppColors.white)
-                            : ButtonWidget(
-                          textButton: "save".tr(),
-                          onPressed: () {
-                            if (cubit.formKeyCompleteRegister.currentState!.validate()) {
-                              cubit.completeRegisterData(context);
-                            }
-                          },
-                        ),
+                              color: AppColors.white),
+                          SizedBox(height: 20.h),
+                          Text(
+                            'loading_data'.tr(), // إضافة رسالة نصية للمستخدم أثناء التحميل
+                            style: TextStyle(
+                                color: AppColors.black, fontSize: 16.sp),
+                          ),
+                        ] else ...[
+                          ButtonWidget(
+                            textButton: "save".tr(),
+                            onPressed: () {
+                              if (cubit.formKeyCompleteRegister.currentState!
+                                  .validate()) {
+                                cubit.completeRegisterData(context);
+                              }
+                            },
+                          ),
+                        ],
                       ],
                     ),
                   ),

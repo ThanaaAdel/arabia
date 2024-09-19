@@ -94,8 +94,16 @@ class Item {
     clientIdentityNo: json["client_identity_no"],
     countryId: json["country_id"],
     occId: json["occ_id"],
-    experience: json["experience"] == null ? null : Experience.fromJson(json["experience"]),
-    religion: json["religion"] == null ? null : Religion.fromJson(json["religion"]),
+    experience: json["experience"] is String
+        ? Experience(id: null, title: json["experience"])  // treat as string
+        : json["experience"] == null
+        ? null
+        : Experience.fromJson(json["experience"]),
+    religion: json["religion"] is String
+        ? Religion(id: null, title: json["religion"])  // treat as string
+        : json["religion"] == null
+        ? null
+        : Religion.fromJson(json["religion"]),
     visaNo: json["visa_no"],
     costWithoutTax: json["cost_without_tax"],
     costTax: json["cost_tax"],

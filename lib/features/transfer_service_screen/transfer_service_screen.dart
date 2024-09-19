@@ -89,6 +89,7 @@ class _TransferServiceScreenState extends State<TransferServiceScreen> {
                                   item: item,
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => TransferServiceRequestDetailsScreen(
+                                      inProgress: item.statusClient == "in_progress" ? true : false,
                                       isArchive: item.statusClient == "archived" ? true : false,
                                       item:
                                     cubit.transferServiceModel!.data!.items![index],

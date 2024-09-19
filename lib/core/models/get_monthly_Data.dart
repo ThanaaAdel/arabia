@@ -85,7 +85,7 @@ class AvailableCountry {
   String? id;
 
   String? name;
-  InternationalCode? internationalCode;
+  String? internationalCode;
 
   AvailableCountry({
     this.id,
@@ -96,43 +96,19 @@ class AvailableCountry {
   factory AvailableCountry.fromJson(Map<String, dynamic> json) => AvailableCountry(
     id: json["id"],
     name:json["name"],
-    internationalCode: internationalCodeValues.map[json["international_code"]]!,
+    internationalCode: json["international_code"]!,
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": nameValues.reverse[name],
-    "international_code": internationalCodeValues.reverse[internationalCode],
+    "name": name,
+    "international_code": internationalCode,
   };
 }
 
-enum InternationalCode {
-  BD,
-  IN,
-  LK,
-  PH
-}
 
-final internationalCodeValues = EnumValues({
-  "bd": InternationalCode.BD,
-  "in": InternationalCode.IN,
-  "lk": InternationalCode.LK,
-  "ph": InternationalCode.PH
-});
 
-enum Name {
-  EMPTY,
-  FLUFFY,
-  NAME,
-  PURPLE
-}
 
-final nameValues = EnumValues({
-  "سريلانكا": Name.EMPTY,
-  "بنجلاديش": Name.FLUFFY,
-  "الفلبين": Name.NAME,
-  "الهند": Name.PURPLE
-});
 
 class EnumValues<T> {
   Map<String, T> map;

@@ -43,7 +43,7 @@ class Data {
   DateTime? serviceDateTo;
   String? serviceDurationPerCalculationMonths;
   String? serviceDurationPerSeconds;
-  dynamic? isWantTransferService;
+  bool? isWantTransferService;
   String? countOfWorkers;
   String? countryId;
   String? occId;
@@ -52,8 +52,10 @@ class Data {
   String? costTaxRatio;
   String? costIncludeTax;
   String? statusClient;
+  DateTime? createdAt;
   MonthlyRentalMobilePackage? occupation;
   Country? country;
+  StatusDisplay? statusDisplay;
   MonthlyRentalMobilePackage? monthlyRentalMobilePackage;
 
   Data({
@@ -76,8 +78,10 @@ class Data {
     this.costTaxRatio,
     this.costIncludeTax,
     this.statusClient,
+    this.createdAt,
     this.occupation,
     this.country,
+    this.statusDisplay,
     this.monthlyRentalMobilePackage,
   });
 
@@ -101,8 +105,10 @@ class Data {
     costTaxRatio: json["cost_tax_ratio"],
     costIncludeTax: json["cost_include_tax"],
     statusClient: json["status_client"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     occupation: json["occupation"] == null ? null : MonthlyRentalMobilePackage.fromJson(json["occupation"]),
     country: json["country"] == null ? null : Country.fromJson(json["country"]),
+    statusDisplay: json["status_display"] == null ? null : StatusDisplay.fromJson(json["status_display"]),
     monthlyRentalMobilePackage: json["monthly_rental_mobile_package"] == null ? null : MonthlyRentalMobilePackage.fromJson(json["monthly_rental_mobile_package"]),
   );
 
@@ -126,8 +132,10 @@ class Data {
     "cost_tax_ratio": costTaxRatio,
     "cost_include_tax": costIncludeTax,
     "status_client": statusClient,
+    "created_at": createdAt?.toIso8601String(),
     "occupation": occupation?.toJson(),
     "country": country?.toJson(),
+    "status_display": statusDisplay?.toJson(),
     "monthly_rental_mobile_package": monthlyRentalMobilePackage?.toJson(),
   };
 }
@@ -173,5 +181,25 @@ class MonthlyRentalMobilePackage {
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
+  };
+}
+
+class StatusDisplay {
+  String? id;
+  String? title;
+
+  StatusDisplay({
+    this.id,
+    this.title,
+  });
+
+  factory StatusDisplay.fromJson(Map<String, dynamic> json) => StatusDisplay(
+    id: json["id"],
+    title: json["title"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "title": title,
   };
 }

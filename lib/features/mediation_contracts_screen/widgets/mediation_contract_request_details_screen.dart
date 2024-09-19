@@ -9,10 +9,11 @@ import '../../../core/models/mediation_contract_model.dart';
 import '../../../core/widgets/appbar_widget_with_screens.dart';
 
 class MediationContractRequestDetailsScreen extends StatelessWidget {
-  const MediationContractRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive});
+  const MediationContractRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive, required this.inProgress});
  final Item item;
  final Function()? onPressed;
   final bool isArchive;
+  final bool inProgress ;
   @override
   String formatDate(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
@@ -125,7 +126,7 @@ class MediationContractRequestDetailsScreen extends StatelessWidget {
 
                       ),
                     ),
-                    isArchive == true?
+                    isArchive == true || inProgress == true?
                         const SizedBox():
                     ButtonWidget(textButton: "archiving".tr(), onPressed:onPressed),
                   ],

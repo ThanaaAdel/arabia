@@ -41,10 +41,42 @@ class LoginCubit extends Cubit<LoginState> {
   Timer? _timer;
   int _timerSeconds = 600;
 
+  void verificationData(BuildContext context) async {
+    emit(VerificationLoadingState());
+    final result = await api.verificationApi(otpController.text);
+    result.fold(
+          (failure) {
+        emit(VerificationErrorState('Error loading data: $failure'));
+      },
+          (r) {
+        if (r.code == 200) {
+          verificationModel = r;
+          _timer?.cancel(); // تأكد من إيقاف المؤقت عند النجاح
+
+          if (r.data!.code == 303) {
+            loginWithClientIdData(
+              context,
+              r.data!.data!.clientId.toString(),
+            );
+          } else {
+            Navigator.pushNamed(context, Routes.completeTheRegistrationDataRoute);
+          }
+
+          successGetBar("verification_success".tr());
+        } else {
+          errorGetBar(r.msg ?? '');
+        }
+        emit(VerificationLoadedState());
+      },
+    );
+  }
+
   void startCountdown() {
+    if (_timer != null && _timer!.isActive) return; // تجنب بدء مؤقت جديد إذا كان هناك مؤقت قيد التشغيل
+
     emit(VerificationTimerRunning(_formatTimerText(_timerSeconds)));
 
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timerSeconds > 0) {
         _timerSeconds--;
         emit(VerificationTimerRunning(_formatTimerText(_timerSeconds)));
@@ -65,6 +97,13 @@ class LoginCubit extends Cubit<LoginState> {
     final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
     final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
     return "$minutes:$remainingSeconds";
+  }
+
+  // الدالة الجديدة لإنهاء المؤقت
+  void endTimer() {
+    _timer?.cancel(); // إيقاف المؤقت
+    _timerSeconds = 600; // إعادة تعيين المؤقت للعدد الافتراضي من الثواني
+    emit(VerificationResendAvailable()); // تحديث حالة الكيوبت لتمكين إرسال الرمز مرة أخرى
   }
 
   @override
@@ -93,38 +132,6 @@ class LoginCubit extends Cubit<LoginState> {
   selectTypeOfStayValue(String value) {
     selectTypeOfStay = value;
     emit(TypeOfStayLoadedState());
-  }
-
-  void verificationData(BuildContext context) async {
-    emit(VerificationLoadingState());
-    final result = await api.verificationApi(otpController.text);
-    result.fold(
-          (failure) {
-        emit(VerificationErrorState('Error loading data: $failure'));
-      },
-          (r) {
-        if (r.code == 200) {
-          verificationModel = r;
-          _timer?.cancel();
-          startCountdown();
-
-          if (r.data!.code == 303) {
-            loginWithClientIdData(
-              context,
-              r.data!.data!.clientId.toString(),
-            );
-          } else {
-            Navigator.pushNamed(
-                context, Routes.completeTheRegistrationDataRoute);
-          }
-
-          successGetBar("verification_success".tr());
-        } else {
-          errorGetBar(r.msg ?? '');
-        }
-        emit(VerificationLoadedState());
-      },
-    );
   }
 
   void completeRegisterData(BuildContext context) async {

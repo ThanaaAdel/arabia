@@ -90,6 +90,7 @@ class _MediationContractsScreenState extends State<MediationContractsScreen> {
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => MediationContractRequestDetailsScreen(
                                       isArchive: item.statusClient == "archived" ? true : false,
+                                      inProgress: item.statusClient == "in_progress" ? true : false,
                                       item:
                                     cubit.mediationContractModel!.data!.items![index],
                                       onPressed: () {

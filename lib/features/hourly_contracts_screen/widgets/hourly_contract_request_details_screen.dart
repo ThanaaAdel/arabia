@@ -9,10 +9,11 @@ import '../../../core/models/hourly_contract_model.dart';
 import '../../../core/widgets/appbar_widget_with_screens.dart';
 
 class HourlyContractRequestDetailsScreen extends StatelessWidget {
-  const HourlyContractRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive});
+  const HourlyContractRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive, required this.inProgress});
  final Item item;
  final Function()? onPressed;
   final bool isArchive;
+  final bool inProgress;
   @override
   String formatDate(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
@@ -177,7 +178,7 @@ class HourlyContractRequestDetailsScreen extends StatelessWidget {
 
                       ),
                     ),
-                    isArchive == true?
+                    isArchive == true || inProgress == true?
                     const SizedBox():
                     ButtonWidget(textButton: "archiving".tr(), onPressed:onPressed),                  ],
                 ),

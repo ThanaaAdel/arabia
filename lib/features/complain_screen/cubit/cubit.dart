@@ -5,6 +5,7 @@ import 'package:arabia/core/models/closed_complain_model.dart';
 import 'package:arabia/core/models/reply_from_complain.dart';
 import 'package:arabia/core/utils/dialogs.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +40,27 @@ class ComplaintsCubit extends Cubit<ComplaintsState> {
       getClosedComplaints(page: closedCurrentPage);
     }
   }
+  String? selectedFile;
 
+  Future<void> pickFile() async {
+    emit(LoadingUploadImage());
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.any, // Allows picking any file type
+      );
+
+      if (result != null && result.files.single.path != null) {
+        selectedFile = result.files.single.path; // Save the file path
+        emit(LoadedUploadImage());
+      } else {
+        // User canceled the picker
+        emit(ErrorHomeState('No file selected.'));
+      }
+    } on PlatformException catch (e) {
+      print('Error: $e');
+      emit(ErrorHomeState('Error picking file: $e'));
+    }
+  }
   String? selectedImage;
   Future<void> pickLogoImage() async {
     emit(LoadingUploadImage());
@@ -106,46 +127,51 @@ class ComplaintsCubit extends Cubit<ComplaintsState> {
 
 
   addNewComplaint(BuildContext context) async {
-    emit(AddRepliesComplaintsLoadingState()); // تغيير حالة التحميل
+    emit(AddRepliesComplaintsLoadingState());
     try {
-      String? base64Image;
-      String? imageName;
+      String? base64Content;
+      String? fileName;
 
-      // تحويل الصورة إلى Base64 إذا كانت موجودة
+      // Check if an image is selected
       if (selectedImage != null) {
         final File imageFile = File(selectedImage!);
-        base64Image = base64Encode(imageFile.readAsBytesSync());
-        imageName = selectedImage!.split('/').last;
+        base64Content = base64Encode(imageFile.readAsBytesSync());
+        fileName = selectedImage!.split('/').last;
+      }
+      // Check if a file is selected
+      else if (selectedFile != null) {
+        final File file = File(selectedFile!);
+        base64Content = base64Encode(file.readAsBytesSync());
+        fileName = selectedFile!.split('/').last;
       }
 
-      // استدعاء API لإضافة الشكوى
+      // API call to add complaint
       final response = await api.addComplianApi(
-        image: imageName ?? "", // استخدام سلسلة فارغة إذا لم يتم تحديد صورة
-        base64FileContant: base64Image ?? "", // استخدام سلسلة فارغة إذا لم يتم تحديد صورة
+        image: fileName ?? "",
+        base64FileContant: base64Content ?? "",
         contact: contactController.text ?? "",
       );
 
-      // التعامل مع الاستجابة من الخادم
       response.fold(
-            (l) => emit(AddRepliesComplaintsErrorState()), // في حالة حدوث خطأ
+            (l) => emit(AddRepliesComplaintsErrorState()),
             (r) {
           addComplainModel = r;
-
-          successGetBar('add_reply_success'.tr()); // إظهار رسالة نجاح
-          print("محتوى الشكوى: ${contactController.text}");
-          print("مسار الصورة: $imageName");
-          print("استجابة Base64: $base64Image");
+          successGetBar('add_reply_success'.tr());
+          print("Complaint Content: ${contactController.text}");
+          print("File/Image Path: $fileName");
+          print("Base64 Content: $base64Content");
           contactController.clear();
+          selectedFile = null;
           selectedImage = null;
-          Navigator.pop(context); // إغلاق صفحة الشكوى
-          getOpenedComplaints(page: openCurrentPage); // تحديث الشكاوى المفتوحة
-          getClosedComplaints(page: closedCurrentPage); // تحديث الشكاوى المغلقة
-          emit(AddRepliesComplaintsLoadedState()); // تغيير حالة التحميل إلى النجاح
+          Navigator.pop(context);
+          getOpenedComplaints(page: openCurrentPage);
+          getClosedComplaints(page: closedCurrentPage);
+          emit(AddRepliesComplaintsLoadedState());
         },
       );
     } catch (e) {
-      print('خطأ في تحويل الصورة إلى Base64: $e');
-      emit(ErrorHomeState('خطأ في تحويل الصورة إلى Base64: $e')); // تغيير الحالة إلى خطأ
+      print('Error converting file/image to Base64: $e');
+      emit(ErrorHomeState('Error converting file/image to Base64: $e'));
     }
   }
 
@@ -159,11 +185,17 @@ class ComplaintsCubit extends Cubit<ComplaintsState> {
       String? base64ImageFromChat;
       String? imageNameFromChat;
 
-      // تحويل الصورة إلى Base64 إذا كانت موجودة
+      // Check if an image is selected
       if (selectedImage != null) {
         final File imageFile = File(selectedImage!);
         base64ImageFromChat = base64Encode(imageFile.readAsBytesSync());
         imageNameFromChat = selectedImage!.split('/').last;
+      }
+      // Check if a file is selected
+      else if (selectedFile != null) {
+        final File file = File(selectedFile!);
+        base64ImageFromChat = base64Encode(file.readAsBytesSync());
+        imageNameFromChat = selectedFile!.split('/').last;
       }
       final response = await api.replyFromComplianApi(
         complainId: complainId,
@@ -181,6 +213,7 @@ class ComplaintsCubit extends Cubit<ComplaintsState> {
           contactReplyController.clear();
           imageNameFromChat = null;
           selectedImage = null;
+          selectedFile = null;
           base64ImageFromChat = null;
           emit(ReplyFromComplaintLoadedState());
         },

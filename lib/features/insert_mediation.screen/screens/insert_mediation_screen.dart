@@ -119,10 +119,18 @@ int?selectedNationalityId;
                       ),
                       SharedTextFiled(
                         keyboardType: TextInputType.number,
-
                         hintText: "visa_number".tr(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'please_enter_visa_number'.tr();
+                          }
+                          if (value.length != 10) {
+                            return 'visa_number_must_be_10_digits'.tr(); // رسالة الخطأ إذا لم يكن الطول 10 أرقام
+                          }
+                          return null; // إذا كان التحقق صحيحاً، لا يوجد خطأ
+                        },
                         onSaved: (value) {
-                          cubit.visaNo = value; // حفظ رقم الفيزا
+                          cubit.visaNo = value;
                         },
                       ),
                       SizedBox(

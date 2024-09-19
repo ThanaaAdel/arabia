@@ -168,7 +168,7 @@ class _ChoosePackageFromContractMonthScreenState
           int workerCount = index + 1;
           return DropdownMenuItem<int>(
             value: workerCount,
-            child: Text(workerCount.toString()),
+            child: Text(workerCount <= 2 ? "$workerCount ${'worker'.tr()}" : "$workerCount ${'workers'.tr()}"),
           );
         }),
         onChanged: (value) {
@@ -192,10 +192,10 @@ class _ChoosePackageFromContractMonthScreenState
               ? DateTime.now()
               : selectedFromDate?.add(Duration(days: (30 * minRentalDuration) - 1)) ?? DateTime.now();
 
-          // تحديد التاريخ الابتدائي بناءً على التاريخ الأول
+          // استخدام التاريخ المحفوظ إذا كان موجودًا، وإلا استخدام الآن
           DateTime initialDate = isFromDate
-              ? DateTime.now()
-              : (firstDate.isAfter(DateTime.now()) ? firstDate : DateTime.now());
+              ? (selectedFromDate ?? DateTime.now())
+              : (selectedToDate ?? (firstDate.isAfter(DateTime.now()) ? firstDate : DateTime.now()));
 
           // تحديد التاريخ الأخير للسماح بفترة أطول من 6 أشهر
           DateTime lastDate = DateTime(2030); // تحديد تاريخ بعيد في المستقبل للسماح بفترة أطول
@@ -213,6 +213,8 @@ class _ChoosePackageFromContractMonthScreenState
               if (isFromDate) {
                 selectedFromDate = picked;
                 fromDate.text = "${picked.toLocal()}".split(' ')[0];
+
+                // التحقق من أن تاريخ النهاية متوافق مع الحد الأدنى للمدة
                 if (selectedToDate != null &&
                     selectedToDate!.isBefore(selectedFromDate!.add(Duration(days: (30 * minRentalDuration) - 1)))) {
                   selectedToDate = selectedFromDate!.add(Duration(days: (30 * minRentalDuration) - 1));
@@ -237,6 +239,7 @@ class _ChoosePackageFromContractMonthScreenState
       onSaved: (value) {},
     );
   }
+
 
 
 
@@ -297,34 +300,27 @@ class _ChoosePackageFromContractMonthScreenState
     double costPerWorker = double.parse(widget.package.costOneWorkerPerMonth.toString());
     double costTransferService = double.parse(widget.package.costTransferServicePerOneWorker.toString());
 
-    // التأكد من أن التواريخ محددة لحساب التكاليف
     if (selectedFromDate != null && selectedToDate != null) {
-      // حساب عدد الأيام بين التواريخ المحددة
       int daysBetween = (selectedToDate?.difference(selectedFromDate!).inDays ?? 0) + 1;
       int daysInMonth = int.parse(widget.package.countOfDaysInOneMonth.toString());
 
-      // حساب تكلفة العمالة
+      // حساب تكلفة العمال
       laborCost = (daysBetween / daysInMonth) * costPerWorker * (numberOfWorkers ?? 1);
-
-      // حساب الضريبة بناءً على تكلفة العمالة فقط
       taxOnLabor = laborCost * (double.parse(widget.package.taxRatio.toString()) / 100);
 
-      // إذا كانت خدمة نقل الكفالة مفعلة
-      if (widget.package.giveTransferServiceOption!) {
-        // حساب تكلفة نقل الخدمة
+      // إذا كان المستخدم قد اختار إضافة خدمة النقل
+      if (widget.package.giveTransferServiceOption! && selectedTransferType == 'yes') {
         transferCost = costTransferService * (numberOfWorkers ?? 1);
-
-        // حساب الإجمالي الفرعي مع تكلفة نقل الخدمة
         totalCostWithTransfer = laborCost + transferCost;
-
-        // حساب الضريبة على الإجمالي الفرعي مع نقل الخدمة
         taxWithTransfer = totalCostWithTransfer * (double.parse(widget.package.taxRatio.toString()) / 100);
+      } else {
+        transferCost = 0.0; // تعيين تكلفة النقل إلى صفر إذا اختار المستخدم "لا"
+        totalCostWithTransfer = laborCost; // بدون النقل، التكلفة الإجمالية هي تكلفة العمال فقط
+        taxWithTransfer = taxOnLabor; // الضريبة هي فقط ضريبة العمال
       }
 
-      // الحساب النهائي للتكلفة الإجمالية
-      totalCost = widget.package.giveTransferServiceOption! ? totalCostWithTransfer + taxWithTransfer : laborCost + taxOnLabor;
+      totalCost = totalCostWithTransfer + taxWithTransfer; // إجمالي التكلفة النهائي
     } else {
-      // إذا لم يتم تحديد التواريخ، تأكد أن جميع القيم تساوي 0
       laborCost = 0.0;
       transferCost = 0.0;
       totalCostWithTransfer = 0.0;
@@ -335,8 +331,7 @@ class _ChoosePackageFromContractMonthScreenState
 
     return Column(
       children: [
-        if (widget.package.giveTransferServiceOption!) ...[
-          // عرض تكلفة العمالة وتكلفة نقل الخدمة
+        if (widget.package.giveTransferServiceOption! && selectedTransferType == 'yes') ...[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -369,7 +364,6 @@ class _ChoosePackageFromContractMonthScreenState
             ],
           ),
         ] else ...[
-          // عرض الضريبة الإجمالية والتكلفة الإجمالية فقط عند عدم تفعيل نقل الخدمة
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -387,7 +381,6 @@ class _ChoosePackageFromContractMonthScreenState
           ),
         ],
         SizedBox(height: 10.sp),
-        // عرض التكلفة الإجمالية النهائية
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -398,4 +391,5 @@ class _ChoosePackageFromContractMonthScreenState
       ],
     );
   }
+
 }

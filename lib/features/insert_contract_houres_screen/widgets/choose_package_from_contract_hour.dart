@@ -29,16 +29,14 @@ class _ChoosePackageFromContractHourScreenState
   int? selectedTransferType = 0;
   String? selectedCountryId;
 
-  int get subTotal {
+  double get subTotal {
     final numberOfDays = widget.cubit.selectedDatesFromServiceDays.length;
     print("numberOfDays: $numberOfDays");
-    final numberOfWorkers = (widget.package.countOfWorkersSelectsMethod ==
-            'restricted')
-        ? int.tryParse(widget.package.restrictCountOfWorkers.toString()) ?? 1
-        : (widget.cubit.numberOfWorkersController.text.isNotEmpty
-            ? int.tryParse(widget.cubit.numberOfWorkersController.text) ?? 1
-            : 1); // تأكد من أن القيمة غير فارغة وتحويلها إلى عدد، أو استخدام 0 كقيمة افتراضية
-    print("numberOfWorkers: $numberOfWorkers");
+    final numberOfWorkers = (widget.package.countOfWorkersSelectsMethod == 'restricted')
+        ? int.tryParse(widget.package.restrictCountOfWorkers.toString()) // استخدم العدد المحدد في `restrictCountOfWorkers`
+        : (widget.cubit.numberOfWorkersController.text.isNotEmpty // إذا كان النص في الحقل غير فارغ
+        ? int.tryParse(widget.cubit.numberOfWorkersController.text) // حاول تحويله إلى عدد
+        : null); // إذا لم يتم إدخال أي شيء، لا تستخدم قيمة افتراضية print("numberOfWorkers: $numberOfWorkers");
     final costPerHour =
         int.tryParse(widget.package.costOfWorkerPerHour ?? '') ?? 1;
     print("costPerHour: $costPerHour");
@@ -49,11 +47,13 @@ class _ChoosePackageFromContractHourScreenState
                 widget.package.restrictServiceTimeEnd!)
             : calculateHoursDifference(widget.cubit.fromHourController.text,
                 widget.cubit.toHourController.text);
-
+    print("workers: $numberOfWorkers");
     print("numberOfHours: $numberOfHours");
 
-    return numberOfDays * numberOfWorkers * costPerHour * numberOfHours;
-  }
+    return (numberOfDays.toDouble() ?? 0.0) *
+        (numberOfWorkers ?? 1) *
+        (costPerHour ?? 0) *
+        (numberOfHours ?? 0);  }
 
   int calculateHoursDifference(String fromTime, String toTime) {
     if (fromTime.isEmpty || toTime.isEmpty) return 0;
@@ -81,15 +81,15 @@ class _ChoosePackageFromContractHourScreenState
     return (durationInMinutes / 60).ceil(); // Convert minutes to hours
   }
 
-  int get ratio {
+  double get ratio {
     // Parse taxRatio to double to handle decimal percentages correctly
     double taxRatio = double.tryParse(widget.package.taxRatio ?? '0') ?? 0;
 
     // Calculate the tax amount by multiplying subtotal with the tax ratio divided by 100
-    return (subTotal * (taxRatio / 100)).round();
+    return (subTotal * (taxRatio / 100));
   }
 
-  int get total {
+  double get total {
     return subTotal + ratio;
   }
 
@@ -128,7 +128,7 @@ class _ChoosePackageFromContractHourScreenState
               60;
       if (duration > maxDurationInMinutes) {
         widget.cubit.toHourController.clear();
-        return 'exceeded_maximum_service_time_duration'.tr();
+        return '${'you_cannot_select_a_period_greater_than'.tr()} ${widget.package.maxServiceTimeDurationLimit} ${'hours'.tr()}';
       }
     }
     return null;
@@ -145,71 +145,97 @@ class _ChoosePackageFromContractHourScreenState
 
   Future<void> _pickTime(BuildContext context, TextEditingController controller,
       {bool isFromTime = false}) async {
-    // Minimum allowed time for `fromHour`: 2 AM
+    // تعيين الوقت الأدنى المسموح به
     TimeOfDay minTime = const TimeOfDay(hour: 2, minute: 0);
-    // Get the current value of `fromHour`
-    TimeOfDay? fromTime;
-    if (!isFromTime && widget.cubit.fromHourController.text.isNotEmpty) {
-      final fromTimeParts = widget.cubit.fromHourController.text.split(' ');
-      final fromTimeComponents = fromTimeParts[0].split(':');
-      int fromHour = int.parse(fromTimeComponents[0]);
-      int fromMinute = int.parse(fromTimeComponents[1]);
 
-      if (fromTimeParts[1].toLowerCase() == 'ص' && fromHour == 12) {
-        fromHour = 0; // Convert 12 AM to 0 hours
-      } else if (fromTimeParts[1].toLowerCase() == 'م' && fromHour != 12) {
-        fromHour += 12; // Convert PM times to 24-hour format
+    // تحديد الوقت المختار سابقًا
+    TimeOfDay? selectedTime;
+
+    // التحقق من الحقل الذي يتم تحريره حاليًا، إما "من الوقت" أو "إلى الوقت"
+    if (controller.text.isNotEmpty) {
+      final timeParts = controller.text.split(' ');
+      final timeComponents = timeParts[0].split(':');
+      int hour = int.parse(timeComponents[0]);
+      int minute = int.parse(timeComponents[1]);
+
+      if (timeParts[1].toLowerCase() == 'ص' && hour == 12) {
+        hour = 0;
+      } else if (timeParts[1].toLowerCase() == 'م' && hour != 12) {
+        hour += 12;
       }
-
-      fromTime = TimeOfDay(hour: fromHour, minute: fromMinute);
+      selectedTime = TimeOfDay(hour: hour, minute: minute);
     }
 
+    // فتح نافذة اختيار الوقت
     TimeOfDay? pickedTime = await showTimePicker(
+      initialEntryMode: TimePickerEntryMode.inputOnly, // العرض على صيغة الإدخال النصي افتراضياً
+      initialTime: selectedTime ?? minTime, // الوقت المبدئي يكون الوقت المختار مسبقاً
       context: context,
-      initialTime: TimeOfDay.now(),
     );
 
     if (pickedTime != null) {
+      // تحديد إذا كان يتم اختيار وقت "من" أو "إلى"
       if (isFromTime) {
-        // Check for `fromHour` to be after the minimum allowed time (2 AM)
+        // التحقق من أن الوقت المختار بعد الحد الأدنى
         if (pickedTime.hour > minTime.hour ||
             (pickedTime.hour == minTime.hour &&
                 pickedTime.minute >= minTime.minute)) {
           setState(() {
-            controller.text = pickedTime.format(context);
+            controller.text = pickedTime.format(context); // حفظ الوقت في الحقل
             _validateAndShowError(context);
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                  "Please select a time after ${minTime.format(context)}."),
+                  "${'please_select_a_time_after'.tr()} ${minTime.format(context)}."),
               backgroundColor: Colors.red,
             ),
           );
         }
       } else {
-        // Check for `toHour` to be after `fromHour`
-        if (fromTime == null ||
-            pickedTime.hour > fromTime.hour ||
-            (pickedTime.hour == fromTime.hour &&
-                pickedTime.minute > fromTime.minute)) {
+        // التحقق من أن وقت "إلى" بعد وقت "من"
+        if (widget.cubit.fromHourController.text.isNotEmpty) {
+          final fromTimeParts = widget.cubit.fromHourController.text.split(' ');
+          final fromTimeComponents = fromTimeParts[0].split(':');
+          int fromHour = int.parse(fromTimeComponents[0]);
+          int fromMinute = int.parse(fromTimeComponents[1]);
+
+          if (fromTimeParts[1].toLowerCase() == 'ص' && fromHour == 12) {
+            fromHour = 0;
+          } else if (fromTimeParts[1].toLowerCase() == 'م' && fromHour != 12) {
+            fromHour += 12;
+          }
+
+          TimeOfDay fromTime = TimeOfDay(hour: fromHour, minute: fromMinute);
+
+          if (pickedTime.hour > fromTime.hour ||
+              (pickedTime.hour == fromTime.hour &&
+                  pickedTime.minute > fromTime.minute)) {
+            setState(() {
+              controller.text = pickedTime.format(context); // حفظ الوقت المختار
+              _validateAndShowError(context);
+            });
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    "Please select a time after ${widget.cubit.fromHourController.text}."),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        } else {
           setState(() {
             controller.text = pickedTime.format(context);
             _validateAndShowError(context);
           });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                  "Please select a time after ${widget.cubit.fromHourController.text}."),
-              backgroundColor: Colors.red,
-            ),
-          );
         }
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -392,71 +418,48 @@ class _ChoosePackageFromContractHourScreenState
                           color: AppColors.blue.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(8.0.sp),
                         ),
-                        child: DropdownButton<String>(
-                          hint: Text("number_of_workers".tr()),
-                          value: widget.package.countOfWorkersSelectsMethod ==
-                                  'restricted'
-                              ? widget.package.restrictCountOfWorkers
-                              : (widget.cubit.numberOfWorkersController.text
-                                          .isNotEmpty &&
-                                      List<int>.generate(
-                                          int.parse(widget
-                                              .package.maxCountOfWorkersLimit!),
-                                          (index) =>
-                                              index + 1).contains(int.tryParse(
-                                          widget.cubit.numberOfWorkersController
-                                              .text)))
-                                  ? widget.cubit.numberOfWorkersController.text
-                                  : null,
-                          isExpanded: true,
-                          elevation: 16,
+                        child:DropdownButtonFormField<int>(
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)),
+                            ),
+                            hintText: "number_of_workers".tr(),
+                            contentPadding: EdgeInsets.only(bottom: 10.h),
+                            hintStyle: TextStyles.size16FontWidgetRegularGrayLight,
+                            labelStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
+                                color: AppColors.black.withOpacity(0.5)),
+                          ),
+                          value: widget.cubit.numberOfWorkersController.text.isNotEmpty
+                              ? int.tryParse(widget.cubit.numberOfWorkersController.text)
+                              : null, // استخدم القيمة المدخلة فقط إذا كانت موجودة
+                          validator: (value) {
+                            if (value == null) {
+                              return 'please_select_number_of_workers'.tr();
+                            }
+                            return null;
+                          },
                           dropdownColor: AppColors.white,
-                          borderRadius: BorderRadius.circular(8.sp),
-                          menuMaxHeight: 100.sp,
-                          autofocus: true,
-                          enableFeedback: false,
-                          style: TextStyle(
-                              color: AppColors.black, fontSize: 16.sp),
-                          underline: Container(),
-                          icon: widget.package.countOfWorkersSelectsMethod ==
-                                  'restricted'
-                              ? const SizedBox()
-                              : Icon(Icons.arrow_drop_down,
-                                  color: AppColors.orange),
-                          iconSize: 24.sp,
-                          onChanged:
-                              widget.package.countOfWorkersSelectsMethod ==
-                                      'restricted'
-                                  ? null
-                                  : (value) {
-                                      if (value != null) {
-                                        setState(() {
-                                          widget.cubit.numberOfWorkersController
-                                              .text = value;
-                                        });
-                                      }
-                                    },
-                          items: widget.package.countOfWorkersSelectsMethod ==
-                                  'opened'
-                              ? List<int>.generate(
-                                      int.parse(widget
-                                          .package.maxCountOfWorkersLimit!),
-                                      (index) => index + 1)
-                                  .map((number) => DropdownMenuItem<String>(
-                                        value: number.toString(),
-                                        child: Text(number.toString()),
-                                      ))
-                                  .toList()
-                              : [
-                                  DropdownMenuItem<String>(
-                                    value:
-                                        widget.package.restrictCountOfWorkers,
-                                    child: Text(
-                                        widget.package.restrictCountOfWorkers!),
-                                  ),
-                                ],
+                          items: List.generate(int.parse(widget.package.maxCountOfWorkersLimit!), (index) {
+                            int workerCount = index + 1;
+                            return DropdownMenuItem<int>(
+                              value: workerCount,
+                              child: Text(workerCount <= 2 ? "$workerCount ${'worker'.tr()}" : "$workerCount ${'workers'.tr()}"),
+                            );
+                          }),
+                          onChanged: (value) {
+                            setState(() {
+                              widget.cubit.numberOfWorkersController.text = value.toString();
+                            });
+                          },
                         ),
+
+
+
+
                       ),
+
                       SizedBox(height: 20.h),
                       _buildDateFilter(context),
                       if (widget.cubit.selectedDatesFromServiceDays.isNotEmpty)
@@ -663,6 +666,7 @@ class _ChoosePackageFromContractHourScreenState
             initialDate: widget.cubit.selectedDate ?? DateTime.now(),
             firstDate: DateTime.now(), // تعديل لتكون أول تاريخ هو اليوم الحالي
             lastDate: DateTime(2025),
+
             builder: (context, child) {
               return Theme(
                 data: Theme.of(context).copyWith(

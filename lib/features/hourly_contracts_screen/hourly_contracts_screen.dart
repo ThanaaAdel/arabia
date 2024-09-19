@@ -89,6 +89,7 @@ class _HourlyContractsScreenState extends State<HourlyContractsScreen> {
                                   item: item,
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => HourlyContractRequestDetailsScreen(
+                                      inProgress: item.statusClient == "in_progress" ? true : false,
                                       isArchive: item.statusClient == "archived" ? true : false,
                                       item:
                                     cubit.hourlyContractModel!.data!.items![index],

@@ -38,7 +38,7 @@ class DetailsFromMonthlyContractScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        "contract_hours".tr(),
+                        "contract_month".tr(),
                         style: TextStyles.size22FontWidgetBoldBlue.copyWith(fontSize: 20.sp)
                     ),
 
@@ -153,7 +153,7 @@ class DetailsFromMonthlyContractScreen extends StatelessWidget {
                           _buildDetailRow(
                             context,
                             "order_status".tr(),
-                            insertMonthlyDataModel.data?.statusClient?.toString() ??
+                            insertMonthlyDataModel.data?.statusDisplay?.title?.toString() ??
                                 '',
                           ),
                        

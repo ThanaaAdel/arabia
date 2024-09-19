@@ -1,19 +1,20 @@
 import 'package:arabia/core/models/contract_model.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/assets_manager.dart';
 import '../cubit/cubit.dart';
 
+import 'package:url_launcher/url_launcher.dart'; // إضافة هذه المكتبة
+
 class ContractCard extends StatelessWidget {
   final bool status;
   final Item item;
+  final Function()? onTap;
 
   const ContractCard({
     super.key,
@@ -21,7 +22,27 @@ class ContractCard extends StatelessWidget {
     required this.item,
     this.onTap,
   });
-  final Function()? onTap;
+
+  // دالة فتح الرابط في المتصفح
+  Future<void> _openFileInBrowser(BuildContext context, String? url) async {
+    if (url == null || url.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('invalid_file_url'.tr())),
+      );
+      return;
+    }
+
+    // تحقق مما إذا كان يمكن فتح الرابط
+    if (await canLaunchUrl(Uri.parse(url))) {
+      // فتح الرابط في المتصفح الافتراضي
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      // التعامل مع الخطأ إذا لم يتم فتح الرابط
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('could_not_launch_url'.tr())),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +105,7 @@ class ContractCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   GestureDetector(
-                      onTap: () => _downloadFile(context, item.fileUrlPath, item.filename ?? "file"),
+                    onTap: () => _openFileInBrowser(context, item.fileUrlPath), // فتح الرابط في المتصفح
                     child: Container(
                       height: 23.h,
                       width: 60.w,
@@ -107,22 +128,22 @@ class ContractCard extends StatelessWidget {
                     child: status
                         ? GestureDetector(
                       onTap: () {
-                        cubit.archiveContract(item);
+                        cubit.archiveContract(fileId: item.fileId.toString(), context: context);
                       },
-                          child: Container(
-                                                height: 23.h,
-                                                width: 60.w,
-                                                decoration: BoxDecoration(
+                      child: Container(
+                        height: 23.h,
+                        width: 60.w,
+                        decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8.sp),
                             color: AppColors.orange),
-                                                child: Center(
+                        child: Center(
                           child: AutoSizeText(
-                            "archived".tr(),
+                            "archive".tr(),
                             style: TextStyle(color: AppColors.white),
                           ),
-                                                ),
-                                              ),
-                        )
+                        ),
+                      ),
+                    )
                         : Container(
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
@@ -141,33 +162,4 @@ class ContractCard extends StatelessWidget {
     );
   }
 }
-Future<void> _downloadFile(BuildContext context, String? url, String filename) async {
-  if (url == null || url.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Invalid file URL')),
-    );
-    return;
-  }
 
-  try {
-    var dio = Dio();
-    var dir = await getApplicationDocumentsDirectory(); // Get device storage directory
-    String savePath = "${dir.path}/$filename"; // Set the save path for the file
-
-    // Show a loading indicator
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Downloading...')),
-    );
-
-    // Download the file
-    await dio.download(url, savePath);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Download completed: $savePath')),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Download failed: $e')),
-    );
-  }
-}

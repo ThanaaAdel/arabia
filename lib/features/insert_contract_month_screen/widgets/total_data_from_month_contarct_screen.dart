@@ -142,7 +142,6 @@ class ServiceSummaryWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSummaryRow('order_number'.tr(), orderNumber, isHighlighted: true),
-          _buildSummaryRow('order_status'.tr(), statusOrder, isHighlighted: true),
           _buildSummaryRow('from_date'.tr(), fromHour, isHighlighted: true),
           _buildSummaryRow('to_date'.tr(), toHour, isHighlighted: true),
           _buildSummaryRow('number_of_workers'.tr(), numberOfWorkers,

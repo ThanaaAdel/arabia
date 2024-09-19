@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/utils/app_colors.dart';
+import '../../core/utils/assets_manager.dart';
 import '../../core/utils/style_text.dart';
 import 'cubit/cubit.dart';
 import 'cubit/state.dart';
@@ -25,8 +26,10 @@ class _ContractsScreenState extends State<ContractsScreen> {
     context.read<ContractsCubit>().getContractData();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    var cubit = context.read<ContractsCubit>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -40,78 +43,77 @@ class _ContractsScreenState extends State<ContractsScreen> {
               height: 20.h,
             ),
             BlocBuilder<ContractsCubit, ContractsState>(
-              builder: (context, state) {
-                // Show loading spinner while data is being fetched
-                if (state is GetContractsLoadingState) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.blue,
-                    ),
-                  );
-                }
-
-                // When data is successfully loaded
-                if (state is GetContractsLoadedState) {
-                  var cubit = context.read<ContractsCubit>();
-                  var contracts = cubit.getFilteredContracts();
-
-                  // Check if there is no data
-                  if (contracts == null || contracts.isEmpty) {
-                    return Center(
-                      child: Text(
-                        "no_data".tr(),
-                        style: TextStyles.size22FontWidgetBoldBlue,
-                      ),
-                    );
-                  }
-
-                  return Expanded(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 80.sp),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                builder: (context, state) {
+              return  Expanded(
+                          child: Column(
                             children: [
-                              ContractsContainerWidget(
-                                selectedIndexOrder: 0,
-                                text: "new".tr(),
-                                cubit: cubit,
+                              Padding(
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 80.sp),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ContractsContainerWidget(
+                                      selectedIndexOrder: 0,
+                                      text: "new".tr(),
+                                      cubit: cubit,
+                                    ),
+                                    SizedBox(width: 10.w),
+                                    ContractsContainerWidget(
+                                      cubit: cubit,
+                                      selectedIndexOrder: 1,
+                                      text: "archive".tr(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              SizedBox(width: 10.w),
-                              ContractsContainerWidget(
-                                cubit: cubit,
-                                selectedIndexOrder: 1,
-                                text: "archiving".tr(),
+                              SizedBox(
+                                height: 20.sp,
                               ),
+                              (state is GetContractsLoadingState)
+                                  ? Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.blue,
+                                ),
+                              )
+                                  : (cubit.contractModel?.data?.items?.length == 0)
+                                  ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 100.h,
+                                  ),
+                                  Image.asset(
+                                    ImageAssets.noData,
+                                    height: 150.h,
+                                    width: 150.w,
+                                  ),
+                                  Text("no_data".tr(),
+                                      style: TextStyles.size22FontWidgetBoldBlue)
+                                ],
+                              )
+                                  :
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount:
+                                      cubit.contractModel!.data!.items!.length,
+                                  itemBuilder: (context, index) {
+                                    var contract = cubit
+                                        .contractModel!.data!.items![index];
+                                    return ContractCard(
+                                      item: contract,
+                                      status: cubit.selectedIndexOrder == 0,
+                                    );
+                                  },
+                                ),
+                              )
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 20.sp,
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: contracts.length,
-                            itemBuilder: (context, index) {
-                              var contract = contracts[index];
-                              return ContractCard(
-                                item: contract,
-                                status: cubit.selectedIndexOrder == 0,
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                }
-
-                // Default case: return an empty container if no state is matched
-                return Container();
-              },
-            ),
+                        );
+            }),
           ],
         ),
       ),
