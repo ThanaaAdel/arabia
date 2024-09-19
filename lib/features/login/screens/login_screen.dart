@@ -20,9 +20,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController countryCodeController =
-      TextEditingController(text: '+966');
-  TextEditingController phoneNumberController = TextEditingController();
+  late TextEditingController countryCodeController;
+  late TextEditingController phoneNumberController;
+  GlobalKey<FormState> formKeyOtp = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    countryCodeController = TextEditingController(text: '+966');
+    phoneNumberController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // countryCodeController.dispose();
+    // phoneNumberController.dispose();
+    // formKeyOtp.();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 50.h),
                 Form(
-                  key: cubit.formKey,
+                  key: formKeyOtp,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -84,14 +99,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Padding(
                               padding: EdgeInsets.all(8.0.sp),
                               child: TextFormField(
-                                controller: cubit.phoneEditingController,
+                                controller: phoneNumberController,
                                 keyboardType: TextInputType.number,
                                 cursorRadius: Radius.circular(8.sp),
                                 autofocus: true,
                                 decoration: InputDecoration(
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: AppColors.grayLite),
+                                    BorderSide(color: AppColors.grayLite),
                                   ),
                                   hintText: "5xxxxxxxxx",
                                 ),
@@ -111,20 +126,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 50.h),
                 (state is LoadingState)
                     ? CircularProgressIndicator(
-                        backgroundColor: AppColors.blue,
-                        color: AppColors.white)
+                    backgroundColor: AppColors.blue,
+                    color: AppColors.white)
                     : ButtonWidget(
-                        onPressed: () {
-                          if (cubit.formKey.currentState!.validate()) {
-                            if (cubit.phoneEditingController.text.isEmpty) {
-                              errorGetBar("please_enter_your_phone_number".tr());
-                            } else {
-                              cubit.loginData(context);
-                            }
-                          }
-                        },
-                        textButton: "login".tr(),
-                      ),
+                  onPressed: () {
+                    if (formKeyOtp.currentState!.validate()) {
+                      if (cubit.phoneEditingController.text.isEmpty) {
+                        errorGetBar("please_enter_your_phone_number".tr());
+                      } else {
+                        cubit.loginData(context);
+                      }
+                    }
+                  },
+                  textButton: "login".tr(),
+                ),
               ],
             ),
           ),
@@ -132,24 +147,4 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     });
   }
-  // void _showCountryPicker(BuildContext context, LoginCubit cubit) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     builder: (context) {
-  //       return IntlPhoneField(
-  //         initialCountryCode: 'SA',
-  //         showCountryFlag: true,
-  //         decoration: InputDecoration(
-  //           border: InputBorder.none,
-  //         ),
-  //         onChanged: (phone) {
-  //           // Update country code in the cubit
-  //           cubit.countryCode = '+${phone.countryCode}';
-  //           setState(() {}); // Refresh UI to show the updated country code
-  //           Navigator.pop(context); // Close the modal after selection
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 }

@@ -167,6 +167,7 @@
   "hours": "ساعات",
   "workers": "عمال",
   "worker": "عامل",
+  "could_not_launch_url": "لا يمكن تشغيل الرابط",
   "please_select_a_time_after": "من فضلك اختار الوقت بعلا الساعة "
 
 }

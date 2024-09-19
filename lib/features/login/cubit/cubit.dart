@@ -26,7 +26,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   // استخدم مراجع جديدة للمفاتيح عند كل عملية تسجيل دخول
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   GlobalKey<FormState> formKeyCompleteRegister = GlobalKey<FormState>();
 
   LoginModel? loginModel;
@@ -35,9 +35,9 @@ class LoginCubit extends Cubit<LoginState> {
 
   String? smsText;
   CompleteRegisterModel? completeRegisterModel;
-  final TextEditingController otpController = TextEditingController();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
+   TextEditingController otpController = TextEditingController();
+   TextEditingController firstNameController = TextEditingController();
+   TextEditingController lastNameController = TextEditingController();
   Timer? _timer;
   int _timerSeconds = 600;
 
@@ -117,10 +117,7 @@ class LoginCubit extends Cubit<LoginState> {
     return super.close();
   }
 
-  void resetKeys() {
-    formKey = GlobalKey<FormState>();
-    formKeyCompleteRegister = GlobalKey<FormState>();
-  }
+
 
   String? childrenNumber;
   selectChildrenNumber(String number) {
@@ -171,7 +168,6 @@ class LoginCubit extends Cubit<LoginState> {
         if (r.code == 200) {
           Preferences.instance.setUser(r).then((value) {
             loginModel = r;
-            resetKeys(); // إعادة تعيين المفاتيح عند تسجيل الدخول
             Navigator.pushNamed(context, Routes.verificationRoute);
             successGetBar("success_login".tr());
           });
@@ -195,7 +191,6 @@ class LoginCubit extends Cubit<LoginState> {
         if (r.code == 200) {
           loginWithClientIdModel = r;
           _timer?.cancel();
-          resetKeys(); // إعادة تعيين المفاتيح عند تسجيل الدخول
           Navigator.pushNamed(context, Routes.homeRoute);
           Preferences.instance.setUserWithSession(loginWithClientIdModel!);
         } else {

@@ -137,6 +137,7 @@
     "occupation": "Occupation",
     "order_status": "Order Status",
     "go_to_home_page": "Go To Home Page",
+    "could_not_launch_url": "Could not launch URL",
     "upload": "Upload",
     "upload_photo": "Upload Photo",
     "upload_file": "Upload File",

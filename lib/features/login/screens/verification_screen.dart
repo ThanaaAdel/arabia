@@ -19,30 +19,18 @@ class VerificationScreen extends StatefulWidget {
 
 class _VerificationScreenState extends State<VerificationScreen> {
   final ScrollController _scrollController = ScrollController();
+  bool isOtpValid = false; // Track whether OTP is valid
 
   @override
   void initState() {
     super.initState();
     context.read<LoginCubit>().startCountdown(); // Start the timer when the screen loads
-    //
-    // // التمرير التلقائي عند تغيير الحالة
-    // context.read<LoginCubit>().stream.listen((state) {
-    //   if (state is VerificationLoadingState ||
-    //       state is CompleteRegisterLoadingState ||
-    //       state is LoginWithClientIdLoadingState ||
-    //       state is VerificationTimerRunning) {
-    //     // تمرير الصفحة لأسفل عند وجود حالة تحميل
-    //     WidgetsBinding.instance.addPostFrameCallback((_) {
-    //       if (_scrollController.hasClients) {
-    //         _scrollController.animateTo(
-    //           _scrollController.position.maxScrollExtent,
-    //           duration: const Duration(milliseconds: 300),
-    //           curve: Curves.easeOut,
-    //         );
-    //       }
-    //     });
-    //   }
-    // });
+    context.read<LoginCubit>().otpController = TextEditingController();
+    context.read<LoginCubit>().otpController.addListener(() {
+      setState(() {
+        isOtpValid = context.read<LoginCubit>().otpController.text.length == 6;
+      });
+    });
   }
 
   @override
@@ -144,12 +132,16 @@ class _VerificationScreenState extends State<VerificationScreen> {
         child: CircularProgressIndicator(color: AppColors.blue),
       )
           : ElevatedButton(
-        onPressed: () {
+        onPressed: isOtpValid // Button is only enabled if OTP is valid
+            ? () {
           context.read<LoginCubit>().endTimer();
           cubit.verificationData(context);
-        },
+        }
+            : null, // Disable the button if OTP is not valid
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.blue,
+          backgroundColor: isOtpValid
+              ? AppColors.blue
+              : AppColors.blue.withOpacity(0.5), // Change button color based on OTP validity
           padding: EdgeInsets.symmetric(vertical: 10.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),

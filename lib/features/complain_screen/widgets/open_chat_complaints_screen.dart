@@ -107,10 +107,13 @@ class _OpenChatComplainScreenState extends State<OpenChatComplainScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: () async {
-                                      // Open the URL when the link is clicked
-                                      if (await canLaunchUrl(Uri.parse(imageUrl!))) {
-                                        await launchUrl(Uri.parse(imageUrl), mode: LaunchMode.externalApplication);
-                                      } else {
+                                      final Uri uri = Uri.parse(imageUrl!);
+
+                                      // Using the launchUrl method directly
+                                      if (!await launchUrl(
+                                        uri,
+                                        mode: LaunchMode.externalApplication,
+                                      )) {
                                         throw 'Could not launch $imageUrl';
                                       }
                                     },

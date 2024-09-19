@@ -23,7 +23,7 @@ class ContractCard extends StatelessWidget {
     this.onTap,
   });
 
-  // دالة فتح الرابط في المتصفح
+
   Future<void> _openFileInBrowser(BuildContext context, String? url) async {
     if (url == null || url.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -32,12 +32,11 @@ class ContractCard extends StatelessWidget {
       return;
     }
 
-    // تحقق مما إذا كان يمكن فتح الرابط
-    if (await canLaunchUrl(Uri.parse(url))) {
-      // فتح الرابط في المتصفح الافتراضي
-      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    } else {
-      // التعامل مع الخطأ إذا لم يتم فتح الرابط
+    final Uri uri = Uri.parse(url);
+
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('could_not_launch_url'.tr())),
       );
