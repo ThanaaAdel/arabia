@@ -24,7 +24,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<LoginCubit>().startCountdown(); // Start the timer when the screen loads
+    context.read<LoginCubit>().startCountdown();
     context.read<LoginCubit>().otpController = TextEditingController();
     context.read<LoginCubit>().otpController.addListener(() {
       setState(() {
