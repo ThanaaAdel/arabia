@@ -122,6 +122,8 @@ class ServiceApi {
           "house_accommodation_type": houseAccommodationType,
           "family_no": familyNumber,
           "token": loginModel.data?.token,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+
         },
         formDataIsEnabled: true,
         options: Options(
@@ -146,6 +148,8 @@ class ServiceApi {
           'action': "loginWithClientId",
           'apiToken': "x93mY",
           'client_id': clientId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+
         },
         formDataIsEnabled: true,
         options: Options(
@@ -167,6 +171,7 @@ class ServiceApi {
         body: {
           'action': "___getCountries",
           'apiToken': "x93mY",
+
           'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
         },
         formDataIsEnabled: true,

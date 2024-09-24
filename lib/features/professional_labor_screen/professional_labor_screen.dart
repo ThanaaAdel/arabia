@@ -1,34 +1,34 @@
 import 'package:arabia/core/utils/app_colors.dart';
 import 'package:arabia/core/widgets/shared_appbar.dart';
-import 'package:arabia/features/professional_employment_screen/cubit/cubit.dart';
-import 'package:arabia/features/professional_employment_screen/cubit/state.dart';
-import 'package:arabia/features/professional_employment_screen/widgets/professional_employment-widget.dart';
-import 'package:arabia/features/professional_employment_screen/widgets/professional_employment_contracts_card.dart';
-import 'package:arabia/features/professional_employment_screen/widgets/professional_employment_request_details_screen.dart';
+import 'package:arabia/features/professional_labor_screen/widgets/professional_labor_contracts_card.dart';
+import 'package:arabia/features/professional_labor_screen/widgets/professional_labor_request_details_screen.dart';
+import 'package:arabia/features/professional_labor_screen/widgets/professional_labor_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/utils/assets_manager.dart';
 import '../hourly_contracts_screen/widgets/pagination_widget.dart';
+import 'cubit/cubit.dart';
+import 'cubit/state.dart';
 
-class ProfessionalEmploymentScreen extends StatefulWidget {
-  const ProfessionalEmploymentScreen({super.key});
+class ProfessionalLaborScreen extends StatefulWidget {
+  const ProfessionalLaborScreen({super.key});
 
   @override
-  State<ProfessionalEmploymentScreen> createState() => _ProfessionalEmploymentScreenState();
+  State<ProfessionalLaborScreen> createState() => _ProfessionalLaborScreenState();
 }
 
-class _ProfessionalEmploymentScreenState extends State<ProfessionalEmploymentScreen> {
+class _ProfessionalLaborScreenState extends State<ProfessionalLaborScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProfessionalEmploymentCubit>().getProfessionalEmployment();
+    context.read<ProfessionalLaborCubit>().getProfessionalEmployment();
   }
 
   @override
   Widget build(BuildContext context) {
-    var cubit = context.read<ProfessionalEmploymentCubit>();
+    var cubit = context.read<ProfessionalLaborCubit>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -39,7 +39,7 @@ class _ProfessionalEmploymentScreenState extends State<ProfessionalEmploymentScr
               child: SharedAppbar(text: "professional_employment".tr()),
             ),
             SizedBox(height: 20.h),
-            BlocBuilder<ProfessionalEmploymentCubit, ProfessionalEmploymentState>(
+            BlocBuilder<ProfessionalLaborCubit, ProfessionalLaborState>(
               builder: (context, state) {
                 return Expanded(
                   child: Column(
@@ -50,19 +50,19 @@ class _ProfessionalEmploymentScreenState extends State<ProfessionalEmploymentScr
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ProfessionalEmploymentWidget(
+                            ProfessionalLaborWidget(
                               selectedIndexOrder: 0,
                               text: "pending".tr(),
                               cubit: cubit,
                             ),
                             SizedBox(width: 10.w),
-                            ProfessionalEmploymentWidget(
+                            ProfessionalLaborWidget(
                               selectedIndexOrder: 1,
                               text: "in_progress".tr(),
                               cubit: cubit,
                             ),
                             SizedBox(width: 10.w),
-                            ProfessionalEmploymentWidget(
+                            ProfessionalLaborWidget(
                               selectedIndexOrder: 2,
                               text: "archived".tr(),
                               cubit: cubit,
@@ -84,11 +84,11 @@ class _ProfessionalEmploymentScreenState extends State<ProfessionalEmploymentScr
                               itemCount: cubit.professionalEmploymentModel?.data?.items?.length ?? 0,
                               itemBuilder: (context, index) {
                                 var item = cubit.professionalEmploymentModel!.data!.items![index];
-                                return ProfessionalEmploymentCard(
+                                return ProfessionalLaborCard(
                                   item: item,
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                        ProfessionalEmploymentRequestDetailsScreen(
+                                        ProfessionalLaborRequestDetailsScreen(
                                           inProgress: item.statusClient == "in_progress" ? true : false,
                                       isArchive: item.statusClient == "archived" ? true : false,
                                       item:

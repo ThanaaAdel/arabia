@@ -5,11 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/utils/app_colors.dart';
 import '../cubit/cubit.dart';
 
-class ProfessionalEmploymentWidget extends StatelessWidget {
+class ProfessionalLaborWidget extends StatelessWidget {
   final String text;
   int selectedIndexOrder;
-  ProfessionalEmploymentCubit cubit;
-  ProfessionalEmploymentWidget(
+  ProfessionalLaborCubit cubit;
+  ProfessionalLaborWidget(
       {super.key,
       required this.text,
       required this.selectedIndexOrder,

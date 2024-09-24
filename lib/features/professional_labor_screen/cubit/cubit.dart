@@ -1,14 +1,14 @@
 import 'package:arabia/core/models/professional_employment_model.dart';
 import 'package:arabia/core/utils/dialogs.dart';
-import 'package:arabia/features/professional_employment_screen/cubit/state.dart';
+import 'package:arabia/features/professional_labor_screen/cubit/state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/remote/service.dart';
 
-class ProfessionalEmploymentCubit extends Cubit<ProfessionalEmploymentState> {
-  ProfessionalEmploymentCubit(this.api) : super(MainInitial());
+class ProfessionalLaborCubit extends Cubit<ProfessionalLaborState> {
+  ProfessionalLaborCubit(this.api) : super(MainInitial());
 
   ServiceApi api;
   int selectedIndexOrder = 0; // 0 : pending, 1 : in_progress, 2 : archived

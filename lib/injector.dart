@@ -21,7 +21,7 @@ import 'features/mediation_screen/cubit/cubit.dart';
 import 'features/monthly_contracts_screen/cubit/cubit.dart';
 import 'features/notification_screen/cubit/cubit.dart';
 import 'features/offers_screen/cubit/cubit.dart';
-import 'features/professional_employment_screen/cubit/cubit.dart';
+import 'features/professional_labor_screen/cubit/cubit.dart';
 import 'features/transfer_service_screen/cubit/cubit.dart';
 
 final serviceLocator = GetIt.instance;
@@ -111,7 +111,7 @@ Future<void> setup() async {
     ),
   );
   serviceLocator.registerFactory(
-    () => ProfessionalEmploymentCubit(
+    () => ProfessionalLaborCubit(
       serviceLocator(),
     ),
   ); serviceLocator.registerFactory(

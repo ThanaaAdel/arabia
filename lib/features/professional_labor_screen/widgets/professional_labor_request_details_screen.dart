@@ -8,8 +8,8 @@ import 'package:flutter_svg/svg.dart';
 import '../../../core/models/professional_employment_model.dart';
 import '../../../core/widgets/appbar_widget_with_screens.dart';
 
-class ProfessionalEmploymentRequestDetailsScreen extends StatelessWidget {
-  const ProfessionalEmploymentRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive, required this.inProgress});
+class ProfessionalLaborRequestDetailsScreen extends StatelessWidget {
+  const ProfessionalLaborRequestDetailsScreen({super.key, required this.item, this.onPressed, required this.isArchive, required this.inProgress});
  final Item item;
  final Function()? onPressed;
   final bool isArchive;

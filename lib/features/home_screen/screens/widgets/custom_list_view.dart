@@ -7,6 +7,7 @@ import '../../../../config/routes/app_routes.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/assets_manager.dart';
 import '../../../../core/utils/style_text.dart';
+import '../../../track_orders_screen/track_orders_screen.dart';
 
 class CustomListView extends StatelessWidget {
   const CustomListView({super.key});
@@ -22,7 +23,7 @@ class CustomListView extends StatelessWidget {
           "follow_my_orders".tr(),
           ImageAssets.followUpOnOrdersIcon,
           () {
-            Navigator.pushNamed(context, Routes.followUpOnOrdersRoute);
+            Navigator.push(context,MaterialPageRoute(builder: (context) => const TrackOrdersScreen(),));
           },
         ),
         _buildListTile(

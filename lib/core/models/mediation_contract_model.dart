@@ -112,7 +112,14 @@ class Item {
     statusClient: json["status_client"],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     occupation: json["occupation"] == null ? null : Occupation.fromJson(json["occupation"]),
-    country: json["country"] == null ? null : Country.fromJson(json["country"]),
+    country: json["country"] is String
+        ? Country(id: null, name: json["country"]) // Handle string case
+        : json["country"] is Map<String, dynamic>
+        ? Country.fromJson(json["country"]) // Handle map case
+        : json["country"] == null || json["country"] is bool
+        ? null // Handle null or bool case
+        : throw Exception("Unexpected country type: ${json["country"]}"),
+    //country: json["country"] == null ? null : Country.fromJson(json["country"]),
     statusDisplay: json["status_display"] == null ? null : StatusDisplay.fromJson(json["status_display"]),
   );
 

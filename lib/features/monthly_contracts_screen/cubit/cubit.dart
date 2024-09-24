@@ -44,7 +44,7 @@ class MonthlyContractsCubit extends Cubit<MonthlyContractsState> {
 
     final response = await api.monthlyContractApi(
       pageNo: pageNo,
-      status: statusFromOrder, // Use status from the selected tab
+      status: statusFromOrder,
     );
 
     response.fold(
@@ -75,9 +75,8 @@ archiveMonthlyContract({required String itemId,required BuildContext context}) a
   );
 }
 
-  // Function to change the page
   void changePage(int newPage) {
     pageNo = newPage;
-    getMonthlyContract(); // Fetch the new page data
+    getMonthlyContract();
   }
 }

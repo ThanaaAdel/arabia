@@ -15,7 +15,6 @@ import 'package:arabia/features/monthly_contracts_screen/monthly_contracts_scree
 import 'package:arabia/features/notification_screen/screens/notification_screen.dart';
 import 'package:arabia/features/offers_screen/screens/widget/offers_details_screen.dart';
 import 'package:arabia/features/offers_screen/screens/offers_screen.dart';
-import 'package:arabia/features/professional_employment_screen/professional_employment_screen.dart';
 import 'package:arabia/features/setting_screen/screens/setting_screen.dart';
 import 'package:arabia/features/login/screens/verification_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +35,7 @@ import '../../features/insert_contract_month_screen/insert_contract_month_screen
 import '../../features/insert_contract_month_screen/widgets/total_data_from_month_contarct_screen.dart';
 import '../../features/insert_transfer_service.screen/screens/insert_transfer_service_screen.dart';
 import '../../features/login/screens/login_screen.dart';
+import '../../features/professional_labor_screen/professional_labor_screen.dart';
 import '../../features/transfer_service_screen/transfer_service_screen.dart';
 
 class Routes {
@@ -56,7 +56,6 @@ class Routes {
   static const String openChatComplaintsRoute = '/openChatComplaintsRoute';
   static const String closeChatComplaintsRoute = '/closeChatComplaintsRoute';
   static const String contractsRoute = '/contractsRoute';
-  static const String followUpOnOrdersRoute = '/followUpOnOrdersRoute';
   static const String hourlyContractsRoute = '/hourlyContractsRoute';
   static const String monthlyContractsRoute = '/monthlyContractsRoute';
   static const String transferServiceRoute = '/transferServiceRoute';
@@ -172,7 +171,7 @@ class AppRoutes {
         );
       case Routes.professionalEmploymentRoute:
         return MaterialPageRoute(
-          builder: (context) => const ProfessionalEmploymentScreen(),
+          builder: (context) => const ProfessionalLaborScreen(),
         );
       case Routes.transferServiceRoute:
         return MaterialPageRoute(
