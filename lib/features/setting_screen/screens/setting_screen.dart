@@ -1,5 +1,6 @@
 import 'package:arabia/config/routes/app_routes.dart';
-import 'package:arabia/features/setting_screen/screens/widgets/about_us.dart';
+import 'package:arabia/features/setting_screen/cubit/cubit.dart';
+import 'package:arabia/features/setting_screen/cubit/state.dart';
 import 'package:arabia/features/setting_screen/screens/widgets/contact_us.dart';
 import 'package:arabia/features/setting_screen/screens/widgets/our_info.dart';
 import 'package:arabia/features/setting_screen/screens/widgets/our_services.dart';
@@ -7,6 +8,7 @@ import 'package:arabia/features/setting_screen/screens/widgets/privacy_policy_sc
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:arabia/core/utils/assets_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -23,8 +25,14 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
+    var cubit = context.read<SettingCubit>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
@@ -114,7 +122,18 @@ class _SettingScreenState extends State<SettingScreen> {
                         title: "language".tr(),
                         icon: ImageAssets.langaugeIcon,
                       ),
-                      CustomRowSetting(
+                      BlocBuilder<SettingCubit,SettingState>(
+
+                        builder: (context,state) {
+                          return CustomRowSetting(
+                            title: "delete_account".tr(),
+                            onTap: () {
+                            cubit.deleteAccount(context);
+                            },
+                            icon: ImageAssets.deleteIcon,
+                          );
+                        }
+                      ),  CustomRowSetting(
                         title: "logout".tr(),
                         onTap: () {
                           Preferences.instance.clearShared().then((value) =>

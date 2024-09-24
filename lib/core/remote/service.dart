@@ -20,6 +20,7 @@ import '../models/archive_professional_employment_model.dart';
 import '../models/closed_complain_model.dart';
 import '../models/complete_register_model.dart';
 import '../models/contract_model.dart';
+import '../models/delete_model.dart';
 import '../models/experance_model.dart';
 import '../models/get_country_model.dart';
 import '../models/get_hourly__package_model.dart';
@@ -987,7 +988,32 @@ class ServiceApi {
       return Left(ServerFailure());
     }
   }
+  ////////////////////////delete account ///////////////////////
+  Future<Either<Failure, DeleteAccountModel>>
+  deleteApi() async {
+    LoginWithClientIdModel? loginWithSessionModel =
+    await Preferences.instance.getUserModelWithSession();
+    try {
+      var response = await dio.post(
+        EndPoints.baseUrl,
+        body: {
+          'action': "getDeleteAccountLink",
+          'apiToken': "x93mY",
+          'session_token': loginWithSessionModel?.data?.sessionToken ?? '',
+          'client_id': loginWithSessionModel?.data?.clientId,
+          'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
+        },
+        formDataIsEnabled: true,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
 
+      return Right(DeleteAccountModel.fromJson(response));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
   ////////////////////////HouseAccommondationType ///////////////////////
   Future<Either<Failure, HouseAccommondationTypeModel>>
       getClientHouseAccomonationTypeApi() async {
@@ -997,6 +1023,7 @@ class ServiceApi {
         body: {
           'action': "__getClientHouseAccommodationTypeOptions",
           'apiToken': "x93mY",
+
           'lang': await Preferences.instance.getSavedLang() == 'ar' ? 1 : 2,
         },
         formDataIsEnabled: true,

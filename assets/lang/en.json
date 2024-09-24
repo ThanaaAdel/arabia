@@ -142,6 +142,7 @@
     "upload_photo": "Upload Photo",
     "upload_file": "Upload File",
     "archive": "Archive",
+    "delete_account": " Delete Account",
     "invalid_file_url": "Invalid file URL",
     "no_directory_selected": "No directory selected",
     "selected_directory_not_exist": "Selected directory does not exist",
@@ -170,5 +171,7 @@
     "hours": "Hours",
     "please_select_a_time_after": "Please select a time after",
     "workers": "ًWorkers",
-    "worker": "ًWorker"
+    "worker": "ًWorker",
+    "delete_account_successfully": "Delete Account Successfully"
+
 }

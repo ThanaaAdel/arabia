@@ -441,7 +441,8 @@ class _ChoosePackageFromContractHourScreenState
                             return null;
                           },
                           dropdownColor: AppColors.white,
-                          items: List.generate(int.parse(widget.package.maxCountOfWorkersLimit!), (index) {
+                          items: List.generate(int.parse(widget.package.maxCountOfWorkersLimit!),
+                                  (index) {
                             int workerCount = index + 1;
                             return DropdownMenuItem<int>(
                               value: workerCount,

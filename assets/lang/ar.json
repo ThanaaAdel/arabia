@@ -167,7 +167,9 @@
   "hours": "ساعات",
   "workers": "عمال",
   "worker": "عامل",
+  "delete_account": "حذف الحساب",
   "could_not_launch_url": "لا يمكن تشغيل الرابط",
-  "please_select_a_time_after": "من فضلك اختار الوقت بعلا الساعة "
+  "please_select_a_time_after": "من فضلك اختار الوقت بعلا الساعة ",
+  "delete_account_successfully":"تم حذف حسابك بنجاح"
 
 }

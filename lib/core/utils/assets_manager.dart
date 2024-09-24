@@ -13,6 +13,8 @@ class ImageAssets {
 
   // icons
   static const String phoneIcon = '$iconsPath/phone.svg';
+  static const String deleteIcon = '$iconsPath/delete.svg';
+
   static const String notificationIconPage = '$imagePath/notification_icon_page.png';
   static const String unoCafeIcon = '$imagePath/arabia_icon.png';
   static const String splashBackgroundImage = '$iconsPath/splash_background.svg';
