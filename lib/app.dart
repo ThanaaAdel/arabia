@@ -14,7 +14,7 @@ import 'features/hourly_contracts_screen/cubit/cubit.dart';
 import 'features/insert_contract_houres_screen/cubit/cubit.dart';
 import 'features/insert_contract_month_screen/cubit/cubit.dart';
 import 'features/insert_mediation.screen/cubit/cubit.dart';
-import 'features/insert_professional_employment.screen/cubit/profissional_emploment_cubit.dart';
+import 'features/insert_professional_labor.screen/cubit/profissional_labor_cubit.dart';
 import 'features/insert_transfer_service.screen/cubit/insert_transfer_service_cubit.dart';
 import 'features/login/cubit/cubit.dart';
 import 'features/mediation_screen/cubit/cubit.dart';
@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
           ),BlocProvider(
             create: (_) => injector.serviceLocator<InsertMediationCubit>(),
           ),BlocProvider(
-            create: (_) => injector.serviceLocator<InsertProfessionalEmploymentCubit>(),
+            create: (_) => injector.serviceLocator<InsertProfessionalLaborCubit>(),
           ),BlocProvider(
             create: (_) => injector.serviceLocator<OffersCubit>(),
           ),BlocProvider(

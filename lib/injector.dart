@@ -15,7 +15,7 @@ import 'features/hourly_contracts_screen/cubit/cubit.dart';
 import 'features/insert_contract_houres_screen/cubit/cubit.dart';
 import 'features/insert_contract_month_screen/cubit/cubit.dart';
 import 'features/insert_mediation.screen/cubit/cubit.dart';
-import 'features/insert_professional_employment.screen/cubit/profissional_emploment_cubit.dart';
+import 'features/insert_professional_labor.screen/cubit/profissional_labor_cubit.dart';
 import 'features/insert_transfer_service.screen/cubit/insert_transfer_service_cubit.dart';
 import 'features/mediation_screen/cubit/cubit.dart';
 import 'features/monthly_contracts_screen/cubit/cubit.dart';
@@ -75,7 +75,7 @@ Future<void> setup() async {
     ),
   );
   serviceLocator.registerFactory(
-    () => InsertProfessionalEmploymentCubit(
+    () => InsertProfessionalLaborCubit(
       serviceLocator(),
     ),
   );

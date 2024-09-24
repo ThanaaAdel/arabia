@@ -1,30 +1,30 @@
 import 'package:arabia/core/utils/app_colors.dart';
-import 'package:arabia/features/insert_professional_employment.screen/screens/widgets/profictionail_employee_container.dart';
+import 'package:arabia/features/insert_professional_labor.screen/screens/widgets/profictionail_labor_container.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../config/routes/app_routes.dart';
 import '../../../core/widgets/appbar_widget_with_screens.dart';
-import '../cubit/profissional_emploment_cubit.dart';
-import '../cubit/profissional_emploment_state.dart';
+import '../cubit/profissional_labor_cubit.dart';
+import '../cubit/profissional_labor_state.dart';
 
-class InsertProfessionalEmploymentScreen extends StatefulWidget {
-  const InsertProfessionalEmploymentScreen({super.key, required this.clientId});
+class InsertProfessionalLaborScreen extends StatefulWidget {
+  const InsertProfessionalLaborScreen({super.key, required this.clientId});
 final String clientId;
   @override
-  State<InsertProfessionalEmploymentScreen> createState() => _InsertProfessionalEmploymentScreenState();
+  State<InsertProfessionalLaborScreen> createState() => _InsertProfessionalEmploymentScreenState();
 }
 
-class _InsertProfessionalEmploymentScreenState extends State<InsertProfessionalEmploymentScreen> {
+class _InsertProfessionalEmploymentScreenState extends State<InsertProfessionalLaborScreen> {
   @override
   initState() {
     super.initState();
-    context.read<InsertProfessionalEmploymentCubit>().getOccupationsData(clientId:widget.clientId);
-    context.read<InsertProfessionalEmploymentCubit>().getCountryData();
+    context.read<InsertProfessionalLaborCubit>().getOccupationsData(clientId:widget.clientId);
+    context.read<InsertProfessionalLaborCubit>().getCountryData();
   }
   Widget build(BuildContext context) {
-    var cubit = context.read<InsertProfessionalEmploymentCubit>();
+    var cubit = context.read<InsertProfessionalLaborCubit>();
     return SafeArea(
         child: Scaffold(
       backgroundColor: AppColors.white,
@@ -41,13 +41,13 @@ class _InsertProfessionalEmploymentScreenState extends State<InsertProfessionalE
             ),
 
             Expanded(
-              child: BlocBuilder<InsertProfessionalEmploymentCubit,InsertProfissionalEmplomentState>(
+              child: BlocBuilder<InsertProfessionalLaborCubit,InsertProfissionalLaborState>(
                 builder: (context,state) {
                   return (state is GetCountriesLoadingState ||state is GetOccupationsLoadingState || cubit.occupationsData == null || cubit.getCountriesModel == null)?
                   const Center(child: CircularProgressIndicator(),):
                   ListView.builder(
                             itemBuilder: (context, index) =>
-                             ProfessionalEmploymentContainer(
+                             ProfessionalLaborContainer(
                                cubit:cubit.occupationsData!.data![index],
                               onTap: () {
                                 Navigator.pushNamed(context, Routes.enterDataProfessionalEmploymentRoute,

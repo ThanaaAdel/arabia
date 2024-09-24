@@ -130,7 +130,6 @@ class ServiceApi {
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
-      print("the dddddddddddddddddddd${loginModel.data!.mobileNum}");
       return Right(CompleteRegisterModel.fromJson(response));
     } on ServerException {
       return Left(ServerFailure());
@@ -156,7 +155,6 @@ class ServiceApi {
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
-      print("the dddddddddddddddddddd${loginModel.data!.mobileNum}");
       return Right(LoginWithClientIdModel.fromJson(response));
     } on ServerException {
       return Left(ServerFailure());

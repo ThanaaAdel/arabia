@@ -1,26 +1,26 @@
 import 'package:arabia/core/utils/app_colors.dart';
 import 'package:arabia/core/widgets/button_widget.dart';
 import 'package:arabia/core/widgets/shared_text_filed.dart';
+import 'package:arabia/features/insert_professional_labor.screen/cubit/profissional_labor_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/widgets/appbar_widget_with_screens.dart';
 import '../../../../core/widgets/custom_drop_down.dart';
-import '../../cubit/profissional_emploment_cubit.dart';
-import '../../cubit/profissional_emploment_state.dart';
+import '../../cubit/profissional_labor_cubit.dart';
 
-class EnterDataProfessionalEmploymentScreen extends StatefulWidget {
-  const EnterDataProfessionalEmploymentScreen({super.key, required this.accId});
+class EnterDataProfessionalLaborScreen extends StatefulWidget {
+  const EnterDataProfessionalLaborScreen({super.key, required this.accId});
   final String accId;
 
   @override
-  State<EnterDataProfessionalEmploymentScreen> createState() =>
+  State<EnterDataProfessionalLaborScreen> createState() =>
       _EnterDataProfessionalEmploymentScreenState();
 }
 
 class _EnterDataProfessionalEmploymentScreenState
-    extends State<EnterDataProfessionalEmploymentScreen> {
+    extends State<EnterDataProfessionalLaborScreen> {
   String? visaNumber;
 
   int? selectedNationalityId;
@@ -28,22 +28,22 @@ class _EnterDataProfessionalEmploymentScreenState
   @override
   void initState() {
     super.initState();
-    context.read<InsertProfessionalEmploymentCubit>().getExperiencesData();
-    context.read<InsertProfessionalEmploymentCubit>().getCountryData();
-    context.read<InsertProfessionalEmploymentCubit>().getReligionData();
+    context.read<InsertProfessionalLaborCubit>().getExperiencesData();
+    context.read<InsertProfessionalLaborCubit>().getCountryData();
+    context.read<InsertProfessionalLaborCubit>().getReligionData();
   }
 
   @override
   Widget build(BuildContext context) {
-    var cubit = context.read<InsertProfessionalEmploymentCubit>();
+    var cubit = context.read<InsertProfessionalLaborCubit>();
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
         body: Padding(
           padding: EdgeInsets.all(10.0.sp),
-          child: BlocBuilder<InsertProfessionalEmploymentCubit,
-              InsertProfissionalEmplomentState>(
+          child: BlocBuilder<InsertProfessionalLaborCubit,
+              InsertProfissionalLaborState>(
             builder: (context, state) {
               if (state is GetExperiencesLoadingState ||
                   state is GetCountriesLoadingState ||
@@ -122,8 +122,8 @@ class _EnterDataProfessionalEmploymentScreenState
                         },
                       ),
                       SizedBox(height: 20.h),
-                      BlocBuilder<InsertProfessionalEmploymentCubit,
-                          InsertProfissionalEmplomentState>(
+                      BlocBuilder<InsertProfessionalLaborCubit,
+                          InsertProfissionalLaborState>(
                         builder: (context, state) {
                           return (state is InsertProfissionalEmploymentLoadingState)
                               ? Center(

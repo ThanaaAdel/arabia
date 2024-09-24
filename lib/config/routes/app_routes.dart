@@ -3,11 +3,10 @@ import 'package:arabia/features/complain_screen/widgets/open_chat_complaints_scr
 import 'package:arabia/features/insert_contract_month_screen/cubit/cubit.dart';
 import 'package:arabia/features/insert_contract_month_screen/widgets/choose_package_from_contract_month.dart';
 import 'package:arabia/features/insert_mediation.screen/screens/insert_mediation_screen.dart';
-import 'package:arabia/features/insert_professional_employment.screen/screens/professional_employment.dart';
+import 'package:arabia/features/insert_professional_labor.screen/screens/professional_labor.dart';
 import 'package:arabia/features/login/screens/complete_the_registration_data_screen.dart';
 import 'package:arabia/features/contarcts_screen/contarcts_screen.dart';
 import 'package:arabia/features/insert_contract_houres_screen/widgets/choose_package_from_contract_hour.dart';
-import 'package:arabia/features/insert_professional_employment.screen/screens/widgets/enter_data_professional_employment.screen.dart';
 import 'package:arabia/features/home_screen/screens/home_Screen.dart';
 import 'package:arabia/features/complain_screen/widgets/new_complaint_screen.dart';
 import 'package:arabia/features/mediation_screen/mediation_contracts_screen.dart';
@@ -33,6 +32,7 @@ import '../../features/insert_contract_houres_screen/widgets/total_data_from_hou
 import '../../features/hourly_contracts_screen/hourly_contracts_screen.dart';
 import '../../features/insert_contract_month_screen/insert_contract_month_screen.dart';
 import '../../features/insert_contract_month_screen/widgets/total_data_from_month_contarct_screen.dart';
+import '../../features/insert_professional_labor.screen/screens/widgets/enter_data_professional_labor.screen.dart';
 import '../../features/insert_transfer_service.screen/screens/insert_transfer_service_screen.dart';
 import '../../features/login/screens/login_screen.dart';
 import '../../features/professional_labor_screen/professional_labor_screen.dart';
@@ -114,7 +114,7 @@ class AppRoutes {
       case Routes.insertProfessionalEmploymentRoute:
         final clientId = settings.arguments as String;
         return MaterialPageRoute(
-          builder: (context) => InsertProfessionalEmploymentScreen(
+          builder: (context) => InsertProfessionalLaborScreen(
             clientId: clientId,
           ),
         );
@@ -180,7 +180,7 @@ class AppRoutes {
       case Routes.enterDataProfessionalEmploymentRoute:
         final occId = settings.arguments as String;
         return MaterialPageRoute(
-          builder: (context) => EnterDataProfessionalEmploymentScreen(
+          builder: (context) => EnterDataProfessionalLaborScreen(
             accId: occId,
           ),
         );

@@ -7,8 +7,8 @@ import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/assets_manager.dart';
 import '../../../../core/utils/style_text.dart';
 
-class ProfessionalEmploymentContainer extends StatelessWidget {
-  const ProfessionalEmploymentContainer({
+class ProfessionalLaborContainer extends StatelessWidget {
+  const ProfessionalLaborContainer({
     super.key, this.onTap, required this.cubit,
   });
   final Function()? onTap;

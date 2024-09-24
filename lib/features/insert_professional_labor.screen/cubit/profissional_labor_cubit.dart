@@ -4,7 +4,7 @@ import 'package:arabia/core/models/get_occupations_model.dart';
 import 'package:arabia/core/models/religions_model.dart';
 import 'package:arabia/core/remote/service.dart';
 import 'package:arabia/core/utils/dialogs.dart';
-import 'package:arabia/features/insert_professional_employment.screen/cubit/profissional_emploment_state.dart';
+import 'package:arabia/features/insert_professional_labor.screen/cubit/profissional_labor_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +12,8 @@ import '../../../core/models/experance_model.dart';
 import '../../../core/models/get_country_model.dart';
 import '../../../core/models/insert_profissional_employment_model.dart';
 
-class InsertProfessionalEmploymentCubit extends Cubit<InsertProfissionalEmplomentState> {
-  InsertProfessionalEmploymentCubit(this.api) : super(InsertProfissionalEmplomentInitial());
+class InsertProfessionalLaborCubit extends Cubit<InsertProfissionalLaborState> {
+  InsertProfessionalLaborCubit(this.api) : super(InsertProfissionalLaborInitial());
   ServiceApi api;
   GetOccupationsModel? occupationsData;
   GetCountriesModel?  getCountriesModel;
