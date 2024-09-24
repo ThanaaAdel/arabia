@@ -31,29 +31,23 @@ class _ChoosePackageFromContractHourScreenState
 
   double get subTotal {
     final numberOfDays = widget.cubit.selectedDatesFromServiceDays.length;
-    print("numberOfDays: $numberOfDays");
     final numberOfWorkers = (widget.package.countOfWorkersSelectsMethod == 'restricted')
-        ? int.tryParse(widget.package.restrictCountOfWorkers.toString()) // استخدم العدد المحدد في `restrictCountOfWorkers`
-        : (widget.cubit.numberOfWorkersController.text.isNotEmpty // إذا كان النص في الحقل غير فارغ
-        ? int.tryParse(widget.cubit.numberOfWorkersController.text) // حاول تحويله إلى عدد
-        : null); // إذا لم يتم إدخال أي شيء، لا تستخدم قيمة افتراضية print("numberOfWorkers: $numberOfWorkers");
-    final costPerHour =
-        int.tryParse(widget.package.costOfWorkerPerHour ?? '') ?? 1;
-    print("costPerHour: $costPerHour");
-
-    final numberOfHours =
-        (widget.package.serviceTimeSelectsMethod == 'restricted')
-            ? calculateHoursDifference(widget.package.restrictServiceTimeStart!,
-                widget.package.restrictServiceTimeEnd!)
-            : calculateHoursDifference(widget.cubit.fromHourController.text,
-                widget.cubit.toHourController.text);
-    print("workers: $numberOfWorkers");
-    print("numberOfHours: $numberOfHours");
+        ? int.tryParse(widget.package.restrictCountOfWorkers.toString())
+        : (widget.cubit.numberOfWorkersController.text.isNotEmpty
+        ? int.tryParse(widget.cubit.numberOfWorkersController.text)
+        : null);
+    final costPerHour = int.tryParse(widget.package.costOfWorkerPerHour ?? '') ?? 1;
+    final numberOfHours = (widget.package.serviceTimeSelectsMethod == 'restricted')
+        ? calculateHoursDifference(widget.package.restrictServiceTimeStart!,
+        widget.package.restrictServiceTimeEnd!)
+        : calculateHoursDifference(widget.cubit.fromHourController.text,
+        widget.cubit.toHourController.text);
 
     return (numberOfDays.toDouble() ?? 0.0) *
         (numberOfWorkers ?? 1) *
         (costPerHour ?? 0) *
-        (numberOfHours ?? 0);  }
+        (numberOfHours ?? 0);
+  }
 
   int calculateHoursDifference(String fromTime, String toTime) {
     if (fromTime.isEmpty || toTime.isEmpty) return 0;
@@ -78,14 +72,11 @@ class _ChoosePackageFromContractHourScreenState
     }
 
     final durationInMinutes = toInMinutes - fromInMinutes;
-    return (durationInMinutes / 60).ceil(); // Convert minutes to hours
+    return (durationInMinutes / 60).ceil();
   }
 
   double get ratio {
-    // Parse taxRatio to double to handle decimal percentages correctly
     double taxRatio = double.tryParse(widget.package.taxRatio ?? '0') ?? 0;
-
-    // Calculate the tax amount by multiplying subtotal with the tax ratio divided by 100
     return (subTotal * (taxRatio / 100));
   }
 
@@ -124,7 +115,7 @@ class _ChoosePackageFromContractHourScreenState
       final duration = toInMinutes - fromInMinutes;
       final maxDurationInMinutes =
           (int.tryParse(widget.package.maxServiceTimeDurationLimit ?? '0') ??
-                  0) *
+              0) *
               60;
       if (duration > maxDurationInMinutes) {
         widget.cubit.toHourController.clear();
@@ -145,13 +136,10 @@ class _ChoosePackageFromContractHourScreenState
 
   Future<void> _pickTime(BuildContext context, TextEditingController controller,
       {bool isFromTime = false}) async {
-    // تعيين الوقت الأدنى المسموح به
     TimeOfDay minTime = const TimeOfDay(hour: 2, minute: 0);
 
-    // تحديد الوقت المختار سابقًا
     TimeOfDay? selectedTime;
 
-    // التحقق من الحقل الذي يتم تحريره حاليًا، إما "من الوقت" أو "إلى الوقت"
     if (controller.text.isNotEmpty) {
       final timeParts = controller.text.split(' ');
       final timeComponents = timeParts[0].split(':');
@@ -166,22 +154,19 @@ class _ChoosePackageFromContractHourScreenState
       selectedTime = TimeOfDay(hour: hour, minute: minute);
     }
 
-    // فتح نافذة اختيار الوقت
     TimeOfDay? pickedTime = await showTimePicker(
-      initialEntryMode: TimePickerEntryMode.inputOnly, // العرض على صيغة الإدخال النصي افتراضياً
-      initialTime: selectedTime ?? minTime, // الوقت المبدئي يكون الوقت المختار مسبقاً
+      initialEntryMode: TimePickerEntryMode.inputOnly,
+      initialTime: selectedTime ?? minTime,
       context: context,
     );
 
     if (pickedTime != null) {
-      // تحديد إذا كان يتم اختيار وقت "من" أو "إلى"
       if (isFromTime) {
-        // التحقق من أن الوقت المختار بعد الحد الأدنى
         if (pickedTime.hour > minTime.hour ||
             (pickedTime.hour == minTime.hour &&
                 pickedTime.minute >= minTime.minute)) {
           setState(() {
-            controller.text = pickedTime.format(context); // حفظ الوقت في الحقل
+            controller.text = pickedTime.format(context);
             _validateAndShowError(context);
           });
         } else {
@@ -194,7 +179,6 @@ class _ChoosePackageFromContractHourScreenState
           );
         }
       } else {
-        // التحقق من أن وقت "إلى" بعد وقت "من"
         if (widget.cubit.fromHourController.text.isNotEmpty) {
           final fromTimeParts = widget.cubit.fromHourController.text.split(' ');
           final fromTimeComponents = fromTimeParts[0].split(':');
@@ -213,7 +197,7 @@ class _ChoosePackageFromContractHourScreenState
               (pickedTime.hour == fromTime.hour &&
                   pickedTime.minute > fromTime.minute)) {
             setState(() {
-              controller.text = pickedTime.format(context); // حفظ الوقت المختار
+              controller.text = pickedTime.format(context);
               _validateAndShowError(context);
             });
           } else {
@@ -235,8 +219,6 @@ class _ChoosePackageFromContractHourScreenState
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -255,74 +237,73 @@ class _ChoosePackageFromContractHourScreenState
               child: Padding(
                 padding: EdgeInsets.all(10.0.sp),
                 child: Form(
-                  key: _formKey, // Use form key for validation
+                  key: _formKey,
                   child: ListView(
                     shrinkWrap: true,
                     physics: const AlwaysScrollableScrollPhysics(),
                     children: [
                       widget.package.serviceTimeSelectsMethod == 'opened' ||
-                              widget.package.serviceTimeSelectsMethod ==
-                                  'restricted'
+                          widget.package.serviceTimeSelectsMethod ==
+                              'restricted'
                           ? const SizedBox()
                           : Container(
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 16.0.sp),
-                              decoration: BoxDecoration(
-                                color: AppColors.blue.withOpacity(0.08),
-                                borderRadius: BorderRadius.circular(8.0.sp),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 20.h),
-                                  Text(
-                                    "service_days_available".tr(),
-                                    style: TextStyle(fontSize: 16.sp),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      ...widget.package.availableServicePackage!
-                                          .map((servicePackage) {
-                                        return Row(
-                                          children: [
-                                            Radio<int>(
-                                              value: int.parse(servicePackage.id
-                                                  .toString()), // Ensure this is an int
-                                              groupValue: selectedTransferType,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedTransferType =
-                                                      value; // Correct type casting
-                                                  widget
-                                                          .cubit
-                                                          .fromHourController
-                                                          .text =
-                                                      servicePackage.fromTime!;
-                                                  widget.cubit.toHourController
-                                                          .text =
-                                                      servicePackage.toTime!;
-                                                });
-                                              },
-                                              activeColor: Colors.blue,
-                                            ),
-                                            Text(
-                                              servicePackage.title!,
-                                              style: TextStyle(
-                                                fontSize: 14.sp,
-                                                color: Colors.grey[700],
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                        padding:
+                        EdgeInsets.symmetric(horizontal: 16.0.sp),
+                        decoration: BoxDecoration(
+                          color: AppColors.blue.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(8.0.sp),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 20.h),
+                            Text(
+                              "service_days_available".tr(),
+                              style: TextStyle(fontSize: 16.sp),
                             ),
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                ...widget.package.availableServicePackage!
+                                    .map((servicePackage) {
+                                  return Row(
+                                    children: [
+                                      Radio<int>(
+                                        value: int.parse(servicePackage.id
+                                            .toString()),
+                                        groupValue: selectedTransferType,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedTransferType = value;
+                                            widget
+                                                .cubit
+                                                .fromHourController
+                                                .text =
+                                            servicePackage.fromTime!;
+                                            widget.cubit.toHourController
+                                                .text =
+                                            servicePackage.toTime!;
+                                          });
+                                        },
+                                        activeColor: Colors.blue,
+                                      ),
+                                      Text(
+                                        servicePackage.title!,
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(height: 10.h),
                       if (widget.package.serviceTimeSelectsMethod ==
                           'restricted') ...[
@@ -368,7 +349,6 @@ class _ChoosePackageFromContractHourScreenState
                             }
                           },
                           validator: (value) {
-                            // Add validator here
                             if (value == null || value.isEmpty) {
                               return 'please_enter_valid_time'.tr();
                             }
@@ -400,7 +380,6 @@ class _ChoosePackageFromContractHourScreenState
                             }
                           },
                           validator: (value) {
-                            // Add validator here
                             if (value == null || value.isEmpty) {
                               return 'please_enter_valid_time'.tr();
                             }
@@ -418,49 +397,8 @@ class _ChoosePackageFromContractHourScreenState
                           color: AppColors.blue.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(8.0.sp),
                         ),
-                        child:DropdownButtonFormField<int>(
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.blue.withOpacity(0.33)),
-                            ),
-                            hintText: "number_of_workers".tr(),
-                            contentPadding: EdgeInsets.only(bottom: 10.h),
-                            hintStyle: TextStyles.size16FontWidgetRegularGrayLight,
-                            labelStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.sp,
-                                color: AppColors.black.withOpacity(0.5)),
-                          ),
-                          value: widget.cubit.numberOfWorkersController.text.isNotEmpty
-                              ? int.tryParse(widget.cubit.numberOfWorkersController.text)
-                              : null, // استخدم القيمة المدخلة فقط إذا كانت موجودة
-                          validator: (value) {
-                            if (value == null) {
-                              return 'please_select_number_of_workers'.tr();
-                            }
-                            return null;
-                          },
-                          dropdownColor: AppColors.white,
-                          items: List.generate(int.parse(widget.package.maxCountOfWorkersLimit!),
-                                  (index) {
-                            int workerCount = index + 1;
-                            return DropdownMenuItem<int>(
-                              value: workerCount,
-                              child: Text(workerCount <= 2 ? "$workerCount ${'worker'.tr()}" : "$workerCount ${'workers'.tr()}"),
-                            );
-                          }),
-                          onChanged: (value) {
-                            setState(() {
-                              widget.cubit.numberOfWorkersController.text = value.toString();
-                            });
-                          },
-                        ),
-
-
-
-
+                        child: _buildWorkerSelectionDropdown(),
                       ),
-
                       SizedBox(height: 20.h),
                       _buildDateFilter(context),
                       if (widget.cubit.selectedDatesFromServiceDays.isNotEmpty)
@@ -499,10 +437,9 @@ class _ChoosePackageFromContractHourScreenState
                             selectedCountryId = widget
                                 .package.availableCountries!
                                 .firstWhere((country) =>
-                                    country.name == selectedNationality)
+                            country.name == selectedNationality)
                                 .id;
                           });
-                          print('Selected nationality: $selectedNationality');
                         },
                       ),
                       SizedBox(height: 20.h),
@@ -565,72 +502,66 @@ class _ChoosePackageFromContractHourScreenState
                         builder: (context, state) {
                           return (state is InsertHourlyDataLoadingState)
                               ? Center(
-                                  child: CircularProgressIndicator(
-                                  color: AppColors.blue,
-                                ))
+                              child: CircularProgressIndicator(
+                                color: AppColors.blue,
+                              ))
                               : ButtonWidget(
-                                  textButton: "order_now".tr(),
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate() &&
-                                        selectedCountryId != null) {
-                                      print(
-                                          'From Time: ${widget.cubit.fromHourController.text}');
-                                      print(
-                                          'To Time: ${widget.cubit.toHourController.text}');
-
-                                      widget.cubit.insertHourlyData(
-                                        serviceTimeFrom: widget.package
-                                                    .serviceTimeSelectsMethod ==
-                                                'restricted'
-                                            ? widget.package
-                                                .restrictServiceTimeStart
-                                                .toString()
-                                            : widget
-                                                .cubit.fromHourController.text,
-                                        serviceTimeTo: widget.package
-                                                    .serviceTimeSelectsMethod ==
-                                                'restricted'
-                                            ? widget
-                                                .package.restrictServiceTimeEnd
-                                                .toString()
-                                            : widget
-                                                .cubit.toHourController.text,
-                                        countOfWorkers: widget.package
-                                                    .countOfWorkersSelectsMethod ==
-                                                'restricted'
-                                            ? widget
-                                                .package.restrictCountOfWorkers
-                                                .toString()
-                                            : widget.cubit
-                                                .numberOfWorkersController.text,
-                                        context: context,
-                                        countryId: selectedCountryId.toString(),
-                                        occId: int.parse(widget.package.occId!),
-                                        hourlyRentalMobilePackageId:
-                                            int.parse(widget.package.id!),
-                                        costWithoutTax: subTotal,
-                                        costTax: ratio,
-                                        costIncludeTax: total,
-                                        costTaxRatio: ratio,
-                                        visitPackageId: int.parse(
-                                            selectedTransferType.toString()),
-                                      );
-                                    } else {
-                                      // Show error message if nationality is not selected
-                                      if (selectedCountryId == null) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                                "please_select_a_nationality"
-                                                    .tr()),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  },
+                            textButton: "order_now".tr(),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate() &&
+                                  selectedCountryId != null) {
+                                widget.cubit.insertHourlyData(
+                                  serviceTimeFrom: widget.package
+                                      .serviceTimeSelectsMethod ==
+                                      'restricted'
+                                      ? widget.package
+                                      .restrictServiceTimeStart
+                                      .toString()
+                                      : widget
+                                      .cubit.fromHourController.text,
+                                  serviceTimeTo: widget.package
+                                      .serviceTimeSelectsMethod ==
+                                      'restricted'
+                                      ? widget
+                                      .package.restrictServiceTimeEnd
+                                      .toString()
+                                      : widget
+                                      .cubit.toHourController.text,
+                                  countOfWorkers: widget.package
+                                      .countOfWorkersSelectsMethod ==
+                                      'restricted'
+                                      ? widget
+                                      .package.restrictCountOfWorkers
+                                      .toString()
+                                      : widget.cubit
+                                      .numberOfWorkersController.text,
+                                  context: context,
+                                  countryId: selectedCountryId.toString(),
+                                  occId: int.parse(widget.package.occId!),
+                                  hourlyRentalMobilePackageId:
+                                  int.parse(widget.package.id!),
+                                  costWithoutTax: subTotal,
+                                  costTax: ratio,
+                                  costIncludeTax: total,
+                                  costTaxRatio: ratio,
+                                  visitPackageId: int.parse(
+                                      selectedTransferType.toString()),
                                 );
+                              } else {
+                                if (selectedCountryId == null) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          "please_select_a_nationality"
+                                              .tr()),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                          );
                         },
                       )
                     ],
@@ -644,11 +575,62 @@ class _ChoosePackageFromContractHourScreenState
     );
   }
 
+  Widget _buildWorkerSelectionDropdown() {
+    final isWorkerCountRestricted =
+        widget.package.countOfWorkersSelectsMethod == 'restricted';
+
+    return isWorkerCountRestricted
+        ? Text(
+      '${"number_of_workers".tr()}: ${widget.package.restrictCountOfWorkers}',
+      style: TextStyle(fontSize: 16.sp),
+    )
+        : DropdownButtonFormField<int>(
+      decoration: InputDecoration(
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+              color: AppColors.blue.withOpacity(0.33)),
+        ),
+        hintText: "number_of_workers".tr(),
+        contentPadding: EdgeInsets.only(bottom: 10.h),
+        hintStyle: TextStyles.size16FontWidgetRegularGrayLight,
+        labelStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16.sp,
+            color: AppColors.black.withOpacity(0.5)),
+      ),
+      value: widget.cubit.numberOfWorkersController.text.isNotEmpty
+          ? int.tryParse(widget.cubit.numberOfWorkersController.text)
+          : null,
+      validator: (value) {
+        if (value == null) {
+          return 'please_select_number_of_workers'.tr();
+        }
+        return null;
+      },
+      dropdownColor: AppColors.white,
+      items: List.generate(
+          int.parse(widget.package.maxCountOfWorkersLimit ?? '5'),
+              (index) {
+            int workerCount = index + 1;
+            return DropdownMenuItem<int>(
+              value: workerCount,
+              child: Text(workerCount <= 2
+                  ? "$workerCount ${'worker'.tr()}"
+                  : "$workerCount ${'workers'.tr()}"),
+            );
+          }),
+      onChanged: (value) {
+        setState(() {
+          widget.cubit.numberOfWorkersController.text = value.toString();
+        });
+      },
+    );
+  }
+
   Widget _buildDateFilter(BuildContext context) {
     return SharedTextFiled(
       suffixIcon: GestureDetector(
         onTap: () async {
-          // تحقق من عدد الأيام لا يتجاوز الحد الأقصى
           if (widget.cubit.selectedDatesFromServiceDays.length >=
               int.tryParse(widget.package.maxServiceDaysLimit ?? '0')!) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -665,9 +647,8 @@ class _ChoosePackageFromContractHourScreenState
             context: context,
             initialDatePickerMode: DatePickerMode.day,
             initialDate: widget.cubit.selectedDate ?? DateTime.now(),
-            firstDate: DateTime.now(), // تعديل لتكون أول تاريخ هو اليوم الحالي
+            firstDate: DateTime.now(),
             lastDate: DateTime(2025),
-
             builder: (context, child) {
               return Theme(
                 data: Theme.of(context).copyWith(
@@ -689,11 +670,9 @@ class _ChoosePackageFromContractHourScreenState
             },
           );
 
-
-          // تحقق من أن التاريخ المختار ليس موجودًا بالفعل في القائمة (حسب اليوم فقط)
           if (picked != null &&
               !widget.cubit.selectedDatesFromServiceDays.any((date) =>
-                  date.year == picked.year &&
+              date.year == picked.year &&
                   date.month == picked.month &&
                   date.day == picked.day)) {
             setState(() {
@@ -709,7 +688,7 @@ class _ChoosePackageFromContractHourScreenState
       readOnly: true,
       enableOrNot: true,
       hintText:
-          "service_days_available".tr() + widget.package.maxServiceDaysLimit.toString(),
+      "service_days_available".tr() + widget.package.maxServiceDaysLimit.toString(),
       onSaved: (p0) {},
     );
   }
