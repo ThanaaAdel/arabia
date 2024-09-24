@@ -8,7 +8,7 @@ import '../cubit/cubit.dart';
 class MediationContractsWidget extends StatelessWidget {
   final String text;
   int selectedIndexOrder;
-  MediationContractsCubit cubit;
+  MediationCubit cubit;
   MediationContractsWidget(
       {super.key,
       required this.text,

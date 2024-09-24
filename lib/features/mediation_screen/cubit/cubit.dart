@@ -1,5 +1,5 @@
 import 'package:arabia/core/utils/dialogs.dart';
-import 'package:arabia/features/mediation_contracts_screen/cubit/state.dart';
+import 'package:arabia/features/mediation_screen/cubit/state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,20 +7,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/models/mediation_contract_model.dart';
 import '../../../core/remote/service.dart';
 
-class MediationContractsCubit extends Cubit<MediationContractsState> {
-  MediationContractsCubit(this.api) : super(MainInitial());
+class MediationCubit extends Cubit<MediationState> {
+  MediationCubit(this.api) : super(MainInitial());
 
   ServiceApi api;
-  int selectedIndexOrder = 0; // 0 : pending, 1 : in_progress, 2 : archived
-  String statusFromOrder = 'pending'; // default status
+  int selectedIndexOrder = 0;
+  String statusFromOrder = 'pending';
   int pageNo = 1;
   int totalPages = 1;
-
-  // Function to handle tab change
   onTapChangeCurrentOrder(int index, BuildContext context) {
     selectedIndexOrder = index;
-
-    // Set status based on the selected index
     switch (selectedIndexOrder) {
       case 0:
         statusFromOrder = 'pending';
@@ -40,14 +36,12 @@ class MediationContractsCubit extends Cubit<MediationContractsState> {
   }
 
  MediationContractModel? mediationContractModel;
-
-  // Function to fetch contracts
   getMediationContract() async {
     emit(GetMediationContractLoadingState());
 
     final response = await api.mediationContractApi(
       pageNo: pageNo,
-      status: statusFromOrder, // Use status from the selected tab
+      status: statusFromOrder,
     );
 
     response.fold(
@@ -78,9 +72,8 @@ archiveMediationContract({required String itemId,required BuildContext context})
   );
 }
 
-  // Function to change the page
   void changePage(int newPage) {
     pageNo = newPage;
-    getMediationContract(); // Fetch the new page data
+    getMediationContract();
   }
 }

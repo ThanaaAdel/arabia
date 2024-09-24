@@ -57,7 +57,6 @@ int?selectedNationalityId;
                       CustomDropdownWidget(
                         label: "jop".tr(),
                         onChanged: (String? newValue) {
-                          // إيجاد الـ occId بناءً على الوظيفة المختارة
                           var selectedOccupation = cubit.occupationsModel?.data?.firstWhere(
                                 (occupation) => occupation.name == newValue,
                           );
@@ -67,7 +66,7 @@ int?selectedNationalityId;
                         },
                         items: cubit.occupationsModel != null && cubit.occupationsModel!.data!.isNotEmpty
                             ? cubit.occupationsModel!.data!.map((e) => e.name!).toList()
-                            : [], // عرض قائمة فارغة في حالة عدم توفر البيانات
+                            : [],
                       ),
 
                       SizedBox(
@@ -87,7 +86,7 @@ int?selectedNationalityId;
                         },
                         items: cubit.getCountriesModel != null && cubit.getCountriesModel!.data!.isNotEmpty
                             ? cubit.getCountriesModel!.data!.map((e) => e.name!).toList()
-                            : [], // عرض قائمة فارغة في حالة عدم توفر البيانات
+                            : [],
                       ),
                       SizedBox(
                         height: 20.h,
@@ -96,7 +95,7 @@ int?selectedNationalityId;
                         label: "employment_entity".tr(),
                         onChanged: (value) {
                           setState(() {
-                            cubit.selectedReligion = value; // حفظ القيمة المختارة للدين
+                            cubit.selectedReligion = value;
                           });
                         },
                         items: cubit.religionsModel?.data?.map((e) => e.name!).toList() ?? [],
@@ -108,11 +107,10 @@ int?selectedNationalityId;
                         label: "experience".tr(),
                         onChanged: (value) {
                           setState(() {
-                            cubit.selectedExperience = value; // Correctly saving the selected experience
-                            print("Selected Experience: ${cubit.selectedExperience}"); // Debug print statement
+                            cubit.selectedExperience = value;
                           });
                         },
-                        items: cubit.experanceModel?.data?.map((e) => e.name!).toList() ?? [], // Ensure this returns the correct list
+                        items: cubit.experanceModel?.data?.map((e) => e.name!).toList() ?? [],
                       ),
                       SizedBox(
                         height: 20.h,
@@ -127,7 +125,7 @@ int?selectedNationalityId;
                           if (value.length != 10) {
                             return 'visa_number_must_be_10_digits'.tr(); // رسالة الخطأ إذا لم يكن الطول 10 أرقام
                           }
-                          return null; // إذا كان التحقق صحيحاً، لا يوجد خطأ
+                          return null;
                         },
                         onSaved: (value) {
                           cubit.visaNo = value;
@@ -145,7 +143,7 @@ int?selectedNationalityId;
                             cubit.insertMediationRequestData(
                               context: context,
                               countryId:selectedNationalityId.toString(),
-                              occId: selectedOccupationId ?? 1, // استخدام الـ occId
+                              occId: selectedOccupationId ?? 1,
                             );
                           }
                         },

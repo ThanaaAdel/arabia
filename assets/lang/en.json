@@ -172,6 +172,7 @@
     "please_select_a_time_after": "Please select a time after",
     "workers": "ًWorkers",
     "worker": "ًWorker",
+    "please_enter_valid_time":"Please enter valid time",
     "delete_account_successfully": "Delete Account Successfully"
 
 }

@@ -1,6 +1,7 @@
 import 'package:arabia/core/utils/app_colors.dart';
 import 'package:arabia/core/widgets/button_widget.dart';
 import 'package:arabia/core/widgets/shared_text_filed.dart';
+import 'package:arabia/features/insert_contract_houres_screen/widgets/build_worker_selection_dropdown.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import '../../../core/utils/style_text.dart';
 import '../../../core/widgets/appbar_widget_with_screens.dart';
 import '../cubit/cubit.dart';
 import '../cubit/state.dart';
+import 'build_data_filter_widget.dart';
 import 'nationality_drop_down.dart';
 
 class ChoosePackageFromContractHourScreen extends StatefulWidget {
@@ -28,7 +30,6 @@ class _ChoosePackageFromContractHourScreenState
   final _formKey = GlobalKey<FormState>(); // Form key for validation
   int? selectedTransferType = 0;
   String? selectedCountryId;
-
   double get subTotal {
     final numberOfDays = widget.cubit.selectedDatesFromServiceDays.length;
     final numberOfWorkers = (widget.package.countOfWorkersSelectsMethod == 'restricted')
@@ -43,10 +44,10 @@ class _ChoosePackageFromContractHourScreenState
         : calculateHoursDifference(widget.cubit.fromHourController.text,
         widget.cubit.toHourController.text);
 
-    return (numberOfDays.toDouble() ?? 0.0) *
+    return (numberOfDays.toDouble()) *
         (numberOfWorkers ?? 1) *
-        (costPerHour ?? 0) *
-        (numberOfHours ?? 0);
+        (costPerHour) *
+        (numberOfHours);
   }
 
   int calculateHoursDifference(String fromTime, String toTime) {
@@ -204,7 +205,7 @@ class _ChoosePackageFromContractHourScreenState
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                    "Please select a time after ${widget.cubit.fromHourController.text}."),
+                    "${"please_select_a_time_after".tr()} ${widget.cubit.fromHourController.text}."),
                 backgroundColor: Colors.red,
               ),
             );
@@ -298,7 +299,7 @@ class _ChoosePackageFromContractHourScreenState
                                       ),
                                     ],
                                   );
-                                }).toList(),
+                                }),
                               ],
                             ),
                           ],
@@ -397,10 +398,15 @@ class _ChoosePackageFromContractHourScreenState
                           color: AppColors.blue.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(8.0.sp),
                         ),
-                        child: _buildWorkerSelectionDropdown(),
+                        child: BuildWorkerSelectionDropdown(
+                          package: widget.package,
+                          cubit: widget.cubit,
+                        ),
                       ),
                       SizedBox(height: 20.h),
-                      _buildDateFilter(context),
+                      BuildDataFilterWidget(cubit: widget.cubit,
+                      package: widget.package,
+                      ),
                       if (widget.cubit.selectedDatesFromServiceDays.isNotEmpty)
                         Padding(
                           padding: EdgeInsets.only(top: 10.h),
@@ -553,8 +559,7 @@ class _ChoosePackageFromContractHourScreenState
                                       .showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                          "please_select_a_nationality"
-                                              .tr()),
+                                          "please_select_a_nationality".tr()),
                                       backgroundColor: Colors.red,
                                     ),
                                   );
@@ -575,121 +580,6 @@ class _ChoosePackageFromContractHourScreenState
     );
   }
 
-  Widget _buildWorkerSelectionDropdown() {
-    final isWorkerCountRestricted =
-        widget.package.countOfWorkersSelectsMethod == 'restricted';
 
-    return isWorkerCountRestricted
-        ? Text(
-      '${"number_of_workers".tr()}: ${widget.package.restrictCountOfWorkers}',
-      style: TextStyle(fontSize: 16.sp),
-    )
-        : DropdownButtonFormField<int>(
-      decoration: InputDecoration(
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              color: AppColors.blue.withOpacity(0.33)),
-        ),
-        hintText: "number_of_workers".tr(),
-        contentPadding: EdgeInsets.only(bottom: 10.h),
-        hintStyle: TextStyles.size16FontWidgetRegularGrayLight,
-        labelStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.sp,
-            color: AppColors.black.withOpacity(0.5)),
-      ),
-      value: widget.cubit.numberOfWorkersController.text.isNotEmpty
-          ? int.tryParse(widget.cubit.numberOfWorkersController.text)
-          : null,
-      validator: (value) {
-        if (value == null) {
-          return 'please_select_number_of_workers'.tr();
-        }
-        return null;
-      },
-      dropdownColor: AppColors.white,
-      items: List.generate(
-          int.parse(widget.package.maxCountOfWorkersLimit ?? '5'),
-              (index) {
-            int workerCount = index + 1;
-            return DropdownMenuItem<int>(
-              value: workerCount,
-              child: Text(workerCount <= 2
-                  ? "$workerCount ${'worker'.tr()}"
-                  : "$workerCount ${'workers'.tr()}"),
-            );
-          }),
-      onChanged: (value) {
-        setState(() {
-          widget.cubit.numberOfWorkersController.text = value.toString();
-        });
-      },
-    );
-  }
 
-  Widget _buildDateFilter(BuildContext context) {
-    return SharedTextFiled(
-      suffixIcon: GestureDetector(
-        onTap: () async {
-          if (widget.cubit.selectedDatesFromServiceDays.length >=
-              int.tryParse(widget.package.maxServiceDaysLimit ?? '0')!) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                    "you_have_reached_the_maximum_number_of_service_days_allowed"
-                        .tr()),
-              ),
-            );
-            return;
-          }
-
-          final DateTime? picked = await showDatePicker(
-            context: context,
-            initialDatePickerMode: DatePickerMode.day,
-            initialDate: widget.cubit.selectedDate ?? DateTime.now(),
-            firstDate: DateTime.now(),
-            lastDate: DateTime(2025),
-            builder: (context, child) {
-              return Theme(
-                data: Theme.of(context).copyWith(
-                  colorScheme: ColorScheme.light(
-                    secondary: AppColors.primary,
-                    background: AppColors.blue,
-                    primary: AppColors.blue,
-                    onPrimary: AppColors.white,
-                    onSurface: AppColors.black,
-                  ),
-                  textButtonTheme: TextButtonThemeData(
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.blue,
-                    ),
-                  ),
-                ),
-                child: child!,
-              );
-            },
-          );
-
-          if (picked != null &&
-              !widget.cubit.selectedDatesFromServiceDays.any((date) =>
-              date.year == picked.year &&
-                  date.month == picked.month &&
-                  date.day == picked.day)) {
-            setState(() {
-              widget.cubit.selectedDatesFromServiceDays.add(picked);
-            });
-          }
-        },
-        child: Icon(
-          Icons.calendar_month,
-          color: AppColors.orange,
-        ),
-      ),
-      readOnly: true,
-      enableOrNot: true,
-      hintText:
-      "service_days_available".tr() + widget.package.maxServiceDaysLimit.toString(),
-      onSaved: (p0) {},
-    );
-  }
 }

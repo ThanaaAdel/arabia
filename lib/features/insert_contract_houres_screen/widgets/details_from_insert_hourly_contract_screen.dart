@@ -15,6 +15,19 @@ class DetailsFromHourlyContractScreen extends StatelessWidget {
   final InsertHourlyDataModel insertHourlyDataModel;
 
   @override
+  String formatTime(String time) {
+    try {
+      List<String> parts = time.split(':');
+      int hour = int.parse(parts[0]);
+      String minute = parts[1];
+      String period = hour >= 12 ? 'م' : 'ص';
+      hour = hour % 12;
+      hour = hour == 0 ? 12 : hour;
+      return '$hour:$minute $period';
+    } catch (e) {
+      return time;
+    }
+  }
   String formatDate(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
@@ -125,13 +138,12 @@ class DetailsFromHourlyContractScreen extends StatelessWidget {
                           _buildDetailRow(
                             context,
                             "from_date".tr(),
-                            insertHourlyDataModel.data?.serviceTimeFrom.toString() ??
-                                '',
+                            formatTime(    insertHourlyDataModel.data?.serviceTimeFrom.toString() ?? ''),
                           ),
                           _buildDetailRow(
                             context,
                             "to_date".tr(),
-                            insertHourlyDataModel.data?.serviceTimeTo.toString() ?? '',
+                            formatTime(insertHourlyDataModel.data?.serviceTimeTo.toString() ?? ''),
                           ),
                           _buildDetailRow(
                             context,

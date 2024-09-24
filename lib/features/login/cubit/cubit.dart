@@ -25,8 +25,6 @@ class LoginCubit extends Cubit<LoginState> {
     _countryCode = value;
   }
 
-  // استخدم مراجع جديدة للمفاتيح عند كل عملية تسجيل دخول
-
   GlobalKey<FormState> formKeyCompleteRegister = GlobalKey<FormState>();
 
   LoginModel? loginModel;

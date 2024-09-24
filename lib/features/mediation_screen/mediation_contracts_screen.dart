@@ -1,8 +1,8 @@
 import 'package:arabia/core/utils/app_colors.dart';
 import 'package:arabia/core/widgets/shared_appbar.dart';
-import 'package:arabia/features/mediation_contracts_screen/cubit/cubit.dart';
-import 'package:arabia/features/mediation_contracts_screen/widgets/mediation_contract_request_details_screen.dart';
-import 'package:arabia/features/mediation_contracts_screen/widgets/mediation_contracts-widget.dart';
+import 'package:arabia/features/mediation_screen/cubit/cubit.dart';
+import 'package:arabia/features/mediation_screen/widgets/mediation_contract_request_details_screen.dart';
+import 'package:arabia/features/mediation_screen/widgets/mediation_contracts-widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,13 +23,12 @@ class _MediationContractsScreenState extends State<MediationContractsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch data for the initial state
-    context.read<MediationContractsCubit>().getMediationContract();
+    context.read<MediationCubit>().getMediationContract();
   }
 
   @override
   Widget build(BuildContext context) {
-    var cubit = context.read<MediationContractsCubit>();
+    var cubit = context.read<MediationCubit>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -40,7 +39,7 @@ class _MediationContractsScreenState extends State<MediationContractsScreen> {
               child: SharedAppbar(text: "mediation".tr()),
             ),
             SizedBox(height: 20.h),
-            BlocBuilder<MediationContractsCubit, MediationContractsState>(
+            BlocBuilder<MediationCubit, MediationState>(
               builder: (context, state) {
                 return Expanded(
                   child: Column(

@@ -11,16 +11,14 @@ class MonthlyContractsCubit extends Cubit<MonthlyContractsState> {
   MonthlyContractsCubit(this.api) : super(MainInitial());
 
   ServiceApi api;
-  int selectedIndexOrder = 0; // 0 : pending, 1 : in_progress, 2 : archived
-  String statusFromOrder = 'pending'; // default status
+  int selectedIndexOrder = 0;
+  String statusFromOrder = 'pending';
   int pageNo = 1;
   int totalPages = 1;
 
-  // Function to handle tab change
   onTapChangeCurrentOrder(int index, BuildContext context) {
     selectedIndexOrder = index;
 
-    // Set status based on the selected index
     switch (selectedIndexOrder) {
       case 0:
         statusFromOrder = 'pending';
@@ -41,7 +39,6 @@ class MonthlyContractsCubit extends Cubit<MonthlyContractsState> {
 
  MonthlyContractModel? monthlyContractModel;
 
-  // Function to fetch contracts
   getMonthlyContract() async {
     emit(GetMonthlyContractLoadingState());
 

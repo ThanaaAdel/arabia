@@ -1,24 +1,21 @@
 import 'package:arabia/core/widgets/shared_appbar.dart';
-import 'package:arabia/features/follow_up_on_orders_screen/widgets/follow_up_on_orders_card.dart';
+import 'package:arabia/features/track_orders_screen/widgets/track_orders_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../config/routes/app_routes.dart';
 import '../../core/utils/assets_manager.dart';
-import 'cubit/cubit.dart';
 
-class FollowUpOnOrdersScreen extends StatefulWidget {
-  const FollowUpOnOrdersScreen({super.key});
+class TrackOrdersScreen extends StatefulWidget {
+  const TrackOrdersScreen({super.key});
 
   @override
-  State<FollowUpOnOrdersScreen> createState() => _FollowUpOnOrdersScreenState();
+  State<TrackOrdersScreen> createState() => _TrackOrdersScreenState();
 }
 
-class _FollowUpOnOrdersScreenState extends State<FollowUpOnOrdersScreen> {
+class _TrackOrdersScreenState extends State<TrackOrdersScreen> {
   @override
   Widget build(BuildContext context) {
-    var cubit = context.read<FollowUpOnOrdersCubit>();
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -31,7 +28,7 @@ class _FollowUpOnOrdersScreenState extends State<FollowUpOnOrdersScreen> {
             SizedBox(
               height: 20.h,
             ),
-            FollowUpOnOrdersCard(
+            TrackOrdersCard(
               onTap: () {
                 Navigator.pushNamed(context, Routes.hourlyContractsRoute);
               },
@@ -39,7 +36,7 @@ class _FollowUpOnOrdersScreenState extends State<FollowUpOnOrdersScreen> {
               title: "hourly_contracts".tr(),
 
             ),
-            FollowUpOnOrdersCard(
+            TrackOrdersCard(
               onTap: () {
                 Navigator.pushNamed(context, Routes.monthlyContractsRoute);
               },
@@ -47,20 +44,20 @@ class _FollowUpOnOrdersScreenState extends State<FollowUpOnOrdersScreen> {
               title: "monthly_contracts".tr(),
 
             ),
-            FollowUpOnOrdersCard(
+            TrackOrdersCard(
               onTap: () {
                 Navigator.pushNamed(context, Routes.mediationContractsRoute);
               },
               image: ImageAssets.mediationServiceIcon,
               title: "mediation".tr(),
             ),
-            FollowUpOnOrdersCard(
+            TrackOrdersCard(
               onTap: () {
                 Navigator.pushNamed(context, Routes.professionalEmploymentRoute);              },
               image: ImageAssets.professionalLaborIcon,
               title: "professional_labor".tr(),
             ),
-            FollowUpOnOrdersCard(
+            TrackOrdersCard(
               onTap: () {
                Navigator.pushNamed(context, Routes.transferServiceRoute);
               },

@@ -40,20 +40,15 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _getStoreUserWithSession() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userWithSession = prefs.getString('userWithSession');
-    print("Stored session data: $userWithSession"); // Debugging: Check stored session data
 
     if (userWithSession != null) {
-      // Fetch the user model correctly
       LoginWithClientIdModel? user = await Preferences.instance.getUserModelWithSession();
       if (user != null) {
-        print("Session found, navigating to Home."); // Debugging: Print if session is valid
         Navigator.pushReplacementNamed(context, Routes.homeRoute);
       } else {
-        print("Session data is invalid, navigating to Login."); // Debugging: Print if session is invalid
         Navigator.pushReplacementNamed(context, Routes.loginRoute);
       }
     } else {
-      print("No session found, navigating to Login."); // Debugging: Print when no session is found
       Navigator.pushReplacementNamed(context, Routes.loginRoute);
     }
   }

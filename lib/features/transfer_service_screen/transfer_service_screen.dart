@@ -23,7 +23,6 @@ class _TransferServiceScreenState extends State<TransferServiceScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch data for the initial state
     context.read<TransferServiceCubit>().getTransferService();
   }
 

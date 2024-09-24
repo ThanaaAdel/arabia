@@ -1,14 +1,14 @@
 import 'package:arabia/core/utils/app_colors.dart';
 import 'package:arabia/core/widgets/button_widget.dart';
 import 'package:arabia/core/widgets/shared_text_filed.dart';
-import 'package:arabia/features/enter_data_professional_employment.screen/cubit/state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/widgets/appbar_widget_with_screens.dart';
-import '../../../core/widgets/custom_drop_down.dart';
-import '../cubit/cubit.dart';
+import '../../../../core/widgets/appbar_widget_with_screens.dart';
+import '../../../../core/widgets/custom_drop_down.dart';
+import '../../cubit/profissional_emploment_cubit.dart';
+import '../../cubit/profissional_emploment_state.dart';
 
 class EnterDataProfessionalEmploymentScreen extends StatefulWidget {
   const EnterDataProfessionalEmploymentScreen({super.key, required this.accId});
@@ -28,22 +28,22 @@ class _EnterDataProfessionalEmploymentScreenState
   @override
   void initState() {
     super.initState();
-    context.read<EnterDataProfissionalEmployementCubit>().getExperiencesData();
-    context.read<EnterDataProfissionalEmployementCubit>().getCountryData();
-    context.read<EnterDataProfissionalEmployementCubit>().getReligionData();
+    context.read<InsertProfessionalEmploymentCubit>().getExperiencesData();
+    context.read<InsertProfessionalEmploymentCubit>().getCountryData();
+    context.read<InsertProfessionalEmploymentCubit>().getReligionData();
   }
 
   @override
   Widget build(BuildContext context) {
-    var cubit = context.read<EnterDataProfissionalEmployementCubit>();
+    var cubit = context.read<InsertProfessionalEmploymentCubit>();
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
         body: Padding(
           padding: EdgeInsets.all(10.0.sp),
-          child: BlocBuilder<EnterDataProfissionalEmployementCubit,
-              EnterDataProfissionalEmployementState>(
+          child: BlocBuilder<InsertProfessionalEmploymentCubit,
+              InsertProfissionalEmplomentState>(
             builder: (context, state) {
               if (state is GetExperiencesLoadingState ||
                   state is GetCountriesLoadingState ||
@@ -122,8 +122,8 @@ class _EnterDataProfessionalEmploymentScreenState
                         },
                       ),
                       SizedBox(height: 20.h),
-                      BlocBuilder<EnterDataProfissionalEmployementCubit,
-                          EnterDataProfissionalEmployementState>(
+                      BlocBuilder<InsertProfessionalEmploymentCubit,
+                          InsertProfissionalEmplomentState>(
                         builder: (context, state) {
                           return (state is InsertProfissionalEmploymentLoadingState)
                               ? Center(

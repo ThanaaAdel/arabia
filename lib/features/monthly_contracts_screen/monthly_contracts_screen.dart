@@ -23,7 +23,6 @@ class _MonthlyContractsScreenState extends State<MonthlyContractsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch data for the initial state
     context.read<MonthlyContractsCubit>().getMonthlyContract();
   }
 

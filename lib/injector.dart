@@ -11,15 +11,13 @@ import 'core/api/base_api_consumer.dart';
 import 'core/api/dio_consumer.dart';
 import 'features/complain_screen/cubit/cubit.dart';
 import 'features/contarcts_screen/cubit/cubit.dart';
-import 'features/enter_data_professional_employment.screen/cubit/cubit.dart';
-import 'features/follow_up_on_orders_screen/cubit/cubit.dart';
 import 'features/hourly_contracts_screen/cubit/cubit.dart';
 import 'features/insert_contract_houres_screen/cubit/cubit.dart';
 import 'features/insert_contract_month_screen/cubit/cubit.dart';
 import 'features/insert_mediation.screen/cubit/cubit.dart';
 import 'features/insert_professional_employment.screen/cubit/profissional_emploment_cubit.dart';
 import 'features/insert_transfer_service.screen/cubit/insert_transfer_service_cubit.dart';
-import 'features/mediation_contracts_screen/cubit/cubit.dart';
+import 'features/mediation_screen/cubit/cubit.dart';
 import 'features/monthly_contracts_screen/cubit/cubit.dart';
 import 'features/notification_screen/cubit/cubit.dart';
 import 'features/offers_screen/cubit/cubit.dart';
@@ -65,11 +63,7 @@ Future<void> setup() async {
       serviceLocator(),
     ),
   );
-  serviceLocator.registerFactory(
-    () => FollowUpOnOrdersCubit(
-      serviceLocator(),
-    ),
-  );
+
   serviceLocator.registerFactory(
     () => HourlyContractsCubit(
       serviceLocator(),
@@ -85,11 +79,7 @@ Future<void> setup() async {
       serviceLocator(),
     ),
   );
-  serviceLocator.registerFactory(
-    () => EnterDataProfissionalEmployementCubit(
-      serviceLocator(),
-    ),
-  );
+
   serviceLocator.registerFactory(
     () => OffersCubit(
       serviceLocator(),
@@ -116,7 +106,7 @@ Future<void> setup() async {
     ),
   );
   serviceLocator.registerFactory(
-    () => MediationContractsCubit(
+    () => MediationCubit(
       serviceLocator(),
     ),
   );

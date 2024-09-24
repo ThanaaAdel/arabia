@@ -10,30 +10,24 @@ class ContractsCubit extends Cubit<ContractsState> {
   ContractsCubit(this.api) : super(MainInitial());
 
   ServiceApi api;
-  int selectedIndexOrder = 0; // 0 : new
-  String status = 'new'; // تحديد الحالة افتراضيًا كـ "new"
+  int selectedIndexOrder = 0;
+  String status = 'new';
 
-  // قوائم لتخزين العقود بناءً على الحالة
   List<Item>? newContracts = [];
   List<Item>? archivedContracts = [];
 
-  // عند تغيير ترتيب العرض بناءً على حالة الفلتر
   onTapChangeCurrentOrder(int index, BuildContext context) {
     selectedIndexOrder = index;
-    // تحديث الحالة بناءً على الفلتر المختار
     status = selectedIndexOrder == 0 ? 'new' : 'archived';
-
     emit(ChangeStatusOfSelectedIndexOrder());
-    getContractData(); // استدعاء الدالة بدون تمرير status
+    getContractData();
   }
 
   ContractModel? contractModel;
-
-  // دالة لجلب البيانات من الـ API بناءً على الحالة المخزنة
   void getContractData() async {
     emit(GetContractsLoadingState());
     final result = await api.contractApi(
-      status: status, // استخدام الحالة المخزنة داخليًا
+      status: status,
     );
     result.fold(
           (failure) {
@@ -42,7 +36,6 @@ class ContractsCubit extends Cubit<ContractsState> {
           (r) {
         contractModel = r;
 
-        // تحديث القوائم بناءً على الحالة
         if (status == "new") {
           newContracts = contractModel?.data?.items
               ?.where((item) => item.statusClient == 'new')
@@ -58,21 +51,19 @@ class ContractsCubit extends Cubit<ContractsState> {
     );
   }
 
-  // دالة لأرشفة العقد
   archiveContract({required String fileId, required BuildContext context}) async {
     emit(ArchiveContractLoadingState());
     final response = await api.archiveContractApi(fileId: fileId);
     response.fold(
           (l) => emit(ArchiveContractErrorState()),
           (r) {
-        getContractData(); // بعد الأرشفة، أعد تحميل العقود بناءً على الحالة الحالية
+        getContractData();
         successGetBar('archive_contract_successfully'.tr());
         emit(ArchiveContractSuccessState());
       },
     );
   }
 
-  // دالة لإرجاع العقود المفلترة بناءً على الفلتر المختار (جديد أو مؤرشف)
   List<Item>? getFilteredContracts() {
     return selectedIndexOrder == 0 ? newContracts : archivedContracts;
   }

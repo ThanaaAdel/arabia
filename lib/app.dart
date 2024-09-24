@@ -9,8 +9,6 @@ import 'core/utils/app_strings.dart';
 import 'package:arabia/injector.dart' as injector;
 import 'features/complain_screen/cubit/cubit.dart';
 import 'features/contarcts_screen/cubit/cubit.dart';
-import 'features/enter_data_professional_employment.screen/cubit/cubit.dart';
-import 'features/follow_up_on_orders_screen/cubit/cubit.dart';
 import 'features/home_screen/cubit/cubit.dart';
 import 'features/hourly_contracts_screen/cubit/cubit.dart';
 import 'features/insert_contract_houres_screen/cubit/cubit.dart';
@@ -19,7 +17,7 @@ import 'features/insert_mediation.screen/cubit/cubit.dart';
 import 'features/insert_professional_employment.screen/cubit/profissional_emploment_cubit.dart';
 import 'features/insert_transfer_service.screen/cubit/insert_transfer_service_cubit.dart';
 import 'features/login/cubit/cubit.dart';
-import 'features/mediation_contracts_screen/cubit/cubit.dart';
+import 'features/mediation_screen/cubit/cubit.dart';
 import 'features/monthly_contracts_screen/cubit/cubit.dart';
 import 'features/notification_screen/cubit/cubit.dart';
 import 'features/offers_screen/cubit/cubit.dart';
@@ -69,9 +67,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(
             create: (_) => injector.serviceLocator<ContractsCubit>(),
           ),
-          BlocProvider(
-            create: (_) => injector.serviceLocator<FollowUpOnOrdersCubit>(),
-          ),
+
           BlocProvider(
             create: (_) => injector.serviceLocator<HourlyContractsCubit>(),
           ),BlocProvider(
@@ -80,8 +76,6 @@ class _MyAppState extends State<MyApp> {
             create: (_) => injector.serviceLocator<InsertMediationCubit>(),
           ),BlocProvider(
             create: (_) => injector.serviceLocator<InsertProfessionalEmploymentCubit>(),
-          ),BlocProvider(
-            create: (_) => injector.serviceLocator<EnterDataProfissionalEmployementCubit>(),
           ),BlocProvider(
             create: (_) => injector.serviceLocator<OffersCubit>(),
           ),BlocProvider(
@@ -93,7 +87,7 @@ class _MyAppState extends State<MyApp> {
           ),BlocProvider(
             create: (_) => injector.serviceLocator<MonthlyContractsCubit>(),
           ),BlocProvider(
-            create: (_) => injector.serviceLocator<MediationContractsCubit>(),
+            create: (_) => injector.serviceLocator<MediationCubit>(),
           ),BlocProvider(
             create: (_) => injector.serviceLocator<ProfessionalEmploymentCubit>(),
           ),BlocProvider(

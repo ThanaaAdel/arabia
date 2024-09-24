@@ -7,11 +7,10 @@ import 'package:arabia/features/insert_professional_employment.screen/screens/pr
 import 'package:arabia/features/login/screens/complete_the_registration_data_screen.dart';
 import 'package:arabia/features/contarcts_screen/contarcts_screen.dart';
 import 'package:arabia/features/insert_contract_houres_screen/widgets/choose_package_from_contract_hour.dart';
-import 'package:arabia/features/enter_data_professional_employment.screen/screens/enter_data_professional_employment.screen.dart';
-import 'package:arabia/features/follow_up_on_orders_screen/follow_up_on_orders_screen.dart';
+import 'package:arabia/features/insert_professional_employment.screen/screens/widgets/enter_data_professional_employment.screen.dart';
 import 'package:arabia/features/home_screen/screens/home_Screen.dart';
 import 'package:arabia/features/complain_screen/widgets/new_complaint_screen.dart';
-import 'package:arabia/features/mediation_contracts_screen/mediation_contracts_screen.dart';
+import 'package:arabia/features/mediation_screen/mediation_contracts_screen.dart';
 import 'package:arabia/features/monthly_contracts_screen/monthly_contracts_screen.dart';
 import 'package:arabia/features/notification_screen/screens/notification_screen.dart';
 import 'package:arabia/features/offers_screen/screens/widget/offers_details_screen.dart';
@@ -28,7 +27,6 @@ import '../../core/models/login_with_client_id_model.dart';
 import '../../core/models/offers_model.dart';
 import '../../core/models/opening_complain_model.dart';
 import '../../core/utils/app_strings.dart';
-import 'package:page_transition/page_transition.dart';
 import '../../features/complain_screen/complaints_screen.dart';
 import '../../features/insert_contract_houres_screen/cubit/cubit.dart';
 import '../../features/insert_contract_houres_screen/insert_contract_hour_screen.dart';
@@ -159,10 +157,7 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (context) => const ContractsScreen(),
         );
-      case Routes.followUpOnOrdersRoute:
-        return MaterialPageRoute(
-          builder: (context) => const FollowUpOnOrdersScreen(),
-        );
+
       case Routes.hourlyContractsRoute:
         return MaterialPageRoute(
           builder: (context) => const HourlyContractsScreen(),

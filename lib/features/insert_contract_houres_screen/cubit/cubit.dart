@@ -3,7 +3,6 @@
 import 'package:arabia/config/routes/app_routes.dart';
 import 'package:arabia/core/models/get_hourly__package_model.dart';
 import 'package:arabia/core/models/insert_hourly_data_model.dart';
-import 'package:arabia/core/utils/dialogs.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,57 +22,6 @@ class InsertContractHourCubit extends Cubit<InsertContractHourState> {
   List<Package>? packagesModel;
   List<DateTime> selectedDatesFromServiceDays = [];
   DateTime? selectedDate;
-  // var ratio = 0.15;
-  //
-  // double calculateSubTotal() {
-  //   try {
-  //     // عدد الساعات: حساب الفرق بين وقت البداية ووقت النهاية
-  //     final fromHour = TimeOfDay(
-  //       hour: int.parse(fromHourController.text.split(':')[0]),
-  //       minute: int.parse(fromHourController.text.split(':')[1]),
-  //     );
-  //     final toHour = TimeOfDay(
-  //       hour: int.parse(toHourController.text.split(':')[0]),
-  //       minute: int.parse(toHourController.text.split(':')[1]),
-  //     );
-  //
-  //     // حساب عدد الساعات
-  //     int fromInMinutes = fromHour.hour * 60 + fromHour.minute;
-  //     int toInMinutes = toHour.hour * 60 + toHour.minute;
-  //     if (toInMinutes < fromInMinutes) {
-  //       toInMinutes += 1440; // إضافة 24 ساعة إذا كانت نهاية اليوم
-  //     }
-  //     final totalHours = (toInMinutes - fromInMinutes) / 60;
-  //
-  //     // عدد العمال
-  //     final numberOfWorkers = int.tryParse(numberOfWorkersController.text) ?? 0;
-  //
-  //     // عدد الأيام
-  //     final numberOfDays = selectedDatesFromServiceDays.length;
-  //
-  //     // سعر الساعة (يمكنك استبدال 100 بالسعر الفعلي من `package`)
-  //     final hourlyRate = double.tryParse(packagesModel?.first.hourlyRate ?? '100') ?? 0;
-  //
-  //     // حساب الإجمالي الفرعي
-  //     return totalHours * numberOfWorkers * hourlyRate * numberOfDays;
-  //   } catch (e) {
-  //     print("Error calculating sub total: $e");
-  //     return 0.0;
-  //   }
-  // }
-  //
-  // // دالة حساب الضريبة
-  // double calculateTax() {
-  //   final subTotal = calculateSubTotal();
-  //   return subTotal * ratio; // حساب الضريبة كنسبة مئوية من الإجمالي الفرعي
-  // }
-  //
-  // // دالة حساب الإجمالي بعد الضريبة
-  // double calculateTotalWithTax() {
-  //   final subTotal = calculateSubTotal();
-  //   final tax = calculateTax();
-  //   return subTotal + tax;
-  // }
   List<Package> getPackagesForOccupation(String occId) {
     return packagesModel?.where((package) => package.occId == occId).toList() ?? [];
   }
@@ -90,16 +38,6 @@ class InsertContractHourCubit extends Cubit<InsertContractHourState> {
     );
   }
 
-  // Future getUserDataWithSession() async {
-  //   emit(LoadingGetUserDataWithSession());
-  //   print("the client session ${model?.data?.sessionToken}");
-  //   Preferences.instance.getUserModelWithSession().then(
-  //         (value) {
-  //       model = value;
-  //       emit(LoadedGetUserDataWithSession());
-  //     },
-  //   );
-  // }
   void getOccupationsData({required String clientId}) async {
 
     emit(GetOccupationsLoadingState());
@@ -181,7 +119,6 @@ class InsertContractHourCubit extends Cubit<InsertContractHourState> {
           arguments: insertHourlyDataModel,
         );
 
-        // إعادة تعيين القيم إلى الافتراضي بعد الإدخال
         _resetFields(
           countOfWorkers: countOfWorkers,
           serviceTimeFrom: serviceTimeFrom,

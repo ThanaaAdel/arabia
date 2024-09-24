@@ -23,7 +23,6 @@ class _ProfessionalEmploymentScreenState extends State<ProfessionalEmploymentScr
   @override
   void initState() {
     super.initState();
-    // Fetch data for the initial state
     context.read<ProfessionalEmploymentCubit>().getProfessionalEmployment();
   }
 
